@@ -76,7 +76,7 @@ public class RecordVPAdapter extends PagerAdapter implements View.OnClickListene
     private String templateCode = null;
 
     public TreeMap<Integer, TreeMap<Integer, RecordRVAdapter>> timeAdapterTree = new TreeMap<>();//外側はdateInt, 内側はdataNumを表す
-
+    public HashMap<Integer, HashMap<String, String>> arrayMap = new HashMap<>();
     private ArrayMap<Integer, RecordUiOperator> pageMap = new ArrayMap<>();
 
     //region static member
