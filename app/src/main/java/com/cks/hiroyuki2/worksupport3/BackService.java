@@ -52,7 +52,7 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
     static final String INTENT_KEY_1 = "INTENT_KEY_1";
     static final String INTENT_KEY_2 = "INTENT_KEY_2";
     private String uid;
-    private static final String urlStart = "https://worksupport2.firebaseio.com";
+    private static final String urlStart = "https://worksupport3.firebaseio.com";
     private List<String> groupKeys = new ArrayList<>();
     private Messenger mServiceMessenger;
     static int CREATE_GROUP = 1;
