@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:id="@+id/container"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <FrameLayout
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="16dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/icon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_face_white_48dp" />
+
+            <ImageView
+                android:id="@+id/icon_inner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription=""
+                android:padding="8dp" />
+
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/name"
+            android:textColor="@color/cardview_dark_background"
+            android:textSize="20sp"
+            android:maxLines="1"/>
+
+        <cn.refactor.library.SmoothCheckBox
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:contentDescription=""
+            android:visibility="gone"
+            android:id="@+id/checkbox"
+            app:color_checked="@color/colorAccent"
+            android:clickable="false"
+            android:focusable="false" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/blue_gray"
+        android:id="@+id/seem"/>
+
+</LinearLayout>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:id="@+id/item_ll">
+
+    <!--<ImageView-->
+        <!--android:layout_width="16dp"-->
+        <!--android:layout_height="16dp"-->
+        <!--android:layout_gravity="center_vertical"-->
+        <!--android:contentDescription=""-->
+        <!--android:src="@drawable/circle"-->
+        <!--android:tint="@color/word_blue"/>-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:background="?android:attr/selectableItemBackground"
+        android:textSize="20sp"
+        android:text="12:00"
+        android:textColor="@color/cardview_dark_background"
+        android:id="@+id/time" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:background="?android:attr/selectableItemBackground"
+        android:textSize="18sp"
+        android:text="起床"
+        android:textColor="@color/cardview_dark_background"
+        android:id="@+id/value"/>
+
+</LinearLayout>

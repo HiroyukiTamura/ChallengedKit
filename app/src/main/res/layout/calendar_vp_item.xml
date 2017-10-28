@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+  -->
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical">
+
+        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:elevation="@dimen/elevation_default_half"
+            app:mcv_dateTextAppearance="@style/CustomDayTextAppearance"
+            app:mcv_selectionColor="@color/blue_gray_light"
+            app:mcv_showOtherDates="all"
+            app:mcv_weekDayTextAppearance="@style/CustomWeekDaysAppearance" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:background="@color/back_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp"
+            android:clipToPadding="false"/>
+
+    </LinearLayout>
+
+</ScrollView>
+
+

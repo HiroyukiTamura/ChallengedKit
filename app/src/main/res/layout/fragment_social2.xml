@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+  -->
+
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.cks.hiroyuki2.worksupport3.Fragments.SocialFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:id="@+id/scroll">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="@string/social_menu_my_prof"
+                android:textColor="@android:color/black"
+                android:background="@color/blue_gray_light"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:id="@+id/my_profile">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/icon"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="16dp" />
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/cardview_dark_background"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="@string/social_menu_share"
+                android:textColor="@android:color/black"
+                android:background="@color/blue_gray_light"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/recycler_share" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:layout_gravity="center_horizontal"
+                android:padding="16dp"
+                android:id="@+id/add_group">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="16dp"
+                    android:layout_alignParentStart="true"
+                    android:id="@+id/icon3"
+                    android:contentDescription=""
+                    android:src="@drawable/ic_add_circle_black_36dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:id="@+id/name3"
+                    android:text="@string/social_menu_add_list"
+                    android:textColor="@color/cardview_dark_background"
+                    android:textSize="20sp"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="@string/social_menu_user"
+                android:textColor="@android:color/black"
+                android:background="@color/blue_gray_light"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/recycler_user"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:layout_gravity="center_horizontal"
+                android:padding="16dp"
+                android:id="@+id/add_user">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="16dp"
+                    android:layout_alignParentStart="true"
+                    android:contentDescription=""
+                    android:src="@drawable/ic_add_circle_black_36dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="@string/addUser"
+                    android:textColor="@color/cardview_dark_background"
+                    android:textSize="20sp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</FrameLayout>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+  -->
+
+<resources>
+    <string name="define_int_material_calendarview" />
+	<!-- Author section -->
+	<string name="library_material_calendarview_author">prolificinteractive</string>
+	<string name="library_material_calendarview_authorWebsite">https://github.com/prolificinteractive/material-calendarview</string>
+	<!-- Library section -->
+	<string name="library_material_calendarview_libraryName">material-calendarview</string>
+	<string name="library_material_calendarview_libraryDescription">A Material design back port of Android\'s CalendarView.</string>
+	<string name="library_material_calendarview_libraryWebsite">https://github.com/prolificinteractive/material-calendarview</string>
+	<string name="library_material_calendarview_libraryVersion">1.4.3</string>
+	<!-- OpenSource section -->
+	<string name="library_material_calendarview_isOpenSource">true</string>
+	<string name="library_material_calendarview_repositoryLink">https://github.com/prolificinteractive/material-calendarview</string>
+	<!-- ClassPath for autoDetect section -->
+	<string name="library_material_calendarview_classPath">com.prolificinteractive:material-calendarview</string>
+	<!-- License section -->
+	<string name="library_material_calendarview_licenseId">mit</string>
+	<!-- Custom variables section -->
+</resources>

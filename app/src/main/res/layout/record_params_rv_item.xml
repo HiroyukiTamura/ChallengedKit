@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="32dp"
+        android:orientation="horizontal"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:id="@+id/container">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:id="@+id/key"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:maxLines="3" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/checkbox"
+            android:layout_marginEnd="16dp"
+            android:visibility="gone"/>
+
+        <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/seek_bar"
+            app:dsb_min="1"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/arrows"
+            android:rotation="90"
+            android:tint="@color/blue_gray"
+            android:visibility="gone"
+            android:id="@+id/max"
+            android:contentDescription=""/>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_close_white_24dp"
+            android:tint="@color/blue_gray"
+            android:visibility="gone"
+            android:id="@+id/remove"
+            android:contentDescription=""/>
+
+        <!--<com.github.channguyen.rsv.RangeSliderView-->
+            <!--android:id="@+id/rsv_custom"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_marginLeft="8dp"-->
+            <!--android:layout_marginRight="@dimen/activity_horizontal_margin"-->
+            <!--rsv:filledColor="#00cbff"-->
+            <!--rsv:emptyColor="#a8aeb8"-->
+            <!--rsv:rangeCount="4"-->
+            <!--rsv:barHeightPercent="0.1" />-->
+
+    </LinearLayout>
+
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/back_color"-->
+        <!--android:id="@+id/seem" />-->
+
+</LinearLayout>

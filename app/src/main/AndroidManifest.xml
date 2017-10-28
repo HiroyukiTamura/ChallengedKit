@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?><!-- ~ Copyright (c) $year. Hiroyuki Tamura All rights reserved. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.cks.hiroyuki2.worksupport3">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        tools:replace="android:supportsRtl"
+        android:name=".MainApplication"
+        android:allowBackup="true"
+        android:configChanges="orientation|screenSize"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:fullBackupContent="@xml/backup_descriptor">
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"
+            tools:replace="android:value" />
+
+        <activity
+            android:name=".Activities.MainActivity_"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="6c1528b3bbc66a9d925a39b9982d20e328e8e509"
+            tools:replace="android:value" />
+
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+        <activity
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="android.webkit.WebView.MetricsOptOut"
+            android:value="true" />
+
+        <activity
+            android:name=".Activities.AddFriendActivity_"
+            android:label="@string/title_activity_add_friend_activity"
+            android:parentActivityName=".Activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="Activities.MainActivity" />
+        </activity>
+
+        <service
+            android:name=".BackService_"
+            android:exported="false" />
+
+        <activity
+            android:name=".Activities.EditDocActivity_"
+            android:label="@string/edit_doc_act_name"
+            android:parentActivityName=".Activities.MainActivity_"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activities.AddGroupActivity_"
+            android:label="@string/title_add_group"
+            android:parentActivityName=".Activities.MainActivity_"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="Activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".Activities.SharedDataViewActivity_"
+            android:label="@string/shared_data_activity_label"
+            android:parentActivityName=".Activities.MainActivity_"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="Activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".Activities.SharedCalendarActivity_"
+            android:label="@string/shared_calendar_activity_label"
+            android:parentActivityName=".Activities.MainActivity_"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activities.GroupSettingActivity_"
+            android:label="@string/toolbar_title_setting_group"
+            android:parentActivityName=".Activities.MainActivity_"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="Activities.MainActivity" />
+        </activity>
+    </application>
+
+</manifest>

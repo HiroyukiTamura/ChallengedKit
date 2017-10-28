@@ -1,0 +1,117 @@
+<!--
+  ~ Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/setting_header"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp"
+        android:paddingTop="16dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="32dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/fui_ic_mail_white_24dp"
+            android:tint="@color/material_icon_active"
+            android:contentDescription=""
+            android:id="@+id/mail_icon"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="e-mail"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="12sp"
+            android:layout_toEndOf="@+id/mail_icon"
+            android:id="@+id/email_subtitle"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/email_subtitle"
+            android:lines="1"
+            android:ellipsize="end"
+            android:textSize="16sp"
+            android:layout_toEndOf="@+id/mail_icon"
+            android:id="@+id/email"
+            android:textColor="@color/cardview_dark_background"/>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="16dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_mode_edit_white_36dp"
+            android:tint="@color/colorAccentDark"
+            android:contentDescription=""
+            android:id="@+id/edit_mail"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp"
+        android:paddingTop="16dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="32dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_lock_white_24dp"
+            android:tint="@color/material_icon_active"
+            android:contentDescription=""
+            android:id="@+id/pw_icon"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="パスワード"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="12sp"
+            android:layout_toEndOf="@+id/pw_icon"
+            android:id="@+id/pw_subtitle"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/pw_subtitle"
+            android:textSize="16sp"
+            android:layout_toEndOf="@+id/pw_icon"
+            android:id="@+id/password"
+            android:text="••••"
+            android:textColor="@color/cardview_dark_background" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="16dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_mode_edit_white_36dp"
+            android:tint="@color/colorAccentDark"
+            android:contentDescription=""
+            android:id="@+id/pw_edit"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+  -->
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/blue_gray_light"
+    android:orientation="horizontal"
+    android:padding="16dp">
+
+    <FrameLayout
+        android:id="@+id/icon_fl"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginEnd="32dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/def_icon_fl">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/circle"
+                android:tint="@color/colorAccent"/>
+
+            <ImageView
+                android:id="@+id/def_icon"
+                android:padding="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" /><!--todo ここなおして！-->
+
+        </FrameLayout>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"/>
+
+        <FrameLayout
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end|bottom">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/circle"
+                android:tint="@color/back_color"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="4dp"
+                android:focusable="false"
+                android:src="@drawable/ic_mode_edit_white_36dp"
+                android:tint="@color/colorAccentDark" />
+
+        </FrameLayout>
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:textColor="@color/cardview_dark_background"
+        android:textSize="20sp" />
+
+    <ImageView
+        android:id="@+id/edit_name"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="16dp"
+        android:contentDescription=""
+        android:src="@drawable/ic_mode_edit_white_36dp"
+        android:tint="@color/colorAccentDark" />
+
+</LinearLayout>

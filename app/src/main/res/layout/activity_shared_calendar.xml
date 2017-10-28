@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+  -->
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cks.hiroyuki2.worksupport3.Activities.SharedCalendarActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:elevation="@dimen/elevation_default">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_marginStart="-16dp"
+            android:background="?attr/colorPrimary"
+            android:title="@string/title_add_group"
+            android:clickable="false"
+            app:popupTheme="@style/AppTheme.PopupOverlay" >
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="false">
+
+                <ImageButton
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_gravity="center_vertical|start"
+                    android:src="@drawable/ic_arrow_back_white_24dp"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter"
+                    android:id="@+id/tool_back"
+                    android:contentDescription=""/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_arrow_drop_up_white_24dp"
+                        android:scaleType="fitCenter"
+                        android:rotation="270"
+                        android:id="@+id/mcv_prev"
+                        android:background="@android:color/transparent"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:id="@+id/title"
+                        android:textSize="22sp"
+                        android:textColor="@android:color/white"/>
+
+                    <ImageButton
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_arrow_drop_up_white_24dp"
+                        android:scaleType="fitCenter"
+                        android:rotation="90"
+                        android:contentDescription=""
+                        android:id="@+id/mcv_forward"
+                        android:background="@android:color/transparent"/>
+
+                </LinearLayout>
+
+                <ImageButton
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_gravity="center_vertical|end"
+                    android:src="@drawable/ic_arrow_drop_up_white_24dp"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter"
+                    android:contentDescription=""
+                    android:id="@+id/flip"/>
+
+            </FrameLayout>
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/fragment_container"/>
+
+        <!--<com.prolificinteractive.materialcalendarview.MaterialCalendarView-->
+            <!--android:id="@+id/calendarView"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@android:color/white"-->
+            <!--android:elevation="@dimen/elevation_default_half"-->
+            <!--app:mcv_dateTextAppearance="@style/CustomDayTextAppearance"-->
+            <!--app:mcv_monthLabels="@array/month"-->
+            <!--app:mcv_selectionColor="@color/blue_gray_light"-->
+            <!--app:mcv_showOtherDates="all"-->
+            <!--app:mcv_weekDayTextAppearance="@style/CustomWeekDaysAppearance" />-->
+
+        <!--<android.support.v7.widget.RecyclerView-->
+            <!--android:id="@+id/recycler"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_weight="1" />-->
+
+        <FrameLayout
+            android:id="@+id/bannersizes_fl_adframe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="@dimen/fab_margin_min400dp"
+        android:layout_marginLeft="@dimen/fab_margin"
+        android:layout_marginRight="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_add_white_24dp" />
+
+</android.support.design.widget.CoordinatorLayout>

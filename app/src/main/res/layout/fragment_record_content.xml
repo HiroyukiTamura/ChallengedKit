@@ -1,0 +1,332 @@
+<!--
+  ~ Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+  -->
+
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:cardview="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:background="@color/back_color">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:id="@+id/tag_container"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                cardview:cardCornerRadius="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:paddingRight="8dp"
+                    android:paddingLeft="8dp"
+                    android:text="出勤日"
+                    android:textColor="@android:color/white"
+                    android:background="@color/orange_dark"/>
+
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp">
+
+            <ImageView
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_gravity="top"
+                android:src="@drawable/circle"
+                android:tint="@color/blue_gray"
+                android:contentDescription="@string/app_name"/>
+
+            <TextView
+                android:layout_width="4dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:background="@color/blue_gray" />
+
+        </FrameLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/recycler" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginRight="24dp"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_marginLeft="32dp">
+
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_gravity="bottom"
+                    android:src="@drawable/circle"
+                    android:tint="@color/blue_gray"
+                    android:contentDescription="@string/app_name"/>
+
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@color/blue_gray" />
+
+            </FrameLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <ImageButton
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:gravity="center_horizontal|bottom"
+                android:background="@drawable/ic_add_circle_black_36dp"
+                android:contentDescription="@string/app_name"
+                android:id="@+id/addBtn"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginBottom="16dp"
+                cardview:cardCornerRadius="8dp">
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="12dp"
+                    android:id="@+id/recycler1" />
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="48dp"
+                android:layout_marginRight="48dp"
+                cardview:cardCornerRadius="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:text="悪化サイン"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:background="@color/orange_dark" />
+
+            </android.support.v7.widget.CardView>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginBottom="16dp"
+                cardview:cardCornerRadius="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="48dp"
+                    android:layout_marginRight="24dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginBottom="12dp"
+                    android:minHeight="72dp"
+                    android:orientation="horizontal"
+                    android:id="@+id/tag_box">
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginLeft="8dp"
+                        cardview:cardCornerRadius="8dp"
+                        app:cardElevation="2dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="4dp"
+                            android:paddingRight="8dp"
+                            android:paddingLeft="8dp"
+                            android:text="出勤日"
+                            android:textSize="16sp"
+                            android:textColor="@android:color/white"
+                            android:background="@color/orange_dark" />
+
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginLeft="8dp"
+                        cardview:cardCornerRadius="8dp"
+                        app:cardElevation="2dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="4dp"
+                            android:paddingRight="8dp"
+                            android:paddingLeft="8dp"
+                            android:text="震え"
+                            android:textSize="16sp"
+                            android:textColor="@android:color/white"
+                            android:background="@color/pink" />
+
+                    </android.support.v7.widget.CardView>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="48dp"
+                android:layout_marginRight="48dp"
+                cardview:cardCornerRadius="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:text="注意サイン"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:background="@color/orange_dark" />
+
+            </android.support.v7.widget.CardView>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginBottom="16dp"
+                cardview:cardCornerRadius="8dp">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="48dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginRight="24dp"
+                    android:layout_marginLeft="24dp"
+                    android:minHeight="72dp"
+                    android:inputType="textMultiLine"
+                    android:background="@color/blue_gray"/>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="48dp"
+                android:layout_marginRight="48dp"
+                cardview:cardCornerRadius="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:text="備考"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:background="@color/orange_dark" />
+
+            </android.support.v7.widget.CardView>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView >

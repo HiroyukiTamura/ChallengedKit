@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingRight="16dp"
+    android:paddingLeft="16dp"
+    android:orientation="horizontal"
+    android:id="@+id/item_container">
+
+    <FrameLayout
+        android:layout_width="32dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="24dp"
+        android:id="@+id/frame">
+
+        <View
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/blue_gray" />
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="center"
+            android:src="@drawable/circle"
+            android:contentDescription="@string/app_name"
+            android:id="@+id/circle" />
+
+        <!--<RadioGroup-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:background="@color/back_gray"-->
+            <!--android:visibility="gone"-->
+            <!--android:id="@+id/radio_group">-->
+
+        <cn.refactor.library.SmoothCheckBox
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginLeft="6dp"
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent"
+            android:id="@+id/radio"
+            android:visibility="gone"
+            app:color_unchecked="@android:color/transparent"
+            app:color_unchecked_stroke="@android:color/white"
+            app:color_checked="@color/word_red"
+            app:duration="200" />
+
+            <!--<android.support.v7.widget.AppCompatRadioButton-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/radio2"-->
+                <!--android:visibility="gone"/>-->
+
+        <!--</RadioGroup>-->
+
+    </FrameLayout>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:id="@+id/time_card">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:gravity="bottom"
+                android:textSize="20sp"
+                android:id="@+id/time" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:textSize="16sp"
+                android:id="@+id/value"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_close_white_24dp"
+                android:tint="@color/blue_gray"
+                android:contentDescription="remove"
+                android:id="@+id/remove"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+  -->
+
+<org.apmem.tools.layouts.FlowLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="32dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/flow">
+
+</org.apmem.tools.layouts.FlowLayout>

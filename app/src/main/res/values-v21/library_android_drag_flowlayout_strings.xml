@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="define_android_drag_flowlayout" />
+	<!-- Author section -->
+	<string name="library_android_drag_flowlayout_author">LightSun</string>
+	<string name="library_android_drag_flowlayout_authorWebsite">https://github.com/LightSun/android-drag-FlowLayout</string>
+	<!-- Library section -->
+	<string name="library_android_drag_flowlayout_libraryName">android-drag-FlowLayout</string>
+	<string name="library_android_drag_flowlayout_libraryDescription">this is a draggable flow layout lib (android 可拖拽的流布局库) . </string>
+	<string name="library_android_drag_flowlayout_libraryWebsite" />
+	<string name="library_android_drag_flowlayout_libraryVersion">1.8.8</string>
+	<!-- OpenSource section -->
+	<string name="library_android_drag_flowlayout_isOpenSource">true</string>
+	<string name="library_android_drag_flowlayout_repositoryLink">https://github.com/LightSun/android-drag-FlowLayout/blob/master/LICENSE</string>
+	<!-- ClassPath for autoDetect section -->
+	<string name="library_android_drag_flowlayout_classPath">com.heaven7.android.dragflowlayout</string>
+	<!-- License section -->
+	<string name="library_android_drag_flowlayout_licenseId">apache_2_0</string>
+	<!-- Custom variables section -->
+</resources>

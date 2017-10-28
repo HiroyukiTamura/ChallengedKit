@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+  -->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="96dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/item_ll">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="96dp"
+        android:paddingRight="8dp"
+        android:paddingLeft="8dp"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription=""
+        android:id="@+id/icon"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:textSize="12sp"
+        android:lines="1"
+        android:layout_gravity="center"
+        android:textColor="@color/cardview_dark_background"
+        android:id="@+id/title"/>
+
+</LinearLayout>

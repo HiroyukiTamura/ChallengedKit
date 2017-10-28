@@ -1,0 +1,74 @@
+{
+  "calendar" : {
+    "-KvyZgUyjZfMjJEHT_IX" : "DEFAULT",
+    "DEFAULT" : "DEFAULT"
+  },
+  "friend" : {
+    "2a0Avh3fkpduKzK4xT5DIfx0Yee2" : {
+      "OXHNwR9jXiVSrLBQi3rCs8XHFds1" : {
+        "isChecked" : false,
+        "name" : "name",
+        "photoUrl" : "null"
+      }
+    },
+    "DEFAULTUID" : {
+      "DEFAULTUID" : {
+        "fuga" : "hoge"
+      }
+    },
+    "OXHNwR9jXiVSrLBQi3rCs8XHFds1" : {
+      "2a0Avh3fkpduKzK4xT5DIfx0Yee2" : {
+        "isChecked" : false,
+        "name" : "name",
+        "photoUrl" : "null"
+      }
+    }
+  },
+  "group" : {
+    "-KvyZgUyjZfMjJEHT_IX" : {
+      "groupName" : "新しいグル",
+      "host" : "2a0Avh3fkpduKzK4xT5DIfx0Yee2",
+      "member" : {
+        "2a0Avh3fkpduKzK4xT5DIfx0Yee2" : {
+          "added" : true,
+          "name" : "田村ひろゆき",
+          "photoUrl" : "null"
+        }
+      },
+      "photoUrl" : "https://firebasestorage.googleapis.com/v0/b/worksupport2.appspot.com/o/keyPusher%2F-Kw0MaiaXj0EIEhjGrvJ.png?alt=media&token=0866c7eb-f2e0-477c-ab10-85ed64912f34"
+    },
+    "DEFALT" : "DEFAULT"
+  },
+  "userData" : {
+    "2a0Avh3fkpduKzK4xT5DIfx0Yee2" : {
+      "group" : {
+        "-KvyZgUyjZfMjJEHT_IX" : {
+          "added" : true,
+          "name" : "新しいグル",
+          "photoUrl" : "https://firebasestorage.googleapis.com/v0/b/worksupport2.appspot.com/o/keyPusher%2F-Kw0MaiaXj0EIEhjGrvJ.png?alt=media&token=0866c7eb-f2e0-477c-ab10-85ed64912f34"
+        },
+        "DEFAULT" : "DEFAULT"
+      },
+      "template" : "DEFAULT"
+    },
+    "DEFAULT" : "DEFAULT",
+    "OXHNwR9jXiVSrLBQi3rCs8XHFds1" : {
+      "template" : "DEFAULT"
+    },
+    "xNjFrqhyanOqxdwezXmeLOGY0Dm1" : {
+      "template" : "DEFAULT"
+    }
+  },
+  "userParamSeries" : {
+    "2a0Avh3fkpduKzK4xT5DIfx0Yee2" : {
+      "DEFAULT" : "DEFAULT"
+    },
+    "DEFAULT" : "DEFAULT",
+    "OXHNwR9jXiVSrLBQi3rCs8XHFds1" : {
+      "DEFAULT" : "DEFAULT"
+    },
+    "xNjFrqhyanOqxdwezXmeLOGY0Dm1" : {
+      "DEFAULT" : "DEFAULT"
+    }
+  }
+}

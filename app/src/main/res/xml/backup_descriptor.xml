@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+  -->
+
+<full-backup-content>
+    <!-- TODO Remove the following "exclude" elements to make them a part of the auto backup admobのリソースIDとかな！-->
+    <!-- Exclude the shared preferences file that contains the GCM registrationId -->
+    <exclude
+        domain="sharedpref"
+        path="group_pref.xml" />
+    <exclude
+        domain="sharedpref"
+        path="pref.xml" />
+    <exclude
+        domain="sharedpref"
+        path="friend_pref.xml" />
+</full-backup-content>

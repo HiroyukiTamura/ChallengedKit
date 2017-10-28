@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+  -->
+
+<resources>
+    <!--カレンダーまわり-->
+    <item type="id" name="data_num" />
+    <item type="id" name="data_txt" />
+
+    <!--editTemplateまわり-->
+    <item type="id" name="tag_id" />
+</resources>

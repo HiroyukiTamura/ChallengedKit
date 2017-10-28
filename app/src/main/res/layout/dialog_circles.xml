@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+  -->
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:layout_marginRight="32dp"
+    android:layout_marginLeft="32dp"
+    android:layout_marginTop="32dp"
+    android:orientation="horizontal"
+    android:id="@+id/ll"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <FrameLayout
+        android:layout_width="48dp"
+        android:layout_height="match_parent"
+        android:id="@+id/color0"
+        android:tag="0">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="yellow"
+            android:src="@drawable/circle"
+            android:tint="@color/pink" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:src="@drawable/ic_check_white_48dp"
+            android:contentDescription="check"
+            android:visibility="invisible"
+            android:clickable="false"/>
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
+
+    <FrameLayout
+        android:layout_width="48dp"
+        android:layout_height="match_parent"
+        android:id="@+id/color1"
+        android:tag="1">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="pink"
+            android:src="@drawable/circle"
+            android:tint="@color/orange_dark" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:src="@drawable/ic_check_white_48dp"
+            android:contentDescription="check"
+            android:visibility="invisible"
+            android:clickable="false"/>
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
+
+    <FrameLayout
+        android:layout_width="48dp"
+        android:layout_height="match_parent"
+        android:id="@+id/color2"
+        android:tag="2">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="blue"
+            android:src="@drawable/circle"
+            android:tint="@android:color/holo_blue_dark" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:src="@drawable/ic_check_white_48dp"
+            android:contentDescription="check"
+            android:visibility="invisible"
+            android:clickable="false"/>
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
+
+    <FrameLayout
+        android:layout_width="48dp"
+        android:layout_height="match_parent"
+        android:id="@+id/color3"
+        android:tag="3">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="gray"
+            android:src="@drawable/circle"
+            android:tint="@android:color/tab_indicator_text" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:src="@drawable/ic_check_white_48dp"
+            android:contentDescription="check"
+            android:visibility="invisible"
+            android:clickable="false"/>
+
+    </FrameLayout>
+
+</LinearLayout>
