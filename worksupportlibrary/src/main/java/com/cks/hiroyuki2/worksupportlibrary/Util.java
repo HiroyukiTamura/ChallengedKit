@@ -44,8 +44,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cks.hiroyuki2.worksupport3.Adapters.RecordParamsRVAdapter;
-import com.cks.hiroyuki2.worksupportlibrary.worksupportlibrary.User;
+import com.cks.hiroyuki2.worksupportlibrary.Entity.RecordData;
+import com.cks.hiroyuki2.worksupportlibrary.Entity.User;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.CustomEvent;
@@ -147,6 +147,10 @@ public class Util {
     public static final String IS_DATA_MINE ="IS_DATA_MINE";
     public static final int NOTIFICATION_ID = 15973;
     public static final String NOTIFICATION_CHANNEL = "CHANNEL_0";
+    public static final String LIST_MAP_HOUR = "HOUR";
+    public static final String LIST_MAP_MIN = "MIN";
+    public static final String LIST_MAP_VALUE = "VALUE";
+    public static final String INDEX = "INDEX";
 
     final static String storageRoot = "gs://worksupport3.appspot.com/";
 
@@ -346,11 +350,11 @@ public class Util {
         for (String key : keyList) {
             Bundle bundle = new Bundle();
             String[] time = key.split(":");
-            bundle.putInt(RecordRVAdapter.LIST_MAP_HOUR, Integer.parseInt(time[0]));
-            bundle.putInt(RecordRVAdapter.LIST_MAP_MIN, Integer.parseInt(time[1]));
+            bundle.putInt(LIST_MAP_HOUR, Integer.parseInt(time[0]));
+            bundle.putInt(LIST_MAP_MIN, Integer.parseInt(time[1]));
             String value = (String)data.data.get(key);
-            bundle.putString(RecordRVAdapter.LIST_MAP_VALUE, value);
-            bundle.putInt(RecordRVAdapter.INDEX, i);
+            bundle.putString(LIST_MAP_VALUE, value);
+            bundle.putInt(INDEX, i);
             list.add(bundle);
             i++;
         }
@@ -386,9 +390,9 @@ public class Util {
     private static HashMap<String, Object> innerBundle2Data(@NonNull List<Bundle> bundles){
         HashMap<String, Object> hashMap = new HashMap<>(bundles.size());
         for (Bundle bundle : bundles) {
-            int hour = bundle.getInt(RecordRVAdapter.LIST_MAP_HOUR);
-            int min = bundle.getInt(RecordRVAdapter.LIST_MAP_MIN);
-            String value = bundle.getString(RecordRVAdapter.LIST_MAP_VALUE);
+            int hour = bundle.getInt(LIST_MAP_HOUR);
+            int min = bundle.getInt(LIST_MAP_MIN);
+            String value = bundle.getString(LIST_MAP_VALUE);
             String timeStr = Util.time2String(hour, min);
             hashMap.put(timeStr, value);
         }
@@ -414,9 +418,9 @@ public class Util {
         for (String key : data.data.keySet()) {
             Bundle bundle = new Bundle();
             String value = (String) data.data.get(key);
-            String[] values = value.split(FirebaseConnection.delimiter);
+            String[] values = value.split(delimiter);
             bundle.putStringArray(PARAMS_VALUES, values);
-            bundle.putInt(RecordParamsRVAdapter.INDEX, i);
+            bundle.putInt(INDEX, i);
             list.add(bundle);
             i++;
         }
@@ -451,7 +455,7 @@ public class Util {
             String[] strings = bundles.get(i).getStringArray(PARAMS_VALUES);
             if (strings == null)
                 continue;
-            String string = Util.joinArr(strings, FirebaseConnection.delimiter);
+            String string = Util.joinArr(strings, delimiter);
             data.put(Integer.toString(i), string);
         }
         return data;
@@ -548,7 +552,7 @@ public class Util {
         Toast.makeText(context, string, Toast.LENGTH_LONG).show();
     }
 
-    @Contract(value = "!null, _ -> !null", pure = true)
+    @Contract(pure = true)
     @NonNull
     public static String getTextNullable(@Nullable String txt, @NonNull String subTxt){
         return txt == null ? subTxt : txt;

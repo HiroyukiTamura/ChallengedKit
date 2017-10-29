@@ -20,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
+import com.cks.hiroyuki2.worksupportlibrary.Entity.RecordData;
+import com.cks.hiroyuki2.worksupportlibrary.Util;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,6 +32,12 @@ import java.util.TreeSet;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.refactor.library.SmoothCheckBox;
+
+import static com.cks.hiroyuki2.worksupportlibrary.Util.INDEX;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.LIST_MAP_HOUR;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.LIST_MAP_MIN;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.LIST_MAP_VALUE;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.time2String;
 
 /**
  * timeLineを表示するおじさん！
@@ -47,10 +55,6 @@ public class RecordRVAdapter extends RecyclerView.Adapter<RecordRVAdapter.ViewHo
     private Snackbar snackbar;
     private Set<Integer> checkedList = new TreeSet<>();//RecordDialogFragment起点の際に使用します
 
-    public static final String LIST_MAP_HOUR = "HOUR";
-    public static final String LIST_MAP_MIN = "MIN";
-    public static final String LIST_MAP_VALUE = "VALUE";
-    public static final String INDEX = "INDEX";
     public static final String ITEM_ADD = "ITEM_ADD";
     public static final String DIALOG_LONGTAP = "DIALOG_LONGTAP";
     public static final int CALLBACK_TIME = 100;
@@ -116,7 +120,7 @@ public class RecordRVAdapter extends RecyclerView.Adapter<RecordRVAdapter.ViewHo
 
         final int hour = bundle.getInt(LIST_MAP_HOUR);
         int min = bundle.getInt(LIST_MAP_MIN);
-        String time = Util.time2String(hour, min);
+        String time = time2String(hour, min);
         holder.time.setText(time);
 
         int colorNum = Integer.parseInt(values[1]);

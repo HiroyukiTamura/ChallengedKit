@@ -12,9 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.FrameLayout;
 
-import com.cks.hiroyuki2.worksupport3.Entity.User;
 import com.cks.hiroyuki2.worksupport3.Fragments.AddGroupFragment;
 import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupportlibrary.Entity.User;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -23,11 +23,9 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import static com.cks.hiroyuki2.worksupport3.Util.getFabLp;
-import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
-import static com.cks.hiroyuki2.worksupport3.Util.logAnalytics;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.initAdMob;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.logAnalytics;
 
 /**
  * Created by hiroyuki2 on 2017/10/20.

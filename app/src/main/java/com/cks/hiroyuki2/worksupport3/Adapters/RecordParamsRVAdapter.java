@@ -25,10 +25,9 @@ import com.cks.hiroyuki2.worksupport3.DialogKicker;
 import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.RecordFragment;
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.RecordData;
 import com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemParam;
 import com.cks.hiroyuki2.worksupport3.TemplateEditor;
-import com.cks.hiroyuki2.worksupport3.Util;
+import com.cks.hiroyuki2.worksupportlibrary.Entity.RecordData;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
@@ -40,9 +39,15 @@ import butterknife.OnClick;
 
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.makeBundleInOnClick;
-import static com.cks.hiroyuki2.worksupport3.Util.PARAMS_VALUES;
-import static com.cks.hiroyuki2.worksupport3.Util.bundle2DataParams;
-import static com.cks.hiroyuki2.worksupport3.Util.onError;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.CALLBACK_TEMPLATE_PARAMS_ITEM;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.CALLBACK_TEMPLATE_PARAMS_SLIDER_MAX;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.INDEX;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.PARAMS_VALUES;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.TEMPLATE_PARAMS_ITEM;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.TEMPLATE_PARAMS_SLIDER_MAX;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.bundle2Data;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.bundle2DataParams;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.onError;
 
 /**
  * {@link RecordVpItemParam}所属！うーん、入り組んでる！
@@ -51,7 +56,6 @@ import static com.cks.hiroyuki2.worksupport3.Util.onError;
 public class RecordParamsRVAdapter extends RecyclerView.Adapter<RecordParamsRVAdapter.ViewHolder> implements CompoundButton.OnCheckedChangeListener, DiscreteSeekBar.OnProgressChangeListener {
 
     private static final String TAG = "MANUAL_TAG: " + RecordParamsRVAdapter.class.getSimpleName();
-    public static final String INDEX = "INDEX";
     private LayoutInflater inflater;
     private List<Bundle> list;
     private int dataNum;
@@ -181,7 +185,7 @@ public class RecordParamsRVAdapter extends RecyclerView.Adapter<RecordParamsRVAd
      * ここでDialogFragmentから返されたbundleをlistにsetしないのは、返されたbundleはそもそもlistを構成しているbundleであるから。
      */
     public void updateData(){
-        RecordData data = Util.bundle2Data(list, dataName, 3, 0, 0, 0);/*bundle2DataParamsでなくていいのか？*/
+        RecordData data = bundle2Data(list, dataName, 3, 0, 0, 0);/*bundle2DataParamsでなくていいのか？*/
         boolean success = TemplateEditor.writeTemplate(dataNum, data, fragment.getContext());
         if (success)
             notifyDataSetChanged();
@@ -275,15 +279,15 @@ public class RecordParamsRVAdapter extends RecyclerView.Adapter<RecordParamsRVAd
     private void onClickKey(int pos){
         Bundle bundle = list.get(pos);
         bundle.putInt(INDEX, pos);
-        makeBundleInOnClick(bundle, Util.TEMPLATE_PARAMS_ITEM, dataNum);
-        kickInputDialog(bundle, Util.TEMPLATE_PARAMS_ITEM, Util.CALLBACK_TEMPLATE_PARAMS_ITEM, fragment);
+        makeBundleInOnClick(bundle, TEMPLATE_PARAMS_ITEM, dataNum);
+        kickInputDialog(bundle, TEMPLATE_PARAMS_ITEM, CALLBACK_TEMPLATE_PARAMS_ITEM, fragment);
     }
 
     private void onClickMax(int pos){
         Bundle bundle = list.get(pos);
-        makeBundleInOnClick(bundle, Util.TEMPLATE_PARAMS_SLIDER_MAX, dataNum);
-        bundle.putInt(Util.TEMPLATE_PARAMS_SLIDER_MAX, pos);
-        DialogKicker.kickDialogInOnClick(Util.TEMPLATE_PARAMS_SLIDER_MAX, Util.CALLBACK_TEMPLATE_PARAMS_SLIDER_MAX, bundle, fragment);
+        makeBundleInOnClick(bundle, TEMPLATE_PARAMS_SLIDER_MAX, dataNum);
+        bundle.putInt(TEMPLATE_PARAMS_SLIDER_MAX, pos);
+        DialogKicker.kickDialogInOnClick(TEMPLATE_PARAMS_SLIDER_MAX, CALLBACK_TEMPLATE_PARAMS_SLIDER_MAX, bundle, fragment);
     }
 
     private void onClickRemove(int pos){

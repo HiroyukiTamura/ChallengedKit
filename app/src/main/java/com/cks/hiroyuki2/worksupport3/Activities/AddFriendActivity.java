@@ -19,11 +19,10 @@ import com.google.zxing.integration.android.IntentResult;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
 
-import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
-import static com.cks.hiroyuki2.worksupport3.Util.logAnalytics;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.initAdMob;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.logAnalytics;
 
 @EActivity(R.layout.activity_add_fridend_acitivity)
 public class AddFriendActivity extends AppCompatActivity {

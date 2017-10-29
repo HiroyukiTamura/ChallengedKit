@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.cks.hiroyuki2.worksupportlibrary.Entity.RecordData;
 import com.google.gson.Gson;
 
 import java.io.FileInputStream;
@@ -20,7 +21,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.cks.hiroyuki2.worksupport3.Util.logStackTrace;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.TEMPLATE_SERIALIZE;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.logStackTrace;
 
 /**
  * テンプレ編集を担うおじさん！信頼が厚い！
@@ -35,7 +37,7 @@ public class TemplateEditor {
         Log.d(TAG, "deSerialize: fire");
         List<RecordData> data = null;
         try {
-            FileInputStream fis = context.openFileInput(Util.TEMPLATE_SERIALIZE);
+            FileInputStream fis = context.openFileInput(TEMPLATE_SERIALIZE);
             ObjectInputStream ois = new ObjectInputStream(fis);
             data = (List<RecordData>) ois.readObject();
             ois.close();
@@ -70,7 +72,7 @@ public class TemplateEditor {
 
     public static boolean applyTemplate(List<RecordData> list, Context context){
         try {
-            ObjectOutputStream out = new ObjectOutputStream(context.openFileOutput(Util.TEMPLATE_SERIALIZE, Context.MODE_PRIVATE));
+            ObjectOutputStream out = new ObjectOutputStream(context.openFileOutput(TEMPLATE_SERIALIZE, Context.MODE_PRIVATE));
             out.writeObject(list);
             out.close();
             return true;
