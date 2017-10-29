@@ -4,7 +4,6 @@
 
 package com.cks.hiroyuki2.worksupportlibrary.Entity;
 
-import com.cks.hiroyuki2.worksupportlibrary.Entity.CalendarEvent;
 import com.google.firebase.database.Exclude;
 
 /**
