@@ -20,15 +20,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.cks.hiroyuki2.worksupport3.Entity.Content;
-import com.cks.hiroyuki2.worksupport3.Entity.Document;
-import com.cks.hiroyuki2.worksupport3.Entity.DocumentEle;
-import com.cks.hiroyuki2.worksupport3.Entity.Group;
-import com.cks.hiroyuki2.worksupport3.Entity.User;
-import com.cks.hiroyuki2.worksupport3.FirebaseConnection;
+import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
+import com.cks.hiroyuki2.worksupprotlib.Entity.Document;
+import com.cks.hiroyuki2.worksupprotlib.Entity.DocumentEle;
+import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
+import com.cks.hiroyuki2.worksupprotlib.Entity.User;
+import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.Util;
+import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ import static com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment.DIALOG
 import static com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment.DIALOG_TAG_DATA_VERT;
 import static com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment.DIALOG_TAG_DOC_VERT;
 import static com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment.DIALOG_TAG_ITEM_VERT;
-import static com.cks.hiroyuki2.worksupport3.Util.setImgFromStorage;
+import static com.cks.hiroyuki2.worksupprotlib.Util.setImgFromStorage;
 
 /**
  * ボードの中身を表示するおじさん！頼りになる！

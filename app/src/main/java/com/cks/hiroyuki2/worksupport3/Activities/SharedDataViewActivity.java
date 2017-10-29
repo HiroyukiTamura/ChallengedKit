@@ -17,8 +17,8 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
-import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
-import static com.cks.hiroyuki2.worksupport3.Util.logAnalytics;
+import static com.cks.hiroyuki2.worksupprotlib.Util.initAdMob;
+import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 
 @EActivity(R.layout.activity_shared_data_view_activity)
 public class SharedDataViewActivity extends AppCompatActivity implements AnalyticsFragment.OnHamburgerClickListener {

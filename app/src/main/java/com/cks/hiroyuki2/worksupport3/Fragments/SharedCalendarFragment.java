@@ -14,9 +14,9 @@ import android.support.v4.view.ViewPager;
 import com.cks.hiroyuki2.worksupport3.Activities.SharedCalendarActivity;
 import com.cks.hiroyuki2.worksupport3.Adapters.SharedCalendarVPAdapter;
 import com.cks.hiroyuki2.worksupportlibrary.worksupportlibrary.CalendarOneEvent;
-import com.cks.hiroyuki2.worksupport3.Entity.Group;
+import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupport3.FbCheckAndWriter;
-import com.cks.hiroyuki2.worksupport3.FirebaseConnection;
+import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -35,11 +35,11 @@ import static com.cks.hiroyuki2.worksupport3.CalendarDialogFragment.CALLBACK_ADD
 import static com.cks.hiroyuki2.worksupport3.CalendarDialogFragment.INPUT;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickCalendarDialog;
 import static com.cks.hiroyuki2.worksupport3.FbCheckAndWriter.CODE_SET_VALUE;
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.getRootRef;
-import static com.cks.hiroyuki2.worksupport3.Util.COLOR_NUM;
-import static com.cks.hiroyuki2.worksupport3.Util.DATE_PATTERN_YM;
-import static com.cks.hiroyuki2.worksupport3.Util.cal2date;
-import static com.cks.hiroyuki2.worksupport3.Util.makeScheme;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRootRef;
+import static com.cks.hiroyuki2.worksupprotlib.Util.COLOR_NUM;
+import static com.cks.hiroyuki2.worksupprotlib.Util.DATE_PATTERN_YM;
+import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
+import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
 
 /**
  * {@link SharedCalendarActivity}のひとり子分。

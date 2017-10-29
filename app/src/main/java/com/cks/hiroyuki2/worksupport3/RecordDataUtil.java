@@ -4,6 +4,8 @@
 
 package com.cks.hiroyuki2.worksupport3;
 
+import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
+
 import org.jetbrains.annotations.Contract;
 
 import java.util.List;

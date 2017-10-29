@@ -24,7 +24,6 @@ import com.cks.hiroyuki2.worksupport3.Adapters.RecordParamsRVAdapter;
 import com.cks.hiroyuki2.worksupport3.Adapters.RecordVPAdapter;
 import com.cks.hiroyuki2.worksupport3.DialogKicker;
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.RecordData;
 import com.cks.hiroyuki2.worksupport3.RecordDiaogFragmentTag;
 import com.cks.hiroyuki2.worksupport3.RecordRVAdapter;
 import com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItem;
@@ -33,8 +32,6 @@ import com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemParam;
 import com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemTime;
 import com.cks.hiroyuki2.worksupport3.RecordVpItems.TempItemTagPool;
 import com.cks.hiroyuki2.worksupport3.TemplateEditor;
-import com.cks.hiroyuki2.worksupport3.TimeEvent;
-import com.cks.hiroyuki2.worksupport3.Util;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -64,7 +61,7 @@ import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickCircleAndInputDial
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickWidgetDialog;
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.delimiter;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.delimiter;
 import static com.cks.hiroyuki2.worksupport3.RecordUiOperator.syncTimeDataMap;
 import static com.cks.hiroyuki2.worksupport3.RecordUiOperator.updateCommentMap;
 import static com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemTime.CALLBACK_RANGE_COLOR;
@@ -74,9 +71,10 @@ import static com.cks.hiroyuki2.worksupport3.TempWidgetDialogFragment.CALLBACK_T
 import static com.cks.hiroyuki2.worksupport3.TempWidgetDialogFragment.TEMPLATE_ADD;
 import static com.cks.hiroyuki2.worksupport3.TempWidgetDialogFragment.TEMPLATE_EDIT;
 import static com.cks.hiroyuki2.worksupport3.TemplateEditor.applyTemplate;
-import static com.cks.hiroyuki2.worksupport3.Util.PARAMS_VALUES;
-import static com.cks.hiroyuki2.worksupport3.Util.onError;
-import static com.cks.hiroyuki2.worksupport3.Util.toast;
+import static com.cks.hiroyuki2.worksupprotlib.Util.PARAMS_VALUES;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
+import static com.cks.hiroyuki2.worksupprotlib.Util.toast;
+import static com.cks.hiroyuki2.worksupprotlib.Util.toast;
 
 @EFragment(R.layout.fragment_setting_fragmnet)
 public class EditTemplateFragment extends Fragment implements RecordVpItemComment.onClickCommentListener, RecordVpItemParam.OnClickParamsNameListener {

@@ -28,14 +28,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.datePattern;
-import static com.cks.hiroyuki2.worksupport3.Util.bundle2DataParams;
-import static com.cks.hiroyuki2.worksupport3.Util.cal2date;
-import static com.cks.hiroyuki2.worksupport3.Util.data2BundleParams;
-import static com.cks.hiroyuki2.worksupport3.Util.setNullableText;
-import static com.cks.hiroyuki2.worksupport3.Util.setRecycler;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.data2BundleParams;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.setNullableText;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.datePattern;
+import static com.cks.hiroyuki2.worksupprotlib.Util.bundle2DataParams;
+import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
+import static com.cks.hiroyuki2.worksupprotlib.Util.data2BundleParams;
+import static com.cks.hiroyuki2.worksupprotlib.Util.setNullableText;
+import static com.cks.hiroyuki2.worksupprotlib.Util.setRecycler;
+import static com.cks.hiroyuki2.worksupprotlib.Util.data2BundleParams;
+import static com.cks.hiroyuki2.worksupprotlib.Util.setNullableText;
 
 /**
  * アセット兄弟！Paramsおじさん！

@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
 import com.cks.hiroyuki2.worksupportlibrary.Entity.RecordData;
-import com.cks.hiroyuki2.worksupportlibrary.Util;
+import com.cks.hiroyuki2.worksupprotlib.Util;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,11 +33,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.refactor.library.SmoothCheckBox;
 
-import static com.cks.hiroyuki2.worksupportlibrary.Util.INDEX;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.LIST_MAP_HOUR;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.LIST_MAP_MIN;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.LIST_MAP_VALUE;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.time2String;
+import static com.cks.hiroyuki2.worksupprotlib.Util.INDEX;
+import static com.cks.hiroyuki2.worksupprotlib.Util.LIST_MAP_HOUR;
+import static com.cks.hiroyuki2.worksupprotlib.Util.LIST_MAP_MIN;
+import static com.cks.hiroyuki2.worksupprotlib.Util.LIST_MAP_VALUE;
+import static com.cks.hiroyuki2.worksupprotlib.Util.time2String;
 
 /**
  * timeLineを表示するおじさん！

@@ -38,9 +38,9 @@ import java.util.List;
 
 import fr.castorflex.android.verticalviewpager.VerticalViewPager;
 
-import static com.cks.hiroyuki2.worksupport3.Util.IS_DATA_MINE;
-import static com.cks.hiroyuki2.worksupport3.Util.UID;
-import static com.cks.hiroyuki2.worksupport3.Util.time2String;
+import static com.cks.hiroyuki2.worksupprotlib.Util.IS_DATA_MINE;
+import static com.cks.hiroyuki2.worksupprotlib.Util.UID;
+import static com.cks.hiroyuki2.worksupprotlib.Util.time2String;
 
 @EFragment(R.layout.analytics_vp)
 public class AnalyticsFragment extends Fragment implements ValueEventListener, IValueFormatter {

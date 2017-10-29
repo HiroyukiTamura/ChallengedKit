@@ -29,8 +29,8 @@ import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.cks.hiroyuki2.worksupport3.UtilDialog.editBuilder;
-import static com.cks.hiroyuki2.worksupport3.UtilDialog.sendIntent;
+import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.editBuilder;
+import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.sendIntent;
 
 /**
  * {@link EditTemplateFragment}のUIに直接かかわる処理を行うDialogFragment Widgetの編集まわりを担当します。

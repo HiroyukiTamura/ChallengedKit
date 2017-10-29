@@ -25,6 +25,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.AnalyticsFragment;
+import com.cks.hiroyuki2.worksupprotlib.AnalyticsCommentObserver;
+import com.cks.hiroyuki2.worksupprotlib.AnalyticsTagpoolObserver;
+import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEventDataSet;
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEventRange;
+import com.cks.hiroyuki2.worksupprotlib.FirebaseEventHandler;
+import com.cks.hiroyuki2.worksupprotlib.TemplateEditor;
+import com.cks.hiroyuki2.worksupprotlib.Util;
+import com.cks.hiroyuki2.worksupprotlib.UtilSpec;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -56,12 +66,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.view.View.GONE;
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.datePattern;
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.delimiter;
-import static com.cks.hiroyuki2.worksupport3.Util.cal2date;
-import static com.cks.hiroyuki2.worksupport3.Util.colorId;
-import static com.cks.hiroyuki2.worksupport3.Util.getTimeEveDataSetFromRecordData;
-import static com.cks.hiroyuki2.worksupport3.Util.time2String;
+import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
+import static com.cks.hiroyuki2.worksupprotlib.Util.datePattern;
+import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getTimeEveDataSetFromRecordData;
+import static com.cks.hiroyuki2.worksupprotlib.Util.time2String;
+import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.colorId;
 
 /**
  * AnalyticsVPAdapterのお助けやくおじさん！みんな協力して働くんだね！
@@ -568,7 +578,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         View view = inflater.inflate(R.layout.analytics_table_tag, null);
         TextView tv = view.findViewById(R.id.tv);
         tv.setText(value);
-        int colorId = Util.colorId.get(colorNum);
+        int colorId = UtilSpec.colorId.get(colorNum);
         int color = ContextCompat.getColor(rootView.getContext(), colorId);
         ImageView iv = view.findViewById(R.id.circle);
         iv.getDrawable().mutate().setColorFilter(color, PorterDuff.Mode.SRC);

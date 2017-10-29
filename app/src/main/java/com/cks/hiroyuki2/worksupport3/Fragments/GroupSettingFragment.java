@@ -22,12 +22,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Adapters.GroupSettingRVAdapter;
-import com.cks.hiroyuki2.worksupport3.Entity.Group;
-import com.cks.hiroyuki2.worksupport3.Entity.User;
+import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
+import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 import com.cks.hiroyuki2.worksupport3.FbCheckAndWriter;
 import com.cks.hiroyuki2.worksupport3.FirebaseStorageUtil;
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.Util;
+import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
@@ -52,8 +52,8 @@ import static com.cks.hiroyuki2.worksupport3.Adapters.GroupSettingRVAdapter.CALL
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
 import static com.cks.hiroyuki2.worksupport3.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.getRef;
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.getRootRef;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRootRef;
 import static com.cks.hiroyuki2.worksupport3.FirebaseStorageUtil.LIMIT_SIZE_PROF;
 import static com.cks.hiroyuki2.worksupport3.FirebaseStorageUtil.isOverSize;
 import static com.cks.hiroyuki2.worksupport3.FirebaseStorageUtil.showCompleteNtf;
@@ -61,14 +61,14 @@ import static com.cks.hiroyuki2.worksupport3.FirebaseStorageUtil.showUploadingNt
 import static com.cks.hiroyuki2.worksupport3.FirebaseStorageUtil.uploadFile;
 import static com.cks.hiroyuki2.worksupport3.Fragments.AddGroupFragment.REQ_CODE_ICON;
 import static com.cks.hiroyuki2.worksupport3.RecordDialogFragmentInput.INPUT;
-import static com.cks.hiroyuki2.worksupport3.Util.UID;
-import static com.cks.hiroyuki2.worksupport3.Util.getExtension;
-import static com.cks.hiroyuki2.worksupport3.Util.getUserMe;
-import static com.cks.hiroyuki2.worksupport3.Util.kickIntentIcon;
-import static com.cks.hiroyuki2.worksupport3.Util.logStackTrace;
-import static com.cks.hiroyuki2.worksupport3.Util.makeScheme;
-import static com.cks.hiroyuki2.worksupport3.Util.setNullableText;
-import static com.cks.hiroyuki2.worksupport3.Util.toastNullable;
+import static com.cks.hiroyuki2.worksupprotlib.Util.UID;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getExtension;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
+import static com.cks.hiroyuki2.worksupprotlib.Util.kickIntentIcon;
+import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
+import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
+import static com.cks.hiroyuki2.worksupprotlib.Util.setNullableText;
+import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 
 /**
  * このクラスは{@link com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity}と酷似しています。ヘッダ部分のロジックとレイアウトを合わせてFragmentとして切り出してもいいかもしれません。

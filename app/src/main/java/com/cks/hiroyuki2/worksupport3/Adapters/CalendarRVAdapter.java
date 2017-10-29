@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.Activities.SharedCalendarActivity;
 import com.cks.hiroyuki2.worksupportlibrary.worksupportlibrary.CalendarOneEvent;
-import com.cks.hiroyuki2.worksupport3.Entity.CalendarEvent;
+import com.cks.hiroyuki2.worksupprotlib.Entity.CalendarEvent;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.SharedCalendarUIOperator;
 
@@ -30,11 +30,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cks.hiroyuki2.worksupport3.Util.DATE_PATTERN_SLASH_MD;
-import static com.cks.hiroyuki2.worksupport3.Util.DATE_PATTERN_YM;
-import static com.cks.hiroyuki2.worksupport3.Util.cal2date;
-import static com.cks.hiroyuki2.worksupport3.Util.colorId;
-import static com.cks.hiroyuki2.worksupport3.Util.date2Cal;
+import static com.cks.hiroyuki2.worksupprotlib.Util.DATE_PATTERN_SLASH_MD;
+import static com.cks.hiroyuki2.worksupprotlib.Util.DATE_PATTERN_YM;
+import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
+import static com.cks.hiroyuki2.worksupprotlib.Util.colorId;
+import static com.cks.hiroyuki2.worksupprotlib.Util.date2Cal;
 
 /**
  * {@link SharedCalendarUIOperator}の子分。{@link SharedCalendarActivity}系列で最も子分のおじさん！

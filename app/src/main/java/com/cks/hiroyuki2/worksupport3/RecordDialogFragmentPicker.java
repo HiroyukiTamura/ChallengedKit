@@ -15,6 +15,8 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.widget.TimePicker;
 
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
+
 import static android.app.Activity.RESULT_OK;
 import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.TIME_EVENT;
 

@@ -20,18 +20,18 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.cks.hiroyuki2.worksupprotlib.UtilDialog;
+import com.cks.hiroyuki2.worksupprotlib.UtilSpec;
+
 import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.cks.hiroyuki2.worksupport3.Adapters.CalendarRVAdapter.cal2DateWithSlash;
-import static com.cks.hiroyuki2.worksupport3.Util.COLOR_NUM;
-import static com.cks.hiroyuki2.worksupport3.Util.PREF_KEY_COLOR;
-import static com.cks.hiroyuki2.worksupport3.Util.PREF_NAME;
-import static com.cks.hiroyuki2.worksupport3.UtilDialog.editBuilder;
-import static com.cks.hiroyuki2.worksupport3.UtilDialog.sendIntent;
-import static com.cks.hiroyuki2.worksupport3.UtilDialog.setColorCircle;
+import static com.cks.hiroyuki2.worksupprotlib.Util.COLOR_NUM;
+import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_KEY_COLOR;
+import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
 
 /**
  * Created by hiroyuki2 on 2017/09/30.
@@ -77,13 +77,13 @@ public class CalendarDialogFragment extends DialogFragment implements DialogInte
         addSchedule = new AddSchedule();
         ButterKnife.bind(addSchedule, rootView);
         addSchedule.inputLayout.setHint(getContext().getString(R.string.dialog_title));
-        int defId = Util.circleId.get(addSchedule.num);
+        int defId = UtilSpec.circleId.get(addSchedule.num);
         FrameLayout fm = rootView.findViewById(defId);
         fm.getChildAt(1).setVisibility(View.VISIBLE);
-        for (int i=0; i<Util.circleId.size(); i++) {
-            setColorCircle(getContext(), rootView, this, i);
+        for (int i = 0; i< UtilSpec.circleId.size(); i++) {
+            UtilDialog.setColorCircle(getContext(), rootView, this, i);
         }
-        dialog = editBuilder(builder, addSchedule.title, R.string.ok, R.string.cancel, rootView, this, null).create();
+        dialog = UtilDialog.editBuilder(builder, addSchedule.title, R.string.ok, R.string.cancel, rootView, this, null).create();
         addSchedule.editText.addTextChangedListener(createTw());
     }
 
@@ -111,7 +111,7 @@ public class CalendarDialogFragment extends DialogFragment implements DialogInte
         String input = addSchedule.editText.getText().toString();
         getArguments().putString(INPUT, input);
         getArguments().putInt(COLOR_NUM, addSchedule.pref.getInt(PREF_KEY_COLOR, 0));
-        sendIntent(getTargetRequestCode(), this);
+        UtilDialog.sendIntent(getTargetRequestCode(), this);
     }
 
     class AddSchedule{

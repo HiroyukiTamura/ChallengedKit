@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Adapters.CalendarRVAdapter;
 import com.cks.hiroyuki2.worksupport3.Adapters.SharedCalendarVPAdapter;
-import com.cks.hiroyuki2.worksupport3.Entity.CalendarEvent;
+import com.cks.hiroyuki2.worksupprotlib.Entity.CalendarEvent;
 import com.cks.hiroyuki2.worksupport3.MaterialCalendarView.DecoratorMaker;
 import com.cks.hiroyuki2.worksupport3.MaterialCalendarView.MSVDecorator;
 import com.cks.hiroyuki2.worksupport3.MaterialCalendarView.MultiDotDecorator;
@@ -41,12 +41,12 @@ import butterknife.ButterKnife;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.cks.hiroyuki2.worksupport3.FbCheckAndWriter.CODE_SET_NULL;
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.delimiterOfNum;
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.getRef;
-import static com.cks.hiroyuki2.worksupport3.Util.DATE_PATTERN_YM;
-import static com.cks.hiroyuki2.worksupport3.Util.cal2date;
-import static com.cks.hiroyuki2.worksupport3.Util.logStackTrace;
-import static com.cks.hiroyuki2.worksupport3.Util.onError;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.delimiterOfNum;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
+import static com.cks.hiroyuki2.worksupprotlib.Util.DATE_PATTERN_YM;
+import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
+import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 
 /**
  * {@link SharedCalendarVPAdapter}の子分、{@link CalendarRVAdapter}の親分。

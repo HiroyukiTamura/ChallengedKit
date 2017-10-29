@@ -14,7 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.cks.hiroyuki2.worksupport3.Entity.User;
+import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 import com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,8 +28,8 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
-import static com.cks.hiroyuki2.worksupport3.Util.UID;
-import static com.cks.hiroyuki2.worksupport3.Util.setNullableText;
+import static com.cks.hiroyuki2.worksupprotlib.Util.UID;
+import static com.cks.hiroyuki2.worksupprotlib.Util.setNullableText;
 
 /**
  * Groupのメンバーを表すRVAdapter. {@link GroupSettingFragment}の舎弟。

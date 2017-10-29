@@ -20,13 +20,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cks.hiroyuki2.worksupport3.Entity.Content;
-import com.cks.hiroyuki2.worksupport3.Entity.Document;
-import com.cks.hiroyuki2.worksupport3.Entity.DocumentEle;
-import com.cks.hiroyuki2.worksupport3.Entity.Group;
+import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
+import com.cks.hiroyuki2.worksupprotlib.Entity.Document;
+import com.cks.hiroyuki2.worksupprotlib.Entity.DocumentEle;
+import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.Entity.User;
-import com.cks.hiroyuki2.worksupport3.Util;
+import com.cks.hiroyuki2.worksupprotlib.Entity.User;
+import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 
@@ -44,9 +44,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
-import static com.cks.hiroyuki2.worksupport3.Util.logAnalytics;
-import static com.cks.hiroyuki2.worksupport3.Util.setImgFromStorage;
+import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
+import static com.cks.hiroyuki2.worksupprotlib.Util.setImgFromStorage;
 
 @EActivity
 public class EditDocActivity extends AppCompatActivity /*implements View.OnFocusChangeListener*/{

@@ -37,8 +37,10 @@ import static com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment.DIALOG
 import static com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment.DIALOG_CODE_EDIT_COMMENT;
 import static com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment.DIALOG_CODE_ITEM_VERT;
 import static com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment.DIALOG_CODE_MY_DATA;
-import static com.cks.hiroyuki2.worksupport3.Util.nullableEqual;
-import static com.cks.hiroyuki2.worksupport3.Util.onError;
+import static com.cks.hiroyuki2.worksupprotlib.Util.nullableEqual;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
+import static com.cks.hiroyuki2.worksupprotlib.Util.nullableEqual;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 
 /**
  * Created by hiroyuki2 on 2017/09/03.

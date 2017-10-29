@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.AddFriendFragment;
 import com.cks.hiroyuki2.worksupport3.R;
@@ -23,14 +22,12 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cks.hiroyuki2.worksupport3.Util.QR_FILE_NAME;
-import static com.cks.hiroyuki2.worksupport3.Util.getNullableText;
-import static com.cks.hiroyuki2.worksupport3.Util.toastNullable;
+import static com.cks.hiroyuki2.worksupprotlib.Util.QR_FILE_NAME;
+import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 
 /**
  * PagerAdapterおじさん！

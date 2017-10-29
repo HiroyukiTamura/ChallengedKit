@@ -26,7 +26,7 @@ import com.cks.hiroyuki2.worksupport3.DialogKicker;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.SettingDialogFragment;
 import com.cks.hiroyuki2.worksupport3.SettingFbCommunicator;
-import com.cks.hiroyuki2.worksupport3.Util;
+import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -47,11 +47,11 @@ import org.jetbrains.annotations.Contract;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.cks.hiroyuki2.worksupport3.SettingFbCommunicator.SCHEME_PHOTO_URL;
-import static com.cks.hiroyuki2.worksupport3.Util.getTextNullable;
-import static com.cks.hiroyuki2.worksupport3.Util.getUserMe;
-import static com.cks.hiroyuki2.worksupport3.Util.kickIntentIcon;
-import static com.cks.hiroyuki2.worksupport3.Util.logStackTrace;
-import static com.cks.hiroyuki2.worksupport3.Util.setImgFromStorage;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getTextNullable;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
+import static com.cks.hiroyuki2.worksupprotlib.Util.kickIntentIcon;
+import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
+import static com.cks.hiroyuki2.worksupprotlib.Util.setImgFromStorage;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickSettingDialog;
 
 @EFragment(R.layout.fragment_setting_fragment2)

@@ -13,14 +13,14 @@ import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.Util;
+import com.cks.hiroyuki2.worksupprotlib.Util;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.view.View.VISIBLE;
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.delimiter;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.delimiter;
 
 /**
  * Created by hiroyuki2 on 2017/09/21.

@@ -35,10 +35,15 @@ import android.widget.Toast;
 import com.cks.hiroyuki2.worksupport3.Adapters.GroupSettingRVAdapter;
 import com.cks.hiroyuki2.worksupport3.Adapters.RecordVPAdapter;
 import com.cks.hiroyuki2.worksupport3.Adapters.SocialGroupListRVAdapter;
-import com.cks.hiroyuki2.worksupport3.Entity.GroupInUserDataNode;
-import com.cks.hiroyuki2.worksupport3.Entity.User;
 import com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.RecordFragment;
+import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
+import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
+import com.cks.hiroyuki2.worksupprotlib.Entity.User;
+import com.cks.hiroyuki2.worksupprotlib.TemplateEditor;
+import com.cks.hiroyuki2.worksupprotlib.Util;
+import com.cks.hiroyuki2.worksupprotlib.UtilDialog;
+import com.cks.hiroyuki2.worksupprotlib.UtilSpec;
 
 import org.apmem.tools.layouts.FlowLayout;
 
@@ -49,8 +54,10 @@ import java.util.List;
 import cn.refactor.library.SmoothCheckBox;
 
 import static com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment.GROUP;
-import static com.cks.hiroyuki2.worksupport3.UtilDialog.editBuilder;
-import static com.cks.hiroyuki2.worksupport3.UtilDialog.sendIntent;
+import static com.cks.hiroyuki2.worksupprotlib.Util.LIST_MAP_VALUE;
+import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
+import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.editBuilder;
+import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.sendIntent;
 
 /**
  * Dialog表示を一手に引き受けるおじさん！ハード！
@@ -100,9 +107,9 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
 
         switch (from){
             case DIALOG_TIME_VALUE:{
-                String string = bundle.getString(RecordRVAdapter.LIST_MAP_VALUE);
+                String string = bundle.getString(LIST_MAP_VALUE);
                 if (string != null){
-                    string = string.substring(0, string.indexOf(FirebaseConnection.delimiter));
+                    string = string.substring(0, string.indexOf(delimiter));
                 }
                 View view = makeDialogContent(5, true, false, string);
                 editBuilder(builder, "イベント名", R.string.ok, R.string.cancel, view, this, null);
@@ -202,10 +209,10 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
      */
     private void setColorCircle(final LinearLayout root, final int num){
         Log.d(TAG, "setColorCircle: fire");
-        int id = Util.circleId.get(num);
+        int id = UtilSpec.circleId.get(num);
         final FrameLayout fm = root.findViewById(id);
         ImageView iv = (ImageView) fm.getChildAt(0);
-        iv.setColorFilter(ContextCompat.getColor(getContext(), Util.colorId.get(num)));
+        iv.setColorFilter(ContextCompat.getColor(getContext(), UtilSpec.colorId.get(num)));
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -215,7 +222,7 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
                 editor.putInt(Util.PREF_KEY_COLOR, num);
                 editor.apply();
 
-                for (int id: Util.circleId) {
+                for (int id: UtilSpec.colorId) {
                     FrameLayout fm = root.findViewById(id);
                     ImageView iv = (ImageView) fm.getChildAt(1);
                     if (fm.getChildAt(1).getVisibility() == View.VISIBLE){
@@ -256,13 +263,13 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
         for (String key : data.data.keySet()) {
             String value2 = (String) data.data.get(key);
             Log.d(TAG, "onCreateDialog: value2:" + value2);
-            String[] strings = value2.split(FirebaseConnection.delimiter);
+            String[] strings = value2.split(delimiter);
 
             final FrameLayout item = (FrameLayout) inflater.inflate(R.layout.record_vp_item_tagitem, null);
 //                LinearLayout container = item.findViewById(R.id.container);
 //                container.removeViewAt(1);
 
-            final int color = Util.colorId.get(Integer.parseInt(strings[1]));
+            final int color = UtilSpec.colorId.get(Integer.parseInt(strings[1]));
 //                container.setBackgroundColor(ContextCompat.getColor(getContext(), color));
 
             TextView tv = item.findViewById(R.id.tv);
@@ -332,10 +339,10 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
         }
         pref = getContext().getSharedPreferences(Util.PREF_NAME, Context.MODE_PRIVATE);
         int num = pref.getInt(Util.PREF_KEY_COLOR, 0);
-        int defId = Util.circleId.get(num);
+        int defId = UtilSpec.colorId.get(num);
         FrameLayout fm = view2.findViewById(defId);
         fm.getChildAt(1).setVisibility(View.VISIBLE);
-        for (int i=0; i<Util.circleId.size(); i++) {
+        for (int i=0; i<UtilSpec.colorId.size(); i++) {
             setColorCircle(view2, i);
         }
 
@@ -348,7 +355,7 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
         autv = view2.findViewById(R.id.edit_text);
         String dataTxt = bundle.getString(Integer.toString(R.id.data_txt));
         if (from.equals(Util.TEMPLATE_TAG_EDIT)){
-            strings = dataTxt.split(FirebaseConnection.delimiter);
+            strings = dataTxt.split(delimiter);
             autv.setText(strings[0]);
             View ll = view2.findViewById(R.id.display_check);
             ll.setVisibility(View.VISIBLE);
@@ -357,15 +364,15 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
             selectedCircleNum = Integer.parseInt(dataTxt.substring(dataTxt.length()-1));
             autv.setText(dataTxt.substring(0, dataTxt.length()-1));
         }
-        int defId = Util.circleId.get(selectedCircleNum);
+        int defId = UtilSpec.colorId.get(selectedCircleNum);
         FrameLayout fm = view2.findViewById(defId);
         fm.getChildAt(1).setVisibility(View.VISIBLE);
 
-        for (int i=0; i<Util.circleId.size(); i++) {
-            FrameLayout ffm = view2.findViewById(Util.circleId.get(i));
+        for (int i=0; i<UtilSpec.colorId.size(); i++) {
+            FrameLayout ffm = view2.findViewById(UtilSpec.colorId.get(i));
             ImageView iv = (ImageView) ffm.getChildAt(0);
             iv.setTag(i);
-            iv.setColorFilter(ContextCompat.getColor(getContext(), Util.colorId.get(i)));
+            iv.setColorFilter(ContextCompat.getColor(getContext(), UtilSpec.colorId.get(i)));
             iv.setOnClickListener(this);
         }
         return view2;
@@ -379,7 +386,7 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
             return;
 
         selectedCircleNum = (Integer) view.getTag();
-        for (int id: Util.circleId) {
+        for (int id: UtilSpec.colorId) {
             FrameLayout fm = root.findViewById(id);
             ImageView iv = (ImageView) fm.getChildAt(1);
             if (fm.getChildAt(1).getVisibility() == View.VISIBLE){
@@ -418,13 +425,13 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
 
         switch (from){
             case DIALOG_TIME_VALUE:
-                String oldValue = bundle.getString(RecordRVAdapter.LIST_MAP_VALUE, null);
+                String oldValue = bundle.getString(LIST_MAP_VALUE, null);
                 String pairNum = "0";
                 if (oldValue != null){
-                    pairNum = oldValue.split(FirebaseConnection.delimiter)[1];
+                    pairNum = oldValue.split(delimiter)[1];
                 }
-                String newValue = editText.getText().toString() + FirebaseConnection.delimiter + pairNum;
-                bundle.putString(RecordRVAdapter.LIST_MAP_VALUE, newValue);//todo イベント名の重複を許さないように設定/nullCheck
+                String newValue = editText.getText().toString() + delimiter + pairNum;
+                bundle.putString(LIST_MAP_VALUE, newValue);//todo イベント名の重複を許さないように設定/nullCheck
                 sendIntent(CALLBACK_TIME_VALUE, this);
                 break;
 
@@ -468,7 +475,7 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
                 break;
 
             case RecordVPAdapter.TAG_ITEM://!checkInputTxt()しないとだめじゃないの？
-                bundle.putString(from, autv.getText().toString() + FirebaseConnection.delimiter + pref.getInt(Util.PREF_KEY_COLOR, 0) + FirebaseConnection.delimiter + Boolean.toString(checkBoxDisplay.isChecked()));
+                bundle.putString(from, autv.getText().toString() + delimiter + pref.getInt(Util.PREF_KEY_COLOR, 0) + delimiter + Boolean.toString(checkBoxDisplay.isChecked()));
                 sendIntent(getTargetRequestCode(), this);
                 break;
 
@@ -492,7 +499,7 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
             case Util.TEMPLATE_TAG_EDIT:{
                 strings[0] = autv.getText().toString();
                 strings[2] = Boolean.toString(checkBoxDisplay.isChecked());
-                bundle.putString(from, Util.joinArr(strings, FirebaseConnection.delimiter));
+                bundle.putString(from, Util.joinArr(strings, delimiter));
                 sendIntent(getTargetRequestCode() ,this);
                 break;}
             
@@ -587,8 +594,8 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
         if (string1 == null)
             return true;
         List<String> tagList1 = new ArrayList<>();
-        if (string1.contains(FirebaseConnection.delimiter)){
-            String[] strings = string1.split(FirebaseConnection.delimiter);
+        if (string1.contains(delimiter)){
+            String[] strings = string1.split(delimiter);
             Collections.addAll(tagList1, strings);
         } else {
             tagList1.add(string1);

@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import com.cks.hiroyuki2.worksupport3.AnalyticsVPUiOperator;
 import com.cks.hiroyuki2.worksupport3.Fragments.AnalyticsFragment;
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.Util;
+import com.cks.hiroyuki2.worksupprotlib.Util;
 
 import java.util.Calendar;
 import java.util.TreeMap;

@@ -23,9 +23,9 @@ import org.jetbrains.annotations.Contract;
 import java.util.Calendar;
 import java.util.TreeMap;
 
-import static com.cks.hiroyuki2.worksupport3.Util.PREF_KEY_START_OF_WEEK;
-import static com.cks.hiroyuki2.worksupport3.Util.PREF_NAME;
-import static com.cks.hiroyuki2.worksupport3.Util.onError;
+import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_KEY_START_OF_WEEK;
+import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 
 /**
  * {@link SharedCalendarFragment}の子分。{@link SharedCalendarUIOperator}の親分。

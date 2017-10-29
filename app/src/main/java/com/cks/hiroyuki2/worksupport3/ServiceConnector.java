@@ -20,7 +20,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
-import com.cks.hiroyuki2.worksupport3.Entity.User;
+import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +32,7 @@ import java.util.List;
 import static com.cks.hiroyuki2.worksupport3.BackService.INTENT_KEY_1;
 import static com.cks.hiroyuki2.worksupport3.BackService.INTENT_KEY_2;
 import static com.cks.hiroyuki2.worksupport3.BackService.SEND_CODE;
-import static com.cks.hiroyuki2.worksupport3.Util.logStackTrace;
+import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 
 /**
  * {@link BackService}の{@link BroadcastReceiver}役。

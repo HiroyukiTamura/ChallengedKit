@@ -33,13 +33,14 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.getRef;
-import static com.cks.hiroyuki2.worksupport3.FriendJsonEditor.readFriendPref;
-import static com.cks.hiroyuki2.worksupport3.FriendJsonEditor.writeFriendPref;
-import static com.cks.hiroyuki2.worksupport3.FriendJsonEditor.writeGroup;
-import static com.cks.hiroyuki2.worksupport3.FriendJsonEditor.writeGroupKeys;
-import static com.cks.hiroyuki2.worksupport3.Util.DEFAULT;
-import static com.cks.hiroyuki2.worksupport3.Util.onError;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
+import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.readFriendPref;
+import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.snap2Json;
+import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.writeFriendPref;
+import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.writeGroup;
+import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.writeGroupKeys;
+import static com.cks.hiroyuki2.worksupprotlib.Util.DEFAULT;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 
 /**
  * BackServiceおじさん！
@@ -310,7 +311,7 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
                 if (urlG.equals(lastNode)){
                     Log.d(TAG, "onDataChange: うごきがあったぞ！");
 
-                    JSONObject jo = FriendJsonEditor.snap2Json(dataSnapshot);
+                    JSONObject jo = snap2Json(dataSnapshot);
                     if (jo == null){
                         onError(getApplicationContext(), TAG + " url: " + url, null);
                         return;

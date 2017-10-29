@@ -23,9 +23,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.view.View.GONE;
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.delimiter;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.onError;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.setNullableText;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.delimiter;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
+import static com.cks.hiroyuki2.worksupprotlib.Util.setNullableText;
 
 /**
  * Created by hiroyuki2 on 2017/09/17.

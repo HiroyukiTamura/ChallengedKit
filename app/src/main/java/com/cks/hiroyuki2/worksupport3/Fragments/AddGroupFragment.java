@@ -17,11 +17,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Adapters.SocialListRVAdapter;
-import com.cks.hiroyuki2.worksupport3.Entity.User;
-import com.cks.hiroyuki2.worksupport3.FirebaseConnection;
+import com.cks.hiroyuki2.worksupprotlib.Entity.User;
+import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupport3.FirebaseStorageUtil;
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.Util;
+import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.OnProgressListener;
@@ -51,10 +51,10 @@ import static com.cks.hiroyuki2.worksupport3.FirebaseStorageUtil.showCompleteNtf
 import static com.cks.hiroyuki2.worksupport3.FirebaseStorageUtil.showUploadingNtf;
 import static com.cks.hiroyuki2.worksupport3.FirebaseStorageUtil.uploadFile;
 import static com.cks.hiroyuki2.worksupport3.RecordDialogFragmentInput.INPUT;
-import static com.cks.hiroyuki2.worksupport3.Util.getExtension;
-import static com.cks.hiroyuki2.worksupport3.Util.kickIntentIcon;
-import static com.cks.hiroyuki2.worksupport3.Util.logStackTrace;
-import static com.cks.hiroyuki2.worksupport3.Util.toastNullable;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getExtension;
+import static com.cks.hiroyuki2.worksupprotlib.Util.kickIntentIcon;
+import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
+import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 
 /**
  * {@link com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity}の子分！彼が扱うFragmentはこのFragmentだけ。

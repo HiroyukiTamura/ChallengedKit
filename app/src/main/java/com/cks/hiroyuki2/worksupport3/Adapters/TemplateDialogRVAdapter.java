@@ -22,7 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cks.hiroyuki2.worksupport3.Util.setNullableText;
+import static com.cks.hiroyuki2.worksupprotlib.Util.setNullableText;
 
 /**
  * {@link com.cks.hiroyuki2.worksupport3.TempWidgetDialogFragment}附属。

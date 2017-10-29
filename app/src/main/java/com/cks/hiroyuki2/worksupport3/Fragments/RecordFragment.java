@@ -20,10 +20,10 @@ import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.Adapters.RecordTabVPAdapter;
 import com.cks.hiroyuki2.worksupport3.Adapters.RecordVPAdapter;
-import com.cks.hiroyuki2.worksupport3.FirebaseConnection;
+import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.RecordRVAdapter;
-import com.cks.hiroyuki2.worksupport3.Util;
+import com.cks.hiroyuki2.worksupprotlib.Util;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -46,8 +46,8 @@ import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter.CA
 import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter.CALLBACK_RANGE_CLICK_VALUE;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickCircleAndInputDialog;
 import static com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemTime.CALLBACK_RANGE_COLOR;
-import static com.cks.hiroyuki2.worksupport3.Util.date2Cal;
-import static com.cks.hiroyuki2.worksupport3.Util.logStackTrace;
+import static com.cks.hiroyuki2.worksupprotlib.Util.date2Cal;
+import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 
 
 @EFragment(R.layout.record_vp_content)

@@ -17,8 +17,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cks.hiroyuki2.worksupportlibrary.Util.getNullableText;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.setNullableText;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getNullableText;
+import static com.cks.hiroyuki2.worksupprotlib.Util.setNullableText;
 
 /**
  * RecordVpItem兄弟のcommentおじさん！

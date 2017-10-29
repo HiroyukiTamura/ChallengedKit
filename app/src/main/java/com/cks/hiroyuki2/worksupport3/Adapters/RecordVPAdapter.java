@@ -19,7 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.cks.hiroyuki2.worksupport3.FirebaseConnection;
+import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupport3.FirebaseEventHandler;
 import com.cks.hiroyuki2.worksupport3.Fragments.RecordFragment;
 import com.cks.hiroyuki2.worksupport3.HeaderTagUtil;
@@ -29,7 +29,7 @@ import com.cks.hiroyuki2.worksupport3.RecordDataUtil;
 import com.cks.hiroyuki2.worksupport3.RecordRVAdapter;
 import com.cks.hiroyuki2.worksupport3.RecordUiOperator;
 import com.cks.hiroyuki2.worksupport3.TemplateEditor;
-import com.cks.hiroyuki2.worksupport3.Util;
+import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -54,11 +54,11 @@ import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter.CA
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.RecordUiOperator.makeBundleInOnClick;
 import static com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemTime.CALLBACK_RANGE_COLOR;
-import static com.cks.hiroyuki2.worksupport3.Util.DATE_PATTERN_YM;
-import static com.cks.hiroyuki2.worksupport3.Util.DEFAULT;
-import static com.cks.hiroyuki2.worksupport3.Util.cal2date;
-import static com.cks.hiroyuki2.worksupport3.Util.date2Cal;
-import static com.cks.hiroyuki2.worksupport3.Util.logStackTrace;
+import static com.cks.hiroyuki2.worksupprotlib.Util.DATE_PATTERN_YM;
+import static com.cks.hiroyuki2.worksupprotlib.Util.DEFAULT;
+import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
+import static com.cks.hiroyuki2.worksupprotlib.Util.date2Cal;
+import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 
 /**
  * VP関係のadapterおじさん！ロジックを持っちゃう！

@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.Util;
+import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.google.firebase.auth.FirebaseUser;
 
 import org.androidannotations.annotations.AfterViews;
@@ -21,9 +21,9 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.HashMap;
 
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.getRef;
-import static com.cks.hiroyuki2.worksupport3.Util.onError;
-import static com.cks.hiroyuki2.worksupport3.Util.setImgFromStorage;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
+import static com.cks.hiroyuki2.worksupprotlib.Util.setImgFromStorage;
 
 
 @EFragment(R.layout.fragment_on_added_friend)

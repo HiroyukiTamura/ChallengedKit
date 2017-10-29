@@ -34,10 +34,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.cks.hiroyuki2.worksupport3.Entity.Group;
-import com.cks.hiroyuki2.worksupport3.Entity.GroupInUserDataNode;
-import com.cks.hiroyuki2.worksupport3.Entity.User;
-import com.cks.hiroyuki2.worksupport3.FirebaseConnection;
+import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
+import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
+import com.cks.hiroyuki2.worksupprotlib.Entity.User;
+import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment_;
 import com.cks.hiroyuki2.worksupport3.Fragments.AnalyticsFragment;
@@ -72,18 +72,18 @@ import io.fabric.sdk.android.Fabric;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.RC_SIGN_IN;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.RC_SIGN_IN;
 import static com.cks.hiroyuki2.worksupport3.LoginCheck.checkIsLogin;
 import static com.cks.hiroyuki2.worksupport3.TemplateEditor.initDefaultTemplate;
-import static com.cks.hiroyuki2.worksupport3.Util.NOTIFICATION_CHANNEL;
-import static com.cks.hiroyuki2.worksupport3.Util.PREF_KEY_FIRST_LAUNCH;
-import static com.cks.hiroyuki2.worksupport3.Util.PREF_KEY_WIDTH;
-import static com.cks.hiroyuki2.worksupport3.Util.PREF_NAME;
-import static com.cks.hiroyuki2.worksupport3.Util.getFabLp;
-import static com.cks.hiroyuki2.worksupport3.Util.getUserMe;
-import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
-import static com.cks.hiroyuki2.worksupport3.Util.logAnalytics;
-import static com.cks.hiroyuki2.worksupport3.Util.onError;
+import static com.cks.hiroyuki2.worksupprotlib.Util.NOTIFICATION_CHANNEL;
+import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_KEY_FIRST_LAUNCH;
+import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_KEY_WIDTH;
+import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getFabLp;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
+import static com.cks.hiroyuki2.worksupprotlib.Util.initAdMob;
+import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener/*, CalenderFragment.OnFragmentInteractionListener*/,

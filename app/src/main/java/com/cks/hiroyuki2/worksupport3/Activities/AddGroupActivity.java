@@ -24,8 +24,8 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 
-import static com.cks.hiroyuki2.worksupportlibrary.Util.initAdMob;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.logAnalytics;
+import static com.cks.hiroyuki2.worksupprotlib.Util.initAdMob;
+import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 
 /**
  * Created by hiroyuki2 on 2017/10/20.

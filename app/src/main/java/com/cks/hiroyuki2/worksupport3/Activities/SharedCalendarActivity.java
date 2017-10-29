@@ -14,7 +14,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.cks.hiroyuki2.worksupport3.Entity.Group;
+import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupport3.Fragments.SharedCalendarFragment;
 import com.cks.hiroyuki2.worksupport3.R;
 
@@ -28,11 +28,11 @@ import java.util.Calendar;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static com.cks.hiroyuki2.worksupport3.Util.DATE_PATTERN_DOT_YM;
-import static com.cks.hiroyuki2.worksupport3.Util.cal2date;
-import static com.cks.hiroyuki2.worksupport3.Util.getFabLp;
-import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
-import static com.cks.hiroyuki2.worksupport3.Util.logAnalytics;
+import static com.cks.hiroyuki2.worksupprotlib.Util.DATE_PATTERN_DOT_YM;
+import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getFabLp;
+import static com.cks.hiroyuki2.worksupprotlib.Util.initAdMob;
+import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 
 /**
  * SharedCalendar系列の長。ひとり子分は{@link SharedCalendarFragment}

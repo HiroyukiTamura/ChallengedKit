@@ -43,16 +43,16 @@ import static android.view.View.VISIBLE;
 import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_ADD2;
 import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_CLICK2;
 import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.TIME_EVENT;
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.delimiter;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.delimiter;
 import static com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemTime.CALLBACK_RANGE_COLOR;
 import static com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemTime.TIME_EVE_RANGE;
-import static com.cks.hiroyuki2.worksupport3.Util.PREF_KEY_COLOR;
-import static com.cks.hiroyuki2.worksupport3.Util.PREF_NAME;
-import static com.cks.hiroyuki2.worksupport3.Util.circleId;
-import static com.cks.hiroyuki2.worksupport3.UtilDialog.editBuilder;
-import static com.cks.hiroyuki2.worksupport3.UtilDialog.onClickCircle;
-import static com.cks.hiroyuki2.worksupport3.UtilDialog.sendIntent;
-import static com.cks.hiroyuki2.worksupport3.UtilDialog.setColorCircle;
+import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_KEY_COLOR;
+import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
+import static com.cks.hiroyuki2.worksupprotlib.Util.circleId;
+import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.editBuilder;
+import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.onClickCircle;
+import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.sendIntent;
+import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.setColorCircle;
 
 /**
  * Created by hiroyuki2 on 2017/09/22.

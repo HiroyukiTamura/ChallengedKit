@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.UtilSpec;
+import com.cks.hiroyuki2.worksupprotlib.UtilSpec;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

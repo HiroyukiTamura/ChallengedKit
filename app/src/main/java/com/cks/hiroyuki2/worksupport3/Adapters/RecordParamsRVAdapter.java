@@ -39,15 +39,15 @@ import butterknife.OnClick;
 
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.makeBundleInOnClick;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.CALLBACK_TEMPLATE_PARAMS_ITEM;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.CALLBACK_TEMPLATE_PARAMS_SLIDER_MAX;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.INDEX;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.PARAMS_VALUES;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.TEMPLATE_PARAMS_ITEM;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.TEMPLATE_PARAMS_SLIDER_MAX;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.bundle2Data;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.bundle2DataParams;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.onError;
+import static com.cks.hiroyuki2.worksupprotlib.Util.CALLBACK_TEMPLATE_PARAMS_ITEM;
+import static com.cks.hiroyuki2.worksupprotlib.Util.CALLBACK_TEMPLATE_PARAMS_SLIDER_MAX;
+import static com.cks.hiroyuki2.worksupprotlib.Util.INDEX;
+import static com.cks.hiroyuki2.worksupprotlib.Util.PARAMS_VALUES;
+import static com.cks.hiroyuki2.worksupprotlib.Util.TEMPLATE_PARAMS_ITEM;
+import static com.cks.hiroyuki2.worksupprotlib.Util.TEMPLATE_PARAMS_SLIDER_MAX;
+import static com.cks.hiroyuki2.worksupprotlib.Util.bundle2Data;
+import static com.cks.hiroyuki2.worksupprotlib.Util.bundle2DataParams;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 
 /**
  * {@link RecordVpItemParam}所属！うーん、入り組んでる！

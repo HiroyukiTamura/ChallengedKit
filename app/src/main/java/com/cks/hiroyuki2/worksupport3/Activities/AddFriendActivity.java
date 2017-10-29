@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
-import com.cks.hiroyuki2.worksupport3.FirebaseConnection;
+import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupport3.Fragments.AddFriendFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.OnAddedFriendFragment;
 import com.cks.hiroyuki2.worksupport3.R;
@@ -21,8 +21,9 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
-import static com.cks.hiroyuki2.worksupportlibrary.Util.initAdMob;
-import static com.cks.hiroyuki2.worksupportlibrary.Util.logAnalytics;
+import static com.cks.hiroyuki2.worksupport3.MainApplication.initAdMob;
+import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
+import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 
 @EActivity(R.layout.activity_add_fridend_acitivity)
 public class AddFriendActivity extends AppCompatActivity {
@@ -56,7 +57,7 @@ public class AddFriendActivity extends AppCompatActivity {
             } else if (contents.equalsIgnoreCase("0")) {//0はエラーを表す?? @see https://goo.gl/nKV7Mw
                 Toast.makeText(this, R.string.error, Toast.LENGTH_LONG).show();
             } else {
-                String[] strings = contents.split(FirebaseConnection.delimiter);
+                String[] strings = contents.split(delimiter);
                 if (strings.length != 3){//このあたり、関係のないQRでないことを確認してください！！
                     Toast.makeText(this, R.string.error, Toast.LENGTH_LONG).show();
                     return;

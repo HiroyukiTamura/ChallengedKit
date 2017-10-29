@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.FrameLayout;
 
-import com.cks.hiroyuki2.worksupport3.Entity.Group;
+import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment;
 import com.cks.hiroyuki2.worksupport3.R;
 
@@ -18,7 +18,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
-import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
+import static com.cks.hiroyuki2.worksupprotlib.Util.initAdMob;
 
 /**
  * {@link GroupSettingFragment} の親。今のところこのActivityが関わるFragmentはこれひとつのみ。

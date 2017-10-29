@@ -37,9 +37,9 @@ import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.TIME_EV
 import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter.POS_IN_LIST;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickCircleAndInputDialog;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickTimePickerDialog;
-import static com.cks.hiroyuki2.worksupport3.Util.colorId;
-import static com.cks.hiroyuki2.worksupport3.Util.getTimeEveDataSetFromRecordData;
-import static com.cks.hiroyuki2.worksupport3.Util.initRecycler;
+import static com.cks.hiroyuki2.worksupprotlib.Util.colorId;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getTimeEveDataSetFromRecordData;
+import static com.cks.hiroyuki2.worksupprotlib.Util.initRecycler;
 
 /**
  * RecordVpItem兄弟！Timelineおじさん！

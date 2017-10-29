@@ -33,10 +33,10 @@ import butterknife.OnClick;
 import static com.cks.hiroyuki2.worksupport3.Adapters.RecordVPAdapter.DATA_NUM;
 import static com.cks.hiroyuki2.worksupport3.Adapters.RecordVPAdapter.PAGE_TAG;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickTimePickerDialog;
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.datePattern;
-import static com.cks.hiroyuki2.worksupport3.Util.cal2date;
-import static com.cks.hiroyuki2.worksupport3.Util.colorId;
-import static com.cks.hiroyuki2.worksupport3.Util.getCalFromTimeEvent;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.datePattern;
+import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
+import static com.cks.hiroyuki2.worksupprotlib.Util.colorId;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getCalFromTimeEvent;
 
 /**
  * itemにpositionをtagとして張り付けるため、必ず{@link RecyclerView.Adapter#notifyDataSetChanged()}を使用してください。それ以外のnotify系は使わないでください。
