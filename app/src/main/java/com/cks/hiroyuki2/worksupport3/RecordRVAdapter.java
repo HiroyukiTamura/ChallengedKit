@@ -20,8 +20,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
-import com.cks.hiroyuki2.worksupportlibrary.Entity.RecordData;
+import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
+import com.cks.hiroyuki2.worksupprotlib.TemplateEditor;
 import com.cks.hiroyuki2.worksupprotlib.Util;
+import com.cks.hiroyuki2.worksupprotlib.UtilSpec;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,6 +39,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.INDEX;
 import static com.cks.hiroyuki2.worksupprotlib.Util.LIST_MAP_HOUR;
 import static com.cks.hiroyuki2.worksupprotlib.Util.LIST_MAP_MIN;
 import static com.cks.hiroyuki2.worksupprotlib.Util.LIST_MAP_VALUE;
+import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
 import static com.cks.hiroyuki2.worksupprotlib.Util.time2String;
 
 /**
@@ -79,7 +82,7 @@ public class RecordRVAdapter extends RecyclerView.Adapter<RecordRVAdapter.ViewHo
                 String value = list.get(i).getString(LIST_MAP_VALUE);
                 if (value == null) continue;
 
-                String color = value.split(FirebaseConnection.delimiter)[1];
+                String color = value.split(delimiter)[1];
                 if (Integer.parseInt(color) != 0)
                     checkedList.add(i);
             }
@@ -115,7 +118,7 @@ public class RecordRVAdapter extends RecyclerView.Adapter<RecordRVAdapter.ViewHo
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Bundle bundle = list.get(position);
 
-        final String[] values = bundle.getString(LIST_MAP_VALUE).split(FirebaseConnection.delimiter);
+        final String[] values = bundle.getString(LIST_MAP_VALUE).split(delimiter);
         holder.value.setText(values[0]);
 
         final int hour = bundle.getInt(LIST_MAP_HOUR);
@@ -126,7 +129,7 @@ public class RecordRVAdapter extends RecyclerView.Adapter<RecordRVAdapter.ViewHo
         int colorNum = Integer.parseInt(values[1]);
         int colorId = R.color.blue_gray;
         if (colorNum != 100){
-            colorId = Util.colorId.get(colorNum);
+            colorId = UtilSpec.colorId.get(colorNum);
         }
         holder.circle.setColorFilter(ContextCompat.getColor(rf.getContext(), colorId));
 

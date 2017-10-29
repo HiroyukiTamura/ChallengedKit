@@ -15,10 +15,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.RecordData;
-import com.cks.hiroyuki2.worksupport3.Fragments.RecordFragment;
 import com.cks.hiroyuki2.worksupport3.Adapters.RecordParamsRVAdapter;
+import com.cks.hiroyuki2.worksupport3.Fragments.RecordFragment;
+import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 
 import java.util.Calendar;
 import java.util.List;
@@ -28,14 +28,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.datePattern;
 import static com.cks.hiroyuki2.worksupprotlib.Util.bundle2DataParams;
 import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
 import static com.cks.hiroyuki2.worksupprotlib.Util.data2BundleParams;
 import static com.cks.hiroyuki2.worksupprotlib.Util.setNullableText;
 import static com.cks.hiroyuki2.worksupprotlib.Util.setRecycler;
-import static com.cks.hiroyuki2.worksupprotlib.Util.data2BundleParams;
-import static com.cks.hiroyuki2.worksupprotlib.Util.setNullableText;
 
 /**
  * アセット兄弟！Paramsおじさん！

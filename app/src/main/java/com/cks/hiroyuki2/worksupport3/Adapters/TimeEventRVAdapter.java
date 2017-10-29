@@ -35,7 +35,7 @@ import static com.cks.hiroyuki2.worksupport3.Adapters.RecordVPAdapter.PAGE_TAG;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickTimePickerDialog;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.datePattern;
 import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
-import static com.cks.hiroyuki2.worksupprotlib.Util.colorId;
+import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.colorId;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getCalFromTimeEvent;
 
 /**

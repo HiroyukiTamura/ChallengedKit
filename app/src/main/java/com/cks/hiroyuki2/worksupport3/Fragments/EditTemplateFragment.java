@@ -58,10 +58,8 @@ import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter.CA
 import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter.POSITION;
 import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter.POS_IN_LIST;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickCircleAndInputDialog;
-import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickWidgetDialog;
-import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.delimiter;
 import static com.cks.hiroyuki2.worksupport3.RecordUiOperator.syncTimeDataMap;
 import static com.cks.hiroyuki2.worksupport3.RecordUiOperator.updateCommentMap;
 import static com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemTime.CALLBACK_RANGE_COLOR;

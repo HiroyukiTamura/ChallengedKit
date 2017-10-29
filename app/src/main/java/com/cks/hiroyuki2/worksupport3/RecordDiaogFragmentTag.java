@@ -25,6 +25,12 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.cks.hiroyuki2.worksupport3.Adapters.RecordVPAdapter;
+import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEventRange;
+import com.cks.hiroyuki2.worksupprotlib.Util;
+import com.cks.hiroyuki2.worksupprotlib.UtilDialog;
+import com.cks.hiroyuki2.worksupprotlib.UtilSpec;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -43,12 +49,11 @@ import static android.view.View.VISIBLE;
 import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_ADD2;
 import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_CLICK2;
 import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.TIME_EVENT;
-import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.delimiter;
 import static com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemTime.CALLBACK_RANGE_COLOR;
 import static com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemTime.TIME_EVE_RANGE;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_KEY_COLOR;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
-import static com.cks.hiroyuki2.worksupprotlib.Util.circleId;
+import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
 import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.editBuilder;
 import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.onClickCircle;
 import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.sendIntent;
@@ -187,10 +192,10 @@ public class RecordDiaogFragmentTag extends DialogFragment implements DialogInte
     }
 
     private void setCircles(int circleDefNum){
-        int defId = circleId.get(circleDefNum);
+        int defId = UtilSpec.circleId.get(circleDefNum);
         fm = rootView.findViewById(defId);
         fm.getChildAt(1).setVisibility(VISIBLE);
-        for (int i = 0; i< circleId.size(); i++) {
+        for (int i = 0; i< UtilSpec.circleId.size(); i++) {
             setColorCircle(getContext(), rootView, this, i);
         }
     }

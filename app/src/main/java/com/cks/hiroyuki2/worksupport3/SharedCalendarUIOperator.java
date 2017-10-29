@@ -15,10 +15,12 @@ import android.widget.Toast;
 import com.cks.hiroyuki2.worksupport3.Adapters.CalendarRVAdapter;
 import com.cks.hiroyuki2.worksupport3.Adapters.SharedCalendarVPAdapter;
 import com.cks.hiroyuki2.worksupprotlib.Entity.CalendarEvent;
-import com.cks.hiroyuki2.worksupport3.MaterialCalendarView.DecoratorMaker;
-import com.cks.hiroyuki2.worksupport3.MaterialCalendarView.MSVDecorator;
-import com.cks.hiroyuki2.worksupport3.MaterialCalendarView.MultiDotDecorator;
-import com.cks.hiroyuki2.worksupportlibrary.worksupportlibrary.CalendarOneEvent;
+import com.cks.hiroyuki2.worksupprotlib.Entity.CalendarOneEvent;
+import com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter;
+import com.cks.hiroyuki2.worksupprotlib.MaterialCalendarView.DecoratorMaker;
+import com.cks.hiroyuki2.worksupprotlib.MaterialCalendarView.MSVDecorator;
+import com.cks.hiroyuki2.worksupprotlib.MaterialCalendarView.MultiDotDecorator;
+import com.cks.hiroyuki2.worksupprotlib.UtilSpec;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,11 +42,11 @@ import butterknife.ButterKnife;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.cks.hiroyuki2.worksupport3.FbCheckAndWriter.CODE_SET_NULL;
-import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.delimiterOfNum;
+import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_SET_NULL;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
 import static com.cks.hiroyuki2.worksupprotlib.Util.DATE_PATTERN_YM;
 import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
+import static com.cks.hiroyuki2.worksupprotlib.Util.delimiterOfNum;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 
@@ -188,9 +190,9 @@ public class SharedCalendarUIOperator implements ValueEventListener, OnDateSelec
             List<Integer> list = new ArrayList<>();
             for (String indexStr: indexes) {
                 int index = Integer.parseInt(indexStr);
-                if (index >= Util.colorId.size())
+                if (index >= UtilSpec.colorId.size())
                     continue;
-                int id = Util.colorId.get(index);
+                int id = UtilSpec.colorId.get(index);
                 int color = ContextCompat.getColor(adapter.getFragment().getContext()/*非同期でないからOK*/, id);
                 list.add(color);
             }

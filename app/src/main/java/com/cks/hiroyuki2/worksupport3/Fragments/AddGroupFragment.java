@@ -17,10 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Adapters.SocialListRVAdapter;
+import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
-import com.cks.hiroyuki2.worksupport3.FirebaseStorageUtil;
-import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil;
 import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,19 +38,16 @@ import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringRes;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
-import static com.cks.hiroyuki2.worksupport3.FirebaseStorageUtil.LIMIT_SIZE_PROF;
-import static com.cks.hiroyuki2.worksupport3.FirebaseStorageUtil.isOverSize;
-import static com.cks.hiroyuki2.worksupport3.FirebaseStorageUtil.showCompleteNtf;
-import static com.cks.hiroyuki2.worksupport3.FirebaseStorageUtil.showUploadingNtf;
-import static com.cks.hiroyuki2.worksupport3.FirebaseStorageUtil.uploadFile;
 import static com.cks.hiroyuki2.worksupport3.RecordDialogFragmentInput.INPUT;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.LIMIT_SIZE_PROF;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.isOverSize;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.uploadFile;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getExtension;
 import static com.cks.hiroyuki2.worksupprotlib.Util.kickIntentIcon;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;

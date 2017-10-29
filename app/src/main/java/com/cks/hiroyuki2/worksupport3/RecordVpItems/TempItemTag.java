@@ -79,7 +79,7 @@ class TempItemTag {
 
     private void setTextAndColor(){
         final String[] strings = value.split(delimiter);
-        int color = Util.colorId.get(Integer.parseInt(strings[1]));
+        int color = UtilSpec.colorId.get(Integer.parseInt(strings[1]));
         tv.setText(strings[0]);
         cv.setCardBackgroundColor(ContextCompat.getColor(frag.getContext(), color));
     }

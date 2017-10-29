@@ -25,6 +25,9 @@ import android.widget.FrameLayout;
 
 import com.cks.hiroyuki2.worksupport3.Adapters.TemplateDialogRVAdapter;
 import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
+import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
+import com.cks.hiroyuki2.worksupprotlib.TemplateEditor;
+import com.cks.hiroyuki2.worksupprotlib.Util;
 
 import java.util.LinkedList;
 import java.util.List;

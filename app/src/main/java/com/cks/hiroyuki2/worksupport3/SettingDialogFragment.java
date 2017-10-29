@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment;
+import com.cks.hiroyuki2.worksupprotlib.UtilDialog;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
