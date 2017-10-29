@@ -9,7 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
-import com.cks.hiroyuki2.worksupport3.RecordData;
+import com.cks.hiroyuki2.worksupportlibrary.Entity.RecordData;
 
 import java.util.Calendar;
 

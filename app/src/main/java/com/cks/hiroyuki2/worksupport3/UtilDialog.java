@@ -30,10 +30,6 @@ import android.widget.LinearLayout;
 import java.util.List;
 
 import static android.content.DialogInterface.BUTTON_POSITIVE;
-import static com.cks.hiroyuki2.worksupport3.Util.PREF_KEY_COLOR;
-import static com.cks.hiroyuki2.worksupport3.Util.circleId;
-import static com.cks.hiroyuki2.worksupport3.Util.colorId;
-import static com.cks.hiroyuki2.worksupport3.Util.nullableEqual;
 import static com.cks.hiroyuki2.worksupportlibrary.Util.PREF_KEY_COLOR;
 import static com.cks.hiroyuki2.worksupportlibrary.Util.PREF_NAME;
 import static com.cks.hiroyuki2.worksupportlibrary.Util.nullableEqual;
@@ -213,10 +209,10 @@ public class UtilDialog implements DialogInterface.OnShowListener{
     //カラーを選択したら、最後に選択した色をPrefに書き込み、記憶しておく。次回ダイアログを表示したときには、その色にチェックをして表示する
     static void setColorCircle(@NonNull Context context, @NonNull LinearLayout root, @Nullable View.OnClickListener listener, final int num){
         Log.d(TAG, "setColorCircle: fire");
-        int id = circleId.get(num);
+        int id = UtilSpec.circleId.get(num);
         FrameLayout fm = root.findViewById(id);
         ImageView iv = (ImageView) fm.getChildAt(0);
-        iv.setColorFilter(ContextCompat.getColor(context, colorId.get(num)));
+        iv.setColorFilter(ContextCompat.getColor(context, UtilSpec.colorId.get(num)));
         iv.setOnClickListener(listener);
     }
 
@@ -227,7 +223,7 @@ public class UtilDialog implements DialogInterface.OnShowListener{
         editor.putInt(PREF_KEY_COLOR, colorNum);
         editor.apply();
 
-        for (int id: circleId) {
+        for (int id: UtilSpec.circleId) {
             FrameLayout fm = rootView.findViewById(id);
             ImageView iv = (ImageView) fm.getChildAt(1);
             if (fm.getChildAt(1).getVisibility() == View.VISIBLE){

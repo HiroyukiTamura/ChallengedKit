@@ -12,13 +12,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupport3.UtilSpec;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.cks.hiroyuki2.worksupport3.Util.colorId;
 
 /**
  * Created by hiroyuki2 on 2017/09/17.
@@ -38,7 +38,7 @@ class RecordVpItemTag {
     }
 
     View buildView(String string0, String string1){
-        int color = colorId.get(Integer.parseInt(string1));
+        int color = UtilSpec.colorId.get(Integer.parseInt(string1));
         tv.setText(string0);
         cv.setCardBackgroundColor(ContextCompat.getColor(context, color));
         return view;

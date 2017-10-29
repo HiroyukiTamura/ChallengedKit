@@ -21,10 +21,6 @@ import com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter;
 import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.RecordFragment;
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.RecordData;
-import com.cks.hiroyuki2.worksupport3.TimeEvent;
-import com.cks.hiroyuki2.worksupport3.TimeEventDataSet;
-import com.cks.hiroyuki2.worksupport3.TimeEventRange;
 
 import java.util.ArrayList;
 import java.util.Calendar;

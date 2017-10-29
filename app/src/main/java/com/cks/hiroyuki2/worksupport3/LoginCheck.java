@@ -27,11 +27,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.RC_SIGN_IN;
 import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.delimiter;
 import static com.cks.hiroyuki2.worksupportlibrary.Util.PREF_KEY_PROF;
 import static com.cks.hiroyuki2.worksupportlibrary.Util.PREF_NAME;
 import static com.cks.hiroyuki2.worksupportlibrary.Util.QR_FILE_NAME;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.RC_SIGN_IN;
 import static com.cks.hiroyuki2.worksupportlibrary.Util.logStackTrace;
 
 /**

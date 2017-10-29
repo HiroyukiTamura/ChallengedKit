@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.RecordData;
+import com.cks.hiroyuki2.worksupportlibrary.Entity.RecordData;
 
 import java.util.Calendar;
 
@@ -17,8 +17,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cks.hiroyuki2.worksupport3.Util.getNullableText;
-import static com.cks.hiroyuki2.worksupport3.Util.setNullableText;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.getNullableText;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.setNullableText;
 
 /**
  * RecordVpItem兄弟のcommentおじさん！

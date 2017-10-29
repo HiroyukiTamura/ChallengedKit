@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.RecordFragment;
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.RecordData;
+import com.cks.hiroyuki2.worksupportlibrary.Entity.RecordData;
 
 import org.apmem.tools.layouts.FlowLayout;
 
@@ -24,8 +24,8 @@ import butterknife.OnClick;
 
 import static android.view.View.GONE;
 import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.delimiter;
-import static com.cks.hiroyuki2.worksupport3.Util.onError;
-import static com.cks.hiroyuki2.worksupport3.Util.setNullableText;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.onError;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.setNullableText;
 
 /**
  * Created by hiroyuki2 on 2017/09/17.
