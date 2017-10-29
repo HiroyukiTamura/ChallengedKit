@@ -2,16 +2,17 @@
  * Copyright (c) $year. Hiroyuki Tamura All rights reserved.
  */
 
-package com.cks.hiroyuki2.worksupport3;
+package com.cks.hiroyuki2.worksupportlibrary;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.firebase.ui.auth.AuthUI;
 import com.github.sumimakito.awesomeqr.AwesomeQRCode;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,11 +28,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.RC_SIGN_IN;
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.delimiter;
 import static com.cks.hiroyuki2.worksupportlibrary.Util.PREF_KEY_PROF;
 import static com.cks.hiroyuki2.worksupportlibrary.Util.PREF_NAME;
 import static com.cks.hiroyuki2.worksupportlibrary.Util.QR_FILE_NAME;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.RC_SIGN_IN;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.delimiter;
 import static com.cks.hiroyuki2.worksupportlibrary.Util.logStackTrace;
 
 /**
@@ -60,11 +61,11 @@ public class LoginCheck {
         return auth.getCurrentUser() != null;
     }
 
-    public void signIn(boolean isPreSetting) {
+    public void signIn(boolean isPreSetting, @DrawableRes int logoRes) {
         Log.d(TAG, "signIn: fire");
         Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
 //                        .setTheme(AuthUI.getDefaultTheme())
-                .setLogo(R.drawable.firebase_auth_120dp)
+                .setLogo(logoRes)
                 .setAvailableProviders(getProviderList())//最新バージョンではメソッド名変更
                 .setTosUrl(GOOGLE_TOS_URL)
                 .setPrivacyPolicyUrl(GOOGLE_PRIVACY_POLICY_URL)//最新バージョンではメソッドが存在
@@ -75,7 +76,7 @@ public class LoginCheck {
 
         intent.putExtra(IS_PRE_SETTING, isPreSetting);
 
-        ((MainActivity)context).startActivityForResult(intent, RC_SIGN_IN);
+        ((Activity)context).startActivityForResult(intent, RC_SIGN_IN);
     }
 
     @Contract(" -> !null")

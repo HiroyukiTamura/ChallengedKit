@@ -11,6 +11,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.cks.hiroyuki2.worksupportlibrary.Entity.RecordData;
+import com.cks.hiroyuki2.worksupportlibrary.Util;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,11 +32,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import static com.cks.hiroyuki2.worksupport3.Util.DATE_PATTERN_YM;
-import static com.cks.hiroyuki2.worksupport3.Util.DEFAULT;
-import static com.cks.hiroyuki2.worksupport3.Util.cal2date;
-import static com.cks.hiroyuki2.worksupport3.Util.makeScheme;
-import static com.cks.hiroyuki2.worksupport3.Util.onError;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.DATE_PATTERN_YM;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.DEFAULT;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.cal2date;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.makeScheme;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.onError;
 
 /**
  * Firebaseとやりとりする係のおじさん！
@@ -43,7 +45,6 @@ import static com.cks.hiroyuki2.worksupport3.Util.onError;
 @EBean
 public class FirebaseConnection implements GoogleApiClient.OnConnectionFailedListener, DatabaseReference.CompletionListener {
     private static final String TAG = "MANUAL_TAG: " + FirebaseConnection.class.getSimpleName();
-    public static final int RC_SIGN_IN = 100;
 //    private GoogleApiClient mGoogleApiClient;
 //    private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;

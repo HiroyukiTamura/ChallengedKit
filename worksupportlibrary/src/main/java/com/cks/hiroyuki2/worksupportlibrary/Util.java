@@ -66,7 +66,6 @@ import java.util.Set;
 /**
  * 便利屋おじさん！
  */
-
 public class Util {
     public static final String datePattern = "yyyyMMdd";
     public static final String delimiter = "9mVSv";
@@ -133,6 +132,7 @@ public class Util {
     public static final String LIST_MAP_MIN = "MIN";
     public static final String LIST_MAP_VALUE = "VALUE";
     public static final String INDEX = "INDEX";
+    public static final int RC_SIGN_IN = 100;
 
     final static String storageRoot = "gs://worksupport3.appspot.com/";
 
@@ -226,7 +226,7 @@ public class Util {
     //region guava代替まわり
     /**************************** guava代替まわり ここから ***************************/
     @Contract("null, null -> true; null, !null -> false; !null, null -> false")
-    static boolean nullableEqual(@Nullable Object x, @Nullable Object y){
+    public static boolean nullableEqual(@Nullable Object x, @Nullable Object y){
         if (x == null && y == null) return true;
 
         if (x == null || y == null) return false;
@@ -234,7 +234,7 @@ public class Util {
         return x.equals(y);
     }
 
-    static boolean setStrEqual(Set<String> x, Set<String> y){
+    public static boolean setStrEqual(Set<String> x, Set<String> y){
         Set<String> subX = new HashSet<>(x);
         Set<String> subY = new HashSet<>(y);
         subX.removeAll(x);
