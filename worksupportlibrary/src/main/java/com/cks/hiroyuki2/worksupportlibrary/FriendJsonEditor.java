@@ -9,9 +9,9 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.cks.hiroyuki2.worksupport2.Entity.Content;
-import com.cks.hiroyuki2.worksupport2.Entity.Group;
-import com.cks.hiroyuki2.worksupport2.Entity.User;
+import com.cks.hiroyuki2.worksupportlibrary.Entity.Content;
+import com.cks.hiroyuki2.worksupportlibrary.Entity.Group;
+import com.cks.hiroyuki2.worksupportlibrary.Entity.User;
 import com.google.firebase.database.DataSnapshot;
 
 import org.jetbrains.annotations.Contract;
@@ -30,10 +30,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static com.cks.hiroyuki2.worksupport2.Util.DEFAULT;
-import static com.cks.hiroyuki2.worksupport2.Util.logStackTrace;
-import static com.cks.hiroyuki2.worksupport3.Util.DEFAULT;
-import static com.cks.hiroyuki2.worksupport3.Util.logStackTrace;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.DEFAULT;
 import static com.cks.hiroyuki2.worksupportlibrary.Util.logStackTrace;
 
 /**
@@ -310,7 +307,6 @@ public class FriendJsonEditor {
      *
      * @return emptyではありえない
      */
-    @Contract("null -> null")
     @Nullable
     public static JSONObject snap2Json(@Nullable DataSnapshot snapshot) {
         if (snapshot == null || !snapshot.exists())

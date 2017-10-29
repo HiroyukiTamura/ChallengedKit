@@ -9,9 +9,6 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.cks.hiroyuki2.worksupport2.Entity.Content;
-import com.cks.hiroyuki2.worksupport2.Entity.Group;
-import com.cks.hiroyuki2.worksupport2.Entity.User;
 import com.google.firebase.database.DataSnapshot;
 
 import org.jetbrains.annotations.Contract;
@@ -30,10 +27,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static com.cks.hiroyuki2.worksupport2.Util.DEFAULT;
-import static com.cks.hiroyuki2.worksupport2.Util.logStackTrace;
-import static com.cks.hiroyuki2.worksupport3.Util.DEFAULT;
-import static com.cks.hiroyuki2.worksupport3.Util.logStackTrace;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.DEFAULT;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.logStackTrace;
 
 /**
  * 友人リストをローカルで保持するファイルを編集するおじさん！
