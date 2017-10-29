@@ -71,4 +71,5 @@ dependencies {
     compile 'org.jetbrains:annotations-java5:15.0'
     compile 'com.firebaseui:firebase-ui:3.1.0'
     compile 'com.github.SumiMakito:AwesomeQRCode:1.0.6'
+    compile 'com.prolificinteractive:material-calendarview:1.4.3'
 }

@@ -34,6 +34,9 @@ import static com.cks.hiroyuki2.worksupport3.Util.PREF_KEY_COLOR;
 import static com.cks.hiroyuki2.worksupport3.Util.circleId;
 import static com.cks.hiroyuki2.worksupport3.Util.colorId;
 import static com.cks.hiroyuki2.worksupport3.Util.nullableEqual;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.PREF_KEY_COLOR;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.PREF_NAME;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.nullableEqual;
 
 /**
  * Created by hiroyuki2 on 2017/09/18.
@@ -218,7 +221,7 @@ public class UtilDialog implements DialogInterface.OnShowListener{
     }
 
     static void onClickCircle(Context context, View clickedView, View rootView){
-        SharedPreferences pref = context.getSharedPreferences(Util.PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         int colorNum = Integer.valueOf((String) ((FrameLayout)clickedView.getParent()).getTag());
         editor.putInt(PREF_KEY_COLOR, colorNum);

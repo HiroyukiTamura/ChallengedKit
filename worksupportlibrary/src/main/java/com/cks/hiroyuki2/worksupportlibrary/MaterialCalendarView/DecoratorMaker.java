@@ -7,8 +7,8 @@ package com.cks.hiroyuki2.worksupportlibrary.MaterialCalendarView;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.cks.hiroyuki2.worksupport3.Entity.CalendarEvent;
-import com.cks.hiroyuki2.worksupportlibrary.worksupportlibrary.CalendarOneEvent;
+import com.cks.hiroyuki2.worksupportlibrary.Entity.CalendarEvent;
+import com.cks.hiroyuki2.worksupportlibrary.Entity.CalendarOneEvent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import static com.cks.hiroyuki2.worksupport3.FirebaseConnection.delimiterOfNum;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.delimiterOfNum;
 
 /**
  * ここで、なぜカレンダーのデータをもとに{@link MultiDotDecorator #shouldDecorate()}で分岐しないかというと、shouldDecorate()はdecorate()を非同期で発火するからです。

@@ -8,7 +8,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupportlibrary.R;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
@@ -18,9 +18,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.TreeSet;
 
-import static com.cks.hiroyuki2.worksupport3.Util.DATE_PATTERN_YM;
-import static com.cks.hiroyuki2.worksupport3.Util.date2Cal;
-import static com.cks.hiroyuki2.worksupport3.Util.logStackTrace;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.DATE_PATTERN_YM;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.date2Cal;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.logStackTrace;
 
 /**
  * 複数ドットを描画するかしないかを判定するおじさん！
