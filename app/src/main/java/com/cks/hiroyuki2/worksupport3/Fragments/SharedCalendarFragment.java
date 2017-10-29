@@ -13,7 +13,7 @@ import android.support.v4.view.ViewPager;
 
 import com.cks.hiroyuki2.worksupport3.Activities.SharedCalendarActivity;
 import com.cks.hiroyuki2.worksupport3.Adapters.SharedCalendarVPAdapter;
-import com.cks.hiroyuki2.worksupportlibrary.Entity.CalendarOneEvent;
+import com.cks.hiroyuki2.worksupportlibrary.worksupportlibrary.CalendarOneEvent;
 import com.cks.hiroyuki2.worksupport3.Entity.Group;
 import com.cks.hiroyuki2.worksupport3.FbCheckAndWriter;
 import com.cks.hiroyuki2.worksupport3.FirebaseConnection;

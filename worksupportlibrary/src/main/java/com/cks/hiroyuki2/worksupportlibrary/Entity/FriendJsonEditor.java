@@ -2,7 +2,7 @@
  * Copyright (c) $year. Hiroyuki Tamura All rights reserved.
  */
 
-package Util;
+package com.cks.hiroyuki2.worksupportlibrary.Entity;
 
 import android.content.Context;
 import android.content.SharedPreferences;

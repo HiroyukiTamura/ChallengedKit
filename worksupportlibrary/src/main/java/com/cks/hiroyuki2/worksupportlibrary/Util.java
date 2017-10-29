@@ -2,7 +2,7 @@
  * Copyright (c) $year. Hiroyuki Tamura All rights reserved.
  */
 
-package com.cks.hiroyuki2.worksupport3;
+package com.cks.hiroyuki2.worksupportlibrary;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -45,7 +45,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Adapters.RecordParamsRVAdapter;
-import com.cks.hiroyuki2.worksupportlibrary.Entity.User;
+import com.cks.hiroyuki2.worksupportlibrary.worksupportlibrary.User;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.CustomEvent;

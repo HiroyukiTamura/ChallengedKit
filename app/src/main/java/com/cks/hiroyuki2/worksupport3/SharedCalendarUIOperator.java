@@ -18,7 +18,7 @@ import com.cks.hiroyuki2.worksupport3.Entity.CalendarEvent;
 import com.cks.hiroyuki2.worksupport3.MaterialCalendarView.DecoratorMaker;
 import com.cks.hiroyuki2.worksupport3.MaterialCalendarView.MSVDecorator;
 import com.cks.hiroyuki2.worksupport3.MaterialCalendarView.MultiDotDecorator;
-import com.cks.hiroyuki2.worksupportlibrary.Entity.CalendarOneEvent;
+import com.cks.hiroyuki2.worksupportlibrary.worksupportlibrary.CalendarOneEvent;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

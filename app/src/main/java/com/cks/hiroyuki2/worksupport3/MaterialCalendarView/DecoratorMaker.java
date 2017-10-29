@@ -7,7 +7,7 @@ package com.cks.hiroyuki2.worksupport3.MaterialCalendarView;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.cks.hiroyuki2.worksupportlibrary.Entity.CalendarOneEvent;
+import com.cks.hiroyuki2.worksupportlibrary.worksupportlibrary.CalendarOneEvent;
 import com.cks.hiroyuki2.worksupport3.Entity.CalendarEvent;
 
 import java.util.HashMap;
