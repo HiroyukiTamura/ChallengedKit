@@ -13,9 +13,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Point;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
@@ -23,36 +20,27 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.util.Base64;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupportlibrary.Entity.RecordData;
+import com.cks.hiroyuki2.worksupportlibrary.Entity.TimeEvent;
+import com.cks.hiroyuki2.worksupportlibrary.Entity.TimeEventDataSet;
 import com.cks.hiroyuki2.worksupportlibrary.Entity.User;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.CustomEvent;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -66,7 +54,6 @@ import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -75,8 +62,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-
-import static android.content.Context.WINDOW_SERVICE;
 
 /**
  * 便利屋おじさん！
@@ -113,9 +98,6 @@ public class Util {
     public final static String PARAM_ITEM_LEN = "PARAM_ITEM_LEN";
 
     public final static String PREF_KEY_QR_PW = "qr_pw";
-
-    public final static List<Integer> circleId = setCircleId();
-    public final static List<Integer> colorId = setColorId();
     public final static List<String> listParam = Util.makeParam();
 
     public final static int PARAMS_SLIDER_MAX_MAX = 10;
@@ -260,25 +242,6 @@ public class Util {
         return subX.isEmpty() && subY.isEmpty();
     }
 
-    private static List<Integer> setCircleId(){
-        List<Integer> circleId = new ArrayList<>();
-        circleId.add(R.id.color0);
-        circleId.add(R.id.color1);
-        circleId.add(R.id.color2);
-        circleId.add(R.id.color3);
-        return circleId;
-    }
-
-//    R.color.word_red, R.color.word_green, R.color.word_blue, R.color.word_purple);
-    private static List<Integer> setColorId(){
-        List<Integer> colorId = new ArrayList<>();
-        colorId.add(R.color.word_red);
-        colorId.add(R.color.word_green);
-        colorId.add(R.color.word_blue);
-        colorId.add(R.color.word_purple);
-        return colorId;
-    }
-
     private static List<String> makeParam(){
         List<String> list = new ArrayList<>();
         list.add("動悸・汗をかく");
@@ -305,15 +268,6 @@ public class Util {
             sb.append(string);
         }
         return sb.toString();
-    }
-
-    public List<String> makeWofList(int startOfWeek, Context context){
-        List<String> listDayOfWeek = Arrays.asList(context.getResources().getStringArray(R.array.dof_en));
-        for (int i = 0; i < startOfWeek; i++) {
-            String head = listDayOfWeek.remove(0);
-            listDayOfWeek.add(head);
-        }
-        return listDayOfWeek;
     }
 
     /**************************** guava代替 ここまで ***************************/
@@ -478,17 +432,6 @@ public class Util {
         } catch (Exception e) {
             Log.e(TAG, "printHashKey()", e);
         }
-    }
-
-    public static void initAdMob(Context context){
-        MobileAds.initialize(context.getApplicationContext(), "ca-app-pub-3940256099942544~3347511713");
-        AdView adView = new AdView(context);
-        adView.setAdUnitId(context.getString(R.string.banner_ad_unit_id_test));
-        adView.setAdSize(AdSize.SMART_BANNER);
-        FrameLayout adFrameLayout = ((Activity)context).findViewById(R.id.bannersizes_fl_adframe);
-        adFrameLayout.addView(adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
     }
 
     public static void logAnalytics(@NonNull String eventName, Context context){
@@ -661,26 +604,6 @@ public class Util {
         context.startActivity(share);
     }
 
-    public static CoordinatorLayout.LayoutParams getFabLp(Context context){
-        WindowManager wm = (WindowManager)context.getSystemService(WINDOW_SERVICE);
-        Display disp = wm.getDefaultDisplay();
-        Point size = new Point();
-        disp.getSize(size);
-        CoordinatorLayout.LayoutParams lp = new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        int defaultMargin =  context.getResources().getDimensionPixelSize(R.dimen.fab_margin);
-        int adHeight;
-        if (size.y <= context.getResources().getDimensionPixelSize(R.dimen.banner_size0)){
-            adHeight = context.getResources().getDimensionPixelSize(R.dimen.fab_margin_min400dp);
-        } else if (size.y <= context.getResources().getDimensionPixelSize(R.dimen.banner_size1)){
-            adHeight = context.getResources().getDimensionPixelSize(R.dimen.fab_margin_min720dp);
-        } else {
-            adHeight = context.getResources().getDimensionPixelSize(R.dimen.fab_margin_over720dp);
-        }
-        lp.setMargins(defaultMargin, 0, defaultMargin, adHeight + defaultMargin);
-        lp.gravity = (Gravity.BOTTOM | Gravity.END);
-        return lp;
-    }
-
     public static void setNullableText(TextView tv, @Nullable String string){
         if (string != null)
             tv.setText(string);
@@ -721,13 +644,6 @@ public class Util {
         intent.setType("image/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         activity.startActivityForResult(intent, intentKey);
-    }
-
-    static Drawable getColoredGroupIcon(Context context){
-        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_group_white_24dp).mutate();
-        int color = ContextCompat.getColor(context, R.color.colorPrimary);
-        drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
-        return drawable;
     }
 
     @NonNull

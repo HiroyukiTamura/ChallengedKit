@@ -10,8 +10,8 @@ import android.support.annotation.NonNull;
 import java.io.Serializable;
 import java.util.Calendar;
 
-import static com.cks.hiroyuki2.worksupport3.Util.DATE_PATTERN_COLON_HM;
-import static com.cks.hiroyuki2.worksupport3.Util.cal2date;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.DATE_PATTERN_COLON_HM;
+import static com.cks.hiroyuki2.worksupportlibrary.Util.cal2date;
 
 /**
  * {@link RecordData#dataType} == 1の場合にこのクラスが使われます。

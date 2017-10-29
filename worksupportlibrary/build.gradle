@@ -66,6 +66,8 @@ dependencies {
     compile 'com.android.support:design:27.0.0'
     compile 'com.google.code.gson:gson:2.8.2'
     compile('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
-        transitive = true;
+        transitive = true
     }
+    compile 'org.jetbrains:annotations-java5:15.0'
+
 }

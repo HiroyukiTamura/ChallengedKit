@@ -425,7 +425,6 @@ public class FriendJsonEditor {
 
     }
 
-    @Contract("null, _ -> null")
     @Nullable
     public static Group getOneGroupFromJson(@Nullable JSONObject jo, @NonNull String groupKey) throws JSONException {
         if (jo == null) return null;
