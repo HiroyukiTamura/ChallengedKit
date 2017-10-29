@@ -63,7 +63,7 @@ import static com.cks.hiroyuki2.worksupport3.Util.logStackTrace;
 /**
  * VP関係のadapterおじさん！ロジックを持っちゃう！
  */
-public class RecordVPAdapter extends PagerAdapter implements View.OnClickListener {
+public class RecordVPAdapter extends PagerAdapter {
 
     private final static int PAGE_NUM = RecordTabVPAdapter.PAGE_NUM * 7;
     public static int MED_NUM = PAGE_NUM/2;
@@ -440,88 +440,4 @@ public class RecordVPAdapter extends PagerAdapter implements View.OnClickListene
             fireBase.userRecDir.child(date).setValue(null, fireBase);
         }
     }
-
-    @Override
-    public void onClick(View view) {
-        Log.d(TAG, "onClick: fire");
-        int calInt = (Integer)currentPage.getTag();
-        Calendar cal;
-        try {
-            cal = date2Cal(Integer.toString(calInt), FirebaseConnection.datePattern);
-        } catch (ParseException e) {
-            logStackTrace(e);
-            return;
-        }
-
-        switch (view.getId()){
-            case R.id.tv:
-                Bundle bundle2 = makeBundleInOnClick(HEADER_TAG_EDIT, cal, 0);
-                View view1 = (View) view.getParent();//もしもheadertag_tag.xmlのレイアウトを変更したら、ここも変更しなければならない。
-                String dataNum1 = (String) view1.getTag(R.id.data_num);
-                String dataTxt = (String) view1.getTag(R.id.data_txt);
-                bundle2.putString(Integer.toString(R.id.data_num), dataNum1);
-                bundle2.putString(Integer.toString(R.id.data_txt), dataTxt);
-                kickDialogInOnClick(HEADER_TAG_EDIT, CALLBACK_HEADER_TAG_EDIT, bundle2, fragment);
-                break;
-
-            case R.id.remove:
-                HeaderTagUtil.getInstance().removeTag(view, cal, currentPage);//removeTagメソッド内でFirebase同期は行われる
-                break;
-        }
-    }
-
-//    public void onHeaderTagAdd(Bundle bundle){//CalendarFragmentと共通化するか？
-//        Log.d(TAG, "onHeaderTagAdd: fire");
-//        LinearLayout ll = currentPage.findViewById(R.id.item_ll);
-//        FlowLayout flowLayout = ll.getChildAt(0).findViewById(R.id.tag_box);
-//        String txt = bundle.getString(HEADER_TAG_VALUE, null);
-//        if (txt == null) return;
-//        View tag = inflater.inflate(R.layout.record_vp_item_headertag_tag, null);
-//        if (HeaderTagUtil.getInstance().makeNewHeaderTag(Integer.toString(flowLayout.getChildCount()-1), txt, tag, this, fragment.getContext())){
-//            flowLayout.addView(tag, flowLayout.getChildCount()-1);//+ボタンの分だけマイナス1する
-////            HeaderTagUtil.getInstance().setFlowLayoutWide(flowLayout);
-//        }
-//
-//        String calStr = Integer.toString((Integer) currentPage.getTag());
-//        Calendar cal;
-//        try {
-//            cal = date2Cal(calStr, FirebaseConnection.datePattern);
-//        } catch (ParseException e) {
-//            logStackTrace(e);
-//            return;
-//        }
-//
-//        String value =  HeaderTagUtil.getInstance().retrieveRecordData(cal);
-//        if (value == null){
-//            value = txt;
-//        } else {
-//            value = value + FirebaseConnection.delimiter + txt;
-//        }
-//
-//        String ymStr = cal2date(cal, DATE_PATTERN_YM);
-//        int ym = Integer.parseInt(ymStr);
-//        String day1 = Integer.toString(cal.get(Calendar.DATE));
-//
-//        if (!HeaderTagUtil.getInstance().isYmDataExist(cal)){
-//            HashMap<String, String> hashMap = new HashMap<>();
-//            hashMap.put(day1, value);
-//            HeaderTagUtil.getInstance().arrayMap.put(ym, hashMap);
-//        } else {
-//            HeaderTagUtil.getInstance().arrayMap.get(ym).put(day1, value);
-//        }
-//
-//        FirebaseConnection.getInstance().userParamSeries.child(ymStr).child(day1).setValue(value, FirebaseConnection.getInstance());
-//    }
-
-//    public void updateHeaderTag(Bundle bundle){
-//        int calInt = (Integer)currentPage.getTag();
-//        Calendar cal;
-//        try {
-//            cal = date2Cal(Integer.toString(calInt), FirebaseConnection.datePattern);
-//        } catch (ParseException e) {
-//            logStackTrace(e);
-//            return;
-//        }
-//        HeaderTagUtil.getInstance().updateTag(bundle, HEADER_TAG_EDIT, fragment.getContext(), cal, this, currentPage);// firebase同期はupdateTagメソッド内で行われる
-//    }
 }
