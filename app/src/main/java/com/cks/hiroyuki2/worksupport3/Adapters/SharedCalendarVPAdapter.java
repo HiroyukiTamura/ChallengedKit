@@ -12,7 +12,7 @@ import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.cks.hiroyuki2.worksupport3.CalendarOneEvent;
+import com.cks.hiroyuki2.worksupportlibrary.Entity.CalendarOneEvent;
 import com.cks.hiroyuki2.worksupport3.Fragments.SharedCalendarFragment;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.SharedCalendarUIOperator;

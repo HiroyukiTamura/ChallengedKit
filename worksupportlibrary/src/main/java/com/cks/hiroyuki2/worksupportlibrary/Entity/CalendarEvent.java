@@ -4,7 +4,7 @@
 
 package com.cks.hiroyuki2.worksupportlibrary.Entity;
 
-import com.cks.hiroyuki2.worksupport3.CalendarOneEvent;
+import com.cks.hiroyuki2.worksupportlibrary.CalendarOneEvent;
 import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;

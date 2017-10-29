@@ -2,9 +2,9 @@
  * Copyright (c) $year. Hiroyuki Tamura All rights reserved.
  */
 
-package com.cks.hiroyuki2.worksupport3;
+package com.cks.hiroyuki2.worksupportlibrary.Entity;
 
-import com.cks.hiroyuki2.worksupport3.Entity.CalendarEvent;
+import com.cks.hiroyuki2.worksupportlibrary.Entity.CalendarEvent;
 import com.google.firebase.database.Exclude;
 
 /**

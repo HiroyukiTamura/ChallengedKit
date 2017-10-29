@@ -6,7 +6,7 @@ package com.cks.hiroyuki2.worksupportlibrary.Entity;
 
 import android.support.annotation.NonNull;
 
-import com.cks.hiroyuki2.worksupport3.FirebaseConnection;
+import com.cks.hiroyuki2.worksupportlibrary.FirebaseConnection;
 import com.cks.hiroyuki2.worksupport3.Util;
 
 import java.io.Serializable;

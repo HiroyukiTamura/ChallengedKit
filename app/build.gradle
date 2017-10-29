@@ -72,7 +72,7 @@ dependencies {
         transitive = true;
     }
     compile('com.twitter.sdk.android:twitter-core:3.1.1@aar') { transitive = true }
-//twitter連携一旦あきらめます
+    //twitter連携一旦あきらめます
     compile('com.mikepenz:aboutlibraries:5.9.7@aar') {
         transitive = true
     }
@@ -89,7 +89,7 @@ dependencies {
     compile 'com.android.support:preference-v14:27.0.0'
     compile 'com.takisoft.fix:preference-v7:26.1.0.3'
     compile 'org.jetbrains:annotations-java5:15.0'
-//    compile 'com.github.channguyen:rsv:1.0.1'
+    //    compile 'com.github.channguyen:rsv:1.0.1'
     compile 'com.prolificinteractive:material-calendarview:1.4.3'
     compile 'com.firebaseui:firebase-ui:3.1.0'
     compile 'com.google.firebase:firebase-core:11.4.2'
@@ -104,8 +104,8 @@ dependencies {
     compile 'org.apmem.tools:layouts:1.10@aar'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     compile 'com.github.andyxialm:SmoothCheckBox:47f69d4ce8'
-//    compile 'com.github.AndroidDeveloperLB:AutoFitTextView:4'
-//    compile 'com.heaven7.android.dragflowlayout:dragflowlayout:1.8.8'
+    //    compile 'com.github.AndroidDeveloperLB:AutoFitTextView:4'
+    //    compile 'com.heaven7.android.dragflowlayout:dragflowlayout:1.8.8'
     compile 'com.github.castorflex.verticalviewpager:library:19.0.1'
     compile 'org.adw.library:discrete-seekbar:1.0.1'
     compile 'com.shawnlin:number-picker:2.4.4'
@@ -115,7 +115,7 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.2.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup.okhttp3:okhttp:3.9.0'
-//    compile 'jp.wasabeef:richeditor-android:1.2.2'
+    //    compile 'jp.wasabeef:richeditor-android:1.2.2'
     compile 'com.google.code.gson:gson:2.8.2'
     compile 'com.github.bumptech.glide:glide:4.2.0'
     testCompile 'junit:junit:4.12'
@@ -124,7 +124,8 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.2'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.2'
-//    compile 'com.android.support:multidex:1.0.2'
+    //    compile 'com.android.support:multidex:1.0.2'
+    compile project(':worksupportlibrary')
 }
 
 apply plugin: 'com.google.gms.google-services'

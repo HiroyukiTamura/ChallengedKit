@@ -14,7 +14,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.Activities.SharedCalendarActivity;
-import com.cks.hiroyuki2.worksupport3.CalendarOneEvent;
+import com.cks.hiroyuki2.worksupportlibrary.Entity.CalendarOneEvent;
 import com.cks.hiroyuki2.worksupport3.Entity.CalendarEvent;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.SharedCalendarUIOperator;
