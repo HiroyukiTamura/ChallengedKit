@@ -45,6 +45,8 @@ import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
 import static com.cks.hiroyuki2.worksupport3.RecordDialogFragmentInput.INPUT;
+import static com.cks.hiroyuki2.worksupport3.Util.showCompleteNtf;
+import static com.cks.hiroyuki2.worksupport3.Util.showUploadingNtf;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.LIMIT_SIZE_PROF;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.isOverSize;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.uploadFile;

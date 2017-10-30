@@ -75,6 +75,9 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toast;
 import com.cks.hiroyuki2.worksupprotlib.Util;
 import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
+import static com.cks.hiroyuki2.worksupprotlib.Util.INDEX;
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
+import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 
 @EFragment(R.layout.fragment_setting_fragmnet)
 public class EditTemplateFragment extends Fragment implements RecordVpItemComment.onClickCommentListener, RecordVpItemParam.OnClickParamsNameListener {

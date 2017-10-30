@@ -48,6 +48,8 @@ import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickCircleAndInputDial
 import static com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemTime.CALLBACK_RANGE_COLOR;
 import static com.cks.hiroyuki2.worksupprotlib.Util.date2Cal;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
+//import static com.cks.hiroyuki2.worksupprotlib.Util.KEY;
+import static com.cks.hiroyuki2.worksupprotlib.Util.INDEX;
 
 
 @EFragment(R.layout.record_vp_content)
@@ -254,7 +256,7 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
         switch (requestCode){
             case RecordRVAdapter.CALLBACK_LONGTAP:
                 Log.d(TAG, "onActivityResult: RecordRVAdapter.CALLBACK_LONGTAP");
-                int index = bundle.getInt(RecordRVAdapter.INDEX);
+                int index = bundle.getInt(INDEX);
                 int key1 = bundle.getInt(RecordRVAdapter.KEY);
                 int dateInt = (Integer) adapter.currentPage.getTag();
                 RecordRVAdapter rvAdapter1 = adapter.timeAdapterTree.get(dateInt).get(key1);

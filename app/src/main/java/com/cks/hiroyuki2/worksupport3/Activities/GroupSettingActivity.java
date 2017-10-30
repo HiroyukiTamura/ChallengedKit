@@ -18,7 +18,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
-import static com.cks.hiroyuki2.worksupport3.MainApplication.initAdMob;
+import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 
 /**
  * {@link GroupSettingFragment} の親。今のところこのActivityが関わるFragmentはこれひとつのみ。

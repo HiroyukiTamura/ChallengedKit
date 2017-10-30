@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.Util;
+import com.cks.hiroyuki2.worksupprotlib.UtilSpec;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

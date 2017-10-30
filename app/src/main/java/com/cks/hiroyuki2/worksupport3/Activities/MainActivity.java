@@ -81,7 +81,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_KEY_WIDTH;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
 import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.getFabLp;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
-import static com.cks.hiroyuki2.worksupport3.MainApplication.initAdMob;
+import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 

@@ -332,7 +332,7 @@ public class RecordVPAdapter extends PagerAdapter {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         hashMap.put(child.getKey(), (String) child.getValue());
                     }
-                    HeaderTagUtil.getInstance().arrayMap.put(ymStr, hashMap);
+//                    HeaderTagUtil.getInstance().arrayMap.put(ymStr, hashMap);
                 }
                 isInitHeaderTagData.add(true);
                 if (checkIsFinishInitData())
@@ -383,7 +383,7 @@ public class RecordVPAdapter extends PagerAdapter {
         String ym = cal2date(cal, DATE_PATTERN_YM);
         int StrInt = Integer.parseInt(ym);
         makeOneDayDataList(cal);
-        if ((cal.get(Calendar.YEAR) != year || cal.get(Calendar.MONTH) != mon) && !HeaderTagUtil.getInstance().arrayMap.containsKey(StrInt)){
+        if ((cal.get(Calendar.YEAR) != year || cal.get(Calendar.MONTH) != mon) /*&& !HeaderTagUtil.getInstance().arrayMap.containsKey(StrInt)*/){
             retrieveOneMonthHeaderTag(cal);
         }
     }

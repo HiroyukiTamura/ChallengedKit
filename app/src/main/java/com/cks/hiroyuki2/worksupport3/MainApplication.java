@@ -4,18 +4,12 @@
 
 package com.cks.hiroyuki2.worksupport3;
 
-import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
 import android.util.Log;
-import android.widget.FrameLayout;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.squareup.leakcanary.LeakCanary;
 import com.crashlytics.android.Crashlytics;
+import com.squareup.leakcanary.LeakCanary;
+
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -36,16 +30,5 @@ public class MainApplication extends Application {
             return;
         }
         LeakCanary.install(this);
-    }
-
-    public static void initAdMob(Context context){
-        MobileAds.initialize(context.getApplicationContext(), "ca-app-pub-3940256099942544~3347511713");
-        AdView adView = new AdView(context);
-        adView.setAdUnitId(context.getString(R.string.banner_ad_unit_id_test));
-        adView.setAdSize(AdSize.SMART_BANNER);
-        FrameLayout adFrameLayout = ((Activity)context).findViewById(R.id.bannersizes_fl_adframe);
-        adFrameLayout.addView(adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
     }
 }
