@@ -84,11 +84,11 @@ public class RecordTabVPAdapter extends PagerAdapter implements View.OnClickList
         calTmp.setTime(calMed.getTime());
         calTmp.add(Calendar.DATE, 7*(- MED_NUM + position));
         calTmp.add(Calendar.DATE, -dayOfWeekMed + 1);
-        int startDate = Integer.parseInt(Util.cal2date(calTmp, FirebaseConnection.datePattern));
+        int startDate = Integer.parseInt(Util.cal2date(calTmp, Util.datePattern));
         for (int i=0; i<7; i++){
             FrameLayout fm = (FrameLayout) ll.getChildAt(i);
             fm.setOnClickListener(this);
-            fm.setTag(Integer.parseInt(Util.cal2date(calTmp, FirebaseConnection.datePattern)));
+            fm.setTag(Integer.parseInt(Util.cal2date(calTmp, Util.datePattern)));
             TextView dayTv = (TextView) fm.findViewById(R.id.tv);
             dayTv.setText(String.valueOf(calTmp.get(Calendar.DAY_OF_MONTH)));
             ImageView iv = (ImageView) fm.findViewById(R.id.iv);
@@ -138,7 +138,7 @@ public class RecordTabVPAdapter extends PagerAdapter implements View.OnClickList
         String dateStr = Integer.toString((Integer) view.getTag());
         Log.w(TAG, "onClick: dateStr" + dateStr);
         try {
-            Calendar cal = Util.date2Cal(dateStr, FirebaseConnection.datePattern);
+            Calendar cal = Util.date2Cal(dateStr, Util.datePattern);
             callback.postOnClick(cal);
         } catch (ParseException e) {
             Util.logStackTrace(e);

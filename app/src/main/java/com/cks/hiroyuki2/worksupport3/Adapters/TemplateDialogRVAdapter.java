@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.RecordData;
+import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 
 import java.util.List;
 

@@ -315,7 +315,7 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
 //        if (data.data != null){
 //            for (String key: data.data.keySet()) {
 //                String value = (String) data.data.get(key);
-//                String[] strings = value.split(FirebaseConnection.delimiter);
+//                String[] strings = value.split(Util.delimiter);
 //                final FrameLayout item = (FrameLayout) inflater.inflate(R.layout.record_vp_item_tagitem, null);
 //                ImageView iv = (ImageView) item.findViewById(R.id.remove);
 //            }
@@ -526,8 +526,8 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
 //                } else {
 //                    colorNum = pref.getInt(Util.PREF_KEY_COLOR, 0);
 //                }
-//                String value = bundle.getString(RecordRVAdapter.LIST_MAP_VALUE).split(FirebaseConnection.delimiter)[0];
-//                value = value + FirebaseConnection.delimiter + Integer.toString(colorNum);
+//                String value = bundle.getString(RecordRVAdapter.LIST_MAP_VALUE).split(Util.delimiter)[0];
+//                value = value + Util.delimiter + Integer.toString(colorNum);
 //                bundle.putString(RecordRVAdapter.LIST_MAP_VALUE, value);
 //                sendIntent(getTargetRequestCode(), this);
 //                break;}

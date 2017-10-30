@@ -40,6 +40,10 @@ import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickTimePickerDialog;
 import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.colorId;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getTimeEveDataSetFromRecordData;
 import static com.cks.hiroyuki2.worksupprotlib.Util.initRecycler;
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEventDataSet;
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEventRange;
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
+import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 
 /**
  * RecordVpItem兄弟！Timelineおじさん！

@@ -81,7 +81,6 @@
         android:paddingBottom="8dp"
         android:orientation="horizontal"
         android:background="@color/colorPrimary"
-        app:elevation="@dimen/elevation_default"
         android:id="@+id/date_container">
 
         <include layout="@layout/tab_day_item" />

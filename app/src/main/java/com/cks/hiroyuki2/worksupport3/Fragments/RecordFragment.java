@@ -110,11 +110,11 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
 
     @Override
     public void postOnClick(Calendar cal) {
-        Log.d(TAG, "postOnClick() cal:" + Util.cal2date(cal, FirebaseConnection.datePattern));
+        Log.d(TAG, "postOnClick() cal:" + Util.cal2date(cal, Util.datePattern));
         String currentDateStr = Integer.toString((int)adapter.currentPage.getTag());
         Calendar currentCal;
         try {
-            currentCal = date2Cal(currentDateStr, FirebaseConnection.datePattern);
+            currentCal = date2Cal(currentDateStr, Util.datePattern);
         } catch (ParseException e) {
             logStackTrace(e);
             return;
@@ -139,7 +139,7 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
 //            return;
 //        cal.add(Calendar.DATE, -RecordVPAdapter.DATALIST_DEF_LENGTH/2);
 //        for (int i=0; i<RecordVPAdapter.DATALIST_DEF_LENGTH; i++){
-//            String date = Util.cal2date(cal, FirebaseConnection.datePattern);
+//            String date = Util.cal2date(cal, Util.datePattern);
 //            if (adapter.dataMap.containsKey(date)){
 //
 //            }
@@ -148,7 +148,7 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
 //        String currentDataStr = Integer.toString((Integer) adapter.currentPage.getTag());
 //        Calendar currentCal;
 //        try {
-//            currentCal = Util.date2Cal(currentDataStr, FirebaseConnection.datePattern);
+//            currentCal = Util.date2Cal(currentDataStr, Util.datePattern);
 //        } catch (ParseException e) {
 //            e.printStackTrace();
 //            return;
@@ -197,7 +197,7 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
             TextView tv = ((View)circle.getParent()).findViewById(R.id.tv);
             tv.setTextColor(Color.WHITE);
 
-            Calendar tagCal = date2Cal(Integer.toString(tag), FirebaseConnection.datePattern);
+            Calendar tagCal = date2Cal(Integer.toString(tag), Util.datePattern);
             if (cal.compareTo(tagCal) < 0){
                 Log.d(TAG, "onPageSelected: 前週へGO");
                 viewPagerTab.setCurrentItem(viewPagerTab.getCurrentItem() -1, true);//前週へ
@@ -215,7 +215,7 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
 
             //まず,遷移先のviewを取得する.
             int def = (int) TimeUnit.MILLISECONDS.toDays(cal.getTimeInMillis() - tagCal.getTimeInMillis());
-            int date = Integer.parseInt(Util.cal2date(tagCal, FirebaseConnection.datePattern));
+            int date = Integer.parseInt(Util.cal2date(tagCal, Util.datePattern));
             Log.d(TAG, "onPageSelected: date " + date);
             if (viewPagerTab.findViewWithTag(date) == null){
                 Log.w(TAG, "onPageSelected: viewはまだcreateされていない");

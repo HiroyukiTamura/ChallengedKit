@@ -95,17 +95,17 @@ public class AddFriendVPAdapter extends PagerAdapter implements Callback{
 //                    //todo エラー画像を表示し、エラー処理をしてください
 //                    Toast.makeText(context, "エラー画像を表示し、エラー処理をしてください", Toast.LENGTH_LONG).show();
 //                } else {
-//                    String string = user.getUid() + FirebaseConnection.delimiter
-//                            + user.getDisplayName() + FirebaseConnection.delimiter
+//                    String string = user.getUid() + Util.delimiter
+//                            + user.getDisplayName() + Util.delimiter
 //                            + user.getPhotoUrl();
 //                    new AwesomeQRCode.Renderer()
 //                            .contents(string)
 //                            .dotScale(1f)
 //                            .size(400).margin(20)
 //                            .renderAsync(this);
-//                    Bitmap bitmap = encodeAsBitmap(user.getUid() + FirebaseConnection.delimiter
-//                            + user.getDisplayName() + FirebaseConnection.delimiter
-//                            + user.getPhotoUrl() + FirebaseConnection.delimiter);
+//                    Bitmap bitmap = encodeAsBitmap(user.getUid() + Util.delimiter
+//                            + user.getDisplayName() + Util.delimiter
+//                            + user.getPhotoUrl() + Util.delimiter);
 //                    if (bitmap != null){
 //                        iv.setImageBitmap(bitmap);
 //                    } else {

@@ -34,13 +34,16 @@ import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter.CA
 import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter.POSITION;
 import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter.POS_IN_LIST;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
-import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.datePattern;
-import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.delimiter;
+import static com.cks.hiroyuki2.worksupprotlib.Util.datePattern;
+import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
 import static com.cks.hiroyuki2.worksupport3.RecordDialogFragment.ADD_NEW_TAG;
 import static com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemTime.TIME_EVE_RANGE;
 import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
 import static com.cks.hiroyuki2.worksupprotlib.Util.joinArr;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
+import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEventRange;
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
 
 /**
  * {@link RecordVPAdapter}のビューをいい感じに設定する人。

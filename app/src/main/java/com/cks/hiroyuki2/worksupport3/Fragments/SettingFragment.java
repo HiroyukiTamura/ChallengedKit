@@ -25,7 +25,7 @@ import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupport3.DialogKicker;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.SettingDialogFragment;
-import com.cks.hiroyuki2.worksupport3.SettingFbCommunicator;
+import com.cks.hiroyuki2.worksupprotlib.SettingFbCommunicator;
 import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -46,7 +46,7 @@ import org.jetbrains.annotations.Contract;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.cks.hiroyuki2.worksupport3.SettingFbCommunicator.SCHEME_PHOTO_URL;
+import static com.cks.hiroyuki2.worksupprotlib.SettingFbCommunicator.SCHEME_PHOTO_URL;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getTextNullable;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
 import static com.cks.hiroyuki2.worksupprotlib.Util.kickIntentIcon;

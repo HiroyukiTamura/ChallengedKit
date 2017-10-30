@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.view.View.VISIBLE;
-import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.delimiter;
+import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
 
 /**
  * Created by hiroyuki2 on 2017/09/21.

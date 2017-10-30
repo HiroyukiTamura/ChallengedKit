@@ -448,7 +448,7 @@ public class ShareBoardRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Nullable
     private String createSubtitle(Content content){
         String lastEditor = getLastEditorName(content);
-        String lastEdit = Util.convertCalPattern(content.lastEdit, FirebaseConnection.datePattern, Util.DATE_PATTERN_DOT_YMD);
+        String lastEdit = Util.convertCalPattern(content.lastEdit, Util.datePattern, Util.DATE_PATTERN_DOT_YMD);
         if (lastEditor == null || lastEditor.isEmpty()){
             return lastEdit;
         } else {

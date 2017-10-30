@@ -20,15 +20,14 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
-import com.cks.hiroyuki2.worksupport3.FirebaseEventHandler;
+import com.cks.hiroyuki2.worksupprotlib.FirebaseEventHandler;
 import com.cks.hiroyuki2.worksupport3.Fragments.RecordFragment;
-import com.cks.hiroyuki2.worksupport3.HeaderTagUtil;
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.RecordData;
+import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 import com.cks.hiroyuki2.worksupport3.RecordDataUtil;
 import com.cks.hiroyuki2.worksupport3.RecordRVAdapter;
 import com.cks.hiroyuki2.worksupport3.RecordUiOperator;
-import com.cks.hiroyuki2.worksupport3.TemplateEditor;
+import com.cks.hiroyuki2.worksupprotlib.TemplateEditor;
 import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -123,9 +122,9 @@ public class RecordVPAdapter extends PagerAdapter {
     //region 初期化系列メソッド
     /*初期化系列メソッドここから*/
     public void initData(){
-        String calMedStr = cal2date(calMed, FirebaseConnection.datePattern);
+        String calMedStr = cal2date(calMed, Util.datePattern);
         try {
-            this.calMed = date2Cal(calMedStr, FirebaseConnection.datePattern);
+            this.calMed = date2Cal(calMedStr, Util.datePattern);
         } catch (ParseException e) {
             logStackTrace(e);/*エラー処理*/
         }
@@ -193,7 +192,7 @@ public class RecordVPAdapter extends PagerAdapter {
     }
 
     public int findPosition(Calendar cal){
-        Log.d(TAG, "findPosition()" + cal2date(cal, FirebaseConnection.datePattern));
+        Log.d(TAG, "findPosition()" + cal2date(cal, Util.datePattern));
         int diffDays =  (int) TimeUnit.MILLISECONDS.toDays(cal.getTimeInMillis() - calMed.getTimeInMillis());
         return MED_NUM + diffDays;
     }
@@ -221,7 +220,7 @@ public class RecordVPAdapter extends PagerAdapter {
         Calendar cal = getTodayCal(position);
 
         //このitemの日付(cal)を"20170415"のようなintに変換し、タグ付けする。
-        int date = Integer.parseInt(cal2date(cal, FirebaseConnection.datePattern));
+        int date = Integer.parseInt(cal2date(cal, Util.datePattern));
         v.setTag(date);
 
         LinearLayout ll = v.findViewById(R.id.item_ll);
@@ -270,7 +269,7 @@ public class RecordVPAdapter extends PagerAdapter {
     }
 
     private void makeOneDayDataList(final Calendar cal){
-        final String date = cal2date(cal, FirebaseConnection.datePattern);
+        final String date = cal2date(cal, Util.datePattern);
         Log.d(TAG, "makeOneDayDataList: date:" + date);
         DatabaseReference ref = FirebaseConnection.getInstance().userRecDir.child(date);
         FirebaseEventHandler handler = new FirebaseEventHandler(cal) {

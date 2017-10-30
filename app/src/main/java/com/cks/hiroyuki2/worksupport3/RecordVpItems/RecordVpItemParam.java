@@ -31,6 +31,7 @@ import butterknife.OnClick;
 import static com.cks.hiroyuki2.worksupprotlib.Util.bundle2DataParams;
 import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
 import static com.cks.hiroyuki2.worksupprotlib.Util.data2BundleParams;
+import static com.cks.hiroyuki2.worksupprotlib.Util.datePattern;
 import static com.cks.hiroyuki2.worksupprotlib.Util.setNullableText;
 import static com.cks.hiroyuki2.worksupprotlib.Util.setRecycler;
 

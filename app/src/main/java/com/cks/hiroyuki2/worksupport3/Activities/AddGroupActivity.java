@@ -14,7 +14,7 @@ import android.widget.FrameLayout;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.AddGroupFragment;
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupportlibrary.Entity.User;
+import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -24,7 +24,7 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 
-import static com.cks.hiroyuki2.worksupprotlib.Util.initAdMob;
+import static com.cks.hiroyuki2.worksupport3.MainApplication.initAdMob;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 
 /**

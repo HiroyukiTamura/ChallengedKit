@@ -22,8 +22,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.delimiter;
 import static com.cks.hiroyuki2.worksupprotlib.Util.setNullableText;
+import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
 
 /**
  * 本来は{@link RecordVpItemTag}が担当してもいいんだけど、テンプレまわりの処理が特に大変なので、tagPoolに関してだけ、テンプレ専用のクラスを作成しました。

@@ -14,8 +14,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.TimeEvent;
-import com.cks.hiroyuki2.worksupport3.TimeEventRange;
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEventRange;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

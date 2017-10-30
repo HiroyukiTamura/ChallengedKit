@@ -31,7 +31,8 @@ import com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemComment;
 import com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemParam;
 import com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemTime;
 import com.cks.hiroyuki2.worksupport3.RecordVpItems.TempItemTagPool;
-import com.cks.hiroyuki2.worksupport3.TemplateEditor;
+import com.cks.hiroyuki2.worksupprotlib.TemplateEditor;
+import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -68,11 +69,12 @@ import static com.cks.hiroyuki2.worksupport3.TempWidgetDialogFragment.CALLBACK_T
 import static com.cks.hiroyuki2.worksupport3.TempWidgetDialogFragment.CALLBACK_TEMPLATE_EDIT;
 import static com.cks.hiroyuki2.worksupport3.TempWidgetDialogFragment.TEMPLATE_ADD;
 import static com.cks.hiroyuki2.worksupport3.TempWidgetDialogFragment.TEMPLATE_EDIT;
-import static com.cks.hiroyuki2.worksupport3.TemplateEditor.applyTemplate;
+import static com.cks.hiroyuki2.worksupprotlib.TemplateEditor.applyTemplate;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PARAMS_VALUES;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toast;
-import static com.cks.hiroyuki2.worksupprotlib.Util.toast;
+import com.cks.hiroyuki2.worksupprotlib.Util;
+import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
 
 @EFragment(R.layout.fragment_setting_fragmnet)
 public class EditTemplateFragment extends Fragment implements RecordVpItemComment.onClickCommentListener, RecordVpItemParam.OnClickParamsNameListener {
@@ -195,7 +197,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
         switch (requestCode){
             case RecordRVAdapter.CALLBACK_LONGTAP:{
                 Log.d(TAG, "onActivityResult: RecordRVAdapter.CALLBACK_LONGTAP");
-                int index = bundle.getInt(RecordRVAdapter.INDEX);
+                int index = bundle.getInt(Util.INDEX);
                 int key1 = bundle.getInt(RecordRVAdapter.KEY, 100);
                 if (timeAdapterTree == null || key1 == 100 || !timeAdapterTree.containsKey(key1))
                     break;
@@ -277,7 +279,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
 
             case Util.CALLBACK_TEMPLATE_PARAMS_ITEM:{
                 int dataNum = bundle.getInt(RecordVPAdapter.DATA_NUM, 100);
-                int plotPos = bundle.getInt(RecordParamsRVAdapter.INDEX, 100);
+                int plotPos = bundle.getInt(INDEX, 100);
                 String[] newStr = bundle.getStringArray(PARAMS_VALUES);
                 String joinedNewStr = Util.joinArr(newStr, delimiter);
 

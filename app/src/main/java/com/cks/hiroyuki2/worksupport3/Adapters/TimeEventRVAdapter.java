@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.TimeEvent;
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -33,7 +33,7 @@ import butterknife.OnClick;
 import static com.cks.hiroyuki2.worksupport3.Adapters.RecordVPAdapter.DATA_NUM;
 import static com.cks.hiroyuki2.worksupport3.Adapters.RecordVPAdapter.PAGE_TAG;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickTimePickerDialog;
-import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.datePattern;
+import static com.cks.hiroyuki2.worksupprotlib.Util.datePattern;
 import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
 import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.colorId;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getCalFromTimeEvent;

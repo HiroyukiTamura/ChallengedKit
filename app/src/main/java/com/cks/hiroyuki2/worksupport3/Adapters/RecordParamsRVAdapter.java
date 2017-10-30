@@ -26,8 +26,8 @@ import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.RecordFragment;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemParam;
-import com.cks.hiroyuki2.worksupport3.TemplateEditor;
-import com.cks.hiroyuki2.worksupportlibrary.Entity.RecordData;
+import com.cks.hiroyuki2.worksupprotlib.TemplateEditor;
+import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 

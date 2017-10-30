@@ -30,8 +30,8 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.cks.hiroyuki2.worksupprotlib.Util.DATE_PATTERN_DOT_YM;
 import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
-import static com.cks.hiroyuki2.worksupprotlib.Util.getFabLp;
-import static com.cks.hiroyuki2.worksupprotlib.Util.initAdMob;
+import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.getFabLp;
+import static com.cks.hiroyuki2.worksupport3.MainApplication.initAdMob;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 
 /**
