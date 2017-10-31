@@ -61,8 +61,7 @@ public class AddGroupActivity extends AppCompatActivity implements AddGroupFragm
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         fragment = com.cks.hiroyuki2.worksupport3.Fragments.AddGroupFragment_.builder()
                 .parcelableArrayListArg("userList", userList).build();//要パッケージ名指定。importするとコンパイル通らず @see https://goo.gl/ru1n1x
-        ft.add(R.id.fragment_container, fragment);
-        ft.commit();
+        ft.add(R.id.fragment_container, fragment).commit();
     }
 
     @Override

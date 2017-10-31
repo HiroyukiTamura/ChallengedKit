@@ -4,7 +4,6 @@
 
 package com.cks.hiroyuki2.worksupport3.Activities;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
@@ -36,8 +35,7 @@ public class SharedDataViewActivity extends AppCompatActivity implements Analyti
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         AnalyticsFragment frag = com.cks.hiroyuki2.worksupport3.Fragments.AnalyticsFragment_.builder().uid(uid).isMine(false).build();
-        fragmentTransaction.add(R.id.fragment_container, frag);
-        fragmentTransaction.commit();
+        fragmentTransaction.add(R.id.fragment_container, frag).commit();
     }
 
     @Override

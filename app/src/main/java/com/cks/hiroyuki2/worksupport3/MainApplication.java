@@ -8,6 +8,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.leakcanary.LeakCanary;
 
 import io.fabric.sdk.android.Fabric;
@@ -30,5 +31,6 @@ public class MainApplication extends Application {
             return;
         }
         LeakCanary.install(this);
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 }

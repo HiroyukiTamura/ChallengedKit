@@ -64,8 +64,7 @@ public class SharedCalendarActivity extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         SharedCalendarFragment fragment = com.cks.hiroyuki2.worksupport3.Fragments.SharedCalendarFragment_.builder()
                 .arg("group", group).build();//要パッケージ名指定。importするとコンパイル通らず @see https://goo.gl/ru1n1x
-        transaction.add(R.id.fragment_container, fragment);
-        transaction.commit();
+        transaction.add(R.id.fragment_container, fragment).commit();
     }
 
     @Click({R.id.mcv_prev, R.id.mcv_forward, R.id.flip, R.id.fab})

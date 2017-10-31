@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
-import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupport3.Fragments.AddFriendFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.OnAddedFriendFragment;
 import com.cks.hiroyuki2.worksupport3.R;
@@ -40,11 +39,14 @@ public class AddFriendActivity extends AppCompatActivity {
         initAdMob(this);
         logAnalytics(TAG + "起動", this);
 
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        AddFriendFragment frag = com.cks.hiroyuki2.worksupport3.Fragments.AddFriendFragment_
-                .builder().build();
-        fragmentTransaction.add(R.id.fragment_container, frag);
-        fragmentTransaction.commit();
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0){
+            getSupportFragmentManager().popBackStack();
+        } else {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            AddFriendFragment frag = com.cks.hiroyuki2.worksupport3.Fragments.AddFriendFragment_
+                    .builder().build();
+            fragmentTransaction.add(R.id.fragment_container, frag).commit();
+        }
     }
 
     @Override

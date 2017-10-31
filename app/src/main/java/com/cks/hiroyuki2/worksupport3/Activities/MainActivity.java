@@ -34,10 +34,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
-import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
-import com.cks.hiroyuki2.worksupprotlib.Entity.User;
-import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment_;
 import com.cks.hiroyuki2.worksupport3.Fragments.AnalyticsFragment;
@@ -47,14 +43,17 @@ import com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment_;
 import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SocialFragment;
-import com.cks.hiroyuki2.worksupprotlib.LoginCheck;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.ServiceConnector;
+import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
+import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
+import com.cks.hiroyuki2.worksupprotlib.Entity.User;
+import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
+import com.cks.hiroyuki2.worksupprotlib.LoginCheck;
 import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
-import com.google.firebase.database.FirebaseDatabase;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -66,24 +65,27 @@ import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.DimensionPixelSizeRes;
 
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 
+import icepick.Icepick;
+import icepick.State;
 import io.fabric.sdk.android.Fabric;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static com.cks.hiroyuki2.worksupprotlib.Util.RC_SIGN_IN;
+import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 import static com.cks.hiroyuki2.worksupprotlib.LoginCheck.checkIsLogin;
 import static com.cks.hiroyuki2.worksupprotlib.TemplateEditor.initDefaultTemplate;
 import static com.cks.hiroyuki2.worksupprotlib.Util.NOTIFICATION_CHANNEL;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_KEY_FIRST_LAUNCH;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_KEY_WIDTH;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
-import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.getFabLp;
+import static com.cks.hiroyuki2.worksupprotlib.Util.RC_SIGN_IN;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
-import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
+import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.getFabLp;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener/*, CalenderFragment.OnFragmentInteractionListener*/,
@@ -112,11 +114,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
 
         Fabric.with(this, new Crashlytics());
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
-        initDefaultTemplate(this);
+//        initDefaultTemplate(this);
 
         pref = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         boolean launchFst = pref.getBoolean(PREF_KEY_FIRST_LAUNCH, true);
@@ -128,6 +130,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             editor.putBoolean(PREF_KEY_FIRST_LAUNCH, false);
             editor.apply();
         }
+
+        initNtfChannel();
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
+
+        //ブロードキャストレシーバーの登録
+        connector = new ServiceConnector(this);
+        connector.setIntentFilter();
+        connector.startService();
+
+        logAnalytics(getClass().getSimpleName() + "起動", this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     private void initNtfChannel(){
@@ -166,23 +184,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView.setNavigationItemSelectedListener(this);
 
-//        setContentFragment();
+        loginCheck();
 
-        logAnalytics(getClass().getSimpleName() + "起動", this);
+//        setContentFragment();
 
 //        signIn();
 
 //        Twitter.initialize(this);
-
-        initNtfChannel();
-        getSupportFragmentManager().addOnBackStackChangedListener(this);
-
-        //ブロードキャストレシーバーの登録
-        connector = new ServiceConnector(this);
-        connector.setIntentFilter();
-        connector.startService();
-
-        loginCheck();
     }
 
     @Override
@@ -343,11 +351,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setContentFragment(){
         Log.d(TAG, "setContentFragment: fire");
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        RecordFragment fragment = getRecordFragmentInstance();
-        ft.add(R.id.fragment_container, fragment);
-        ft.addToBackStack(null);
-        ft.commit();
+
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0){
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            RecordFragment fragment = getRecordFragmentInstance();
+            ft.add(R.id.fragment_container, fragment);
+            ft.addToBackStack(null);
+            ft.commit();
+        } else {
+            //onCreate()->saveinstance有
+            getSupportFragmentManager().popBackStack();
+        }
     }
 
     private void changeContentFragment(Fragment fragment){

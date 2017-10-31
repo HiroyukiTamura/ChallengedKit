@@ -43,7 +43,6 @@ public class GroupSettingActivity extends AppCompatActivity {
     private void setFragment(){
         FragmentTransaction t = getSupportFragmentManager().beginTransaction();
         GroupSettingFragment fragment = GroupSettingFragment.newInstance(group);
-        t.add(R.id.fragment_container, fragment);
-        t.commit();
+        t.add(R.id.fragment_container, fragment).commit();
     }
 }

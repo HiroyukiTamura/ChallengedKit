@@ -65,7 +65,7 @@
         <activity
             android:name=".Activities.AddFriendActivity_"
             android:label="@string/title_activity_add_friend_activity"
-            android:parentActivityName=".Activities.MainActivity"
+            android:parentActivityName=".Activities.MainActivity_"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -88,7 +88,7 @@
             android:theme="@style/AppTheme.NoActionBar" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="Activities.MainActivity" />
+                android:value="Activities.MainActivity_" />
         </activity>
         <activity
             android:name=".Activities.SharedDataViewActivity_"
@@ -97,7 +97,7 @@
             android:theme="@style/AppTheme.NoActionBar" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="Activities.MainActivity" />
+                android:value="Activities.MainActivity_" />
         </activity>
         <activity
             android:name=".Activities.SharedCalendarActivity_"
@@ -111,7 +111,7 @@
             android:theme="@style/AppTheme.NoActionBar" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="Activities.MainActivity" />
+                android:value="Activities.MainActivity_" />
         </activity>
     </application>
 
