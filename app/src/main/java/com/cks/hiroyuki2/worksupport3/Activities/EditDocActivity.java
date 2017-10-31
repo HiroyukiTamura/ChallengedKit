@@ -11,6 +11,7 @@ import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -20,13 +21,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Document;
 import com.cks.hiroyuki2.worksupprotlib.Entity.DocumentEle;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
-import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
-import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 
@@ -41,6 +41,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import icepick.Icepick;
+import icepick.State;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -48,8 +50,8 @@ import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 import static com.cks.hiroyuki2.worksupprotlib.Util.setImgFromStorage;
 
-@EActivity
-public class EditDocActivity extends AppCompatActivity /*implements View.OnFocusChangeListener*/{
+@EActivity(R.layout.activity_edit_doc2)
+public class EditDocActivity extends AppCompatActivity implements TextWatcher /*implements View.OnFocusChangeListener*/ {
     private static final String TAG = "MANUAL_TAG: " + EditDocActivity.class.getSimpleName();
     public static final int REQ_INTENT_CODE = 2010;
     public static final int REQ_INTENT_CODE_COMMENT = 2011;
@@ -60,26 +62,60 @@ public class EditDocActivity extends AppCompatActivity /*implements View.OnFocus
     private EditText editTitle;
     private EditText editContent;
     private Document doc;
+    @State String input;//null, empty, 代入有の3通りあります
+    @State String title;//null, empty, 代入有の3通りあります
     @ViewById(R.id.toolbar) Toolbar toolbar;
+    @ViewById(R.id.vert) View vert;
+    @ViewById(R.id.icon) CircleImageView imv;
+    @ViewById(R.id.title) TextView titleTv;
+    @ViewById(R.id.content_main_doc) TextView mainDoc;
+    @ViewById(R.id.sub_title) TextView subTitleTv;
+    @ViewById(R.id.add_comment) ImageButton ib;
+    @ViewById(R.id.expand_view) LinearLayout expandView;
+    @ViewById(R.id.titles_container) LinearLayout ll;
     @DimensionPixelSizeRes(R.dimen.horizontal_margin) int margin;
+    @org.androidannotations.annotations.res.StringRes(R.string.edit_hint) String hint;
+    @org.androidannotations.annotations.res.StringRes(R.string.edit_hint_title) String hintTitle;
 
     @Extra int pos = -1;
-    @Extra
-    Group group = null;
+    @Extra Group group = null;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Icepick.saveInstanceState(this, savedInstanceState);
+    }
 
-        View v;
-        v = getLayoutInflater().inflate(R.layout.activity_edit_doc2, null);
-        v.findViewById(R.id.vert).setVisibility(GONE);
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.restoreInstanceState(this, outState);
+    }
 
-        CircleImageView imv = v.findViewById(R.id.icon);
-        TextView titleTv = v.findViewById(R.id.title);
-        TextView mainDoc = v.findViewById(R.id.content_main_doc);
-        TextView subTitleTv = v.findViewById(R.id.sub_title);
-        ImageButton ib = v.findViewById(R.id.add_comment);
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+        input = editable.length() == 0 ?
+                "" : editable.toString();
+    }
+
+    @AfterViews
+    void onAfterViews(){
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+//        textInputEditText.setOnFocusChangeListener(this);
+
+        initAdMob(this);
+        logAnalytics(TAG + "起動", this);
+
+        vert.setVisibility(GONE);
+
         if (pos != -1 && group != null){
             //この辺共通化できるよね
             setImgFromStorage(getAuhtor(pos), imv, R.drawable.ic_face_origin_48dp);
@@ -94,7 +130,7 @@ public class EditDocActivity extends AppCompatActivity /*implements View.OnFocus
             doc = gson.fromJson(content.comment, Document.class);
             mainDoc.setText(doc.eleList.get(0).content);
 
-            LinearLayout expandView = v.findViewById(R.id.expand_view);
+//            LinearLayout expandView = v.findViewById(R.id.expand_view);
             expandView.setVisibility(VISIBLE);
             for (int i = 1; i < doc.eleList.size(); i++) {
                 DocumentEle ele = doc.eleList.get(i);
@@ -119,15 +155,15 @@ public class EditDocActivity extends AppCompatActivity /*implements View.OnFocus
             parent.removeAllViews();
             editContent = new EditText(this);
             editContent.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            editContent.setHint("内容を入力");
+            editContent.setHint(hint);
             parent.addView(editContent);
             CircleImageView iconRep = reply.findViewById(R.id.icon_ele);
-            Util.setImgFromStorage(FirebaseAuth.getInstance().getCurrentUser(), iconRep, R.drawable.ic_face_origin_48dp);
+            setImgFromStorage(FirebaseAuth.getInstance().getCurrentUser(), iconRep, R.drawable.ic_face_origin_48dp);
 
             expandView.addView(reply);
 
         } else {
-            Util.setImgFromStorage(FirebaseAuth.getInstance().getCurrentUser(), imv, R.drawable.ic_face_origin_48dp);
+            setImgFromStorage(FirebaseAuth.getInstance().getCurrentUser(), imv, R.drawable.ic_face_origin_48dp);
             mainDoc.setVisibility(GONE);
             editContent = new EditText(this);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -136,33 +172,40 @@ public class EditDocActivity extends AppCompatActivity /*implements View.OnFocus
             lp.bottomMargin = margin*2;
             editContent.setLayoutParams(lp);
 
-            editContent.setHint("内容を入力");
+            editContent.setHint(hint);
             ViewGroup parent = (ViewGroup)mainDoc.getParent();
             parent.removeView(editContent);
             parent.addView(editContent, 1);
 
             editTitle = new EditText(this);
             editTitle.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            editTitle.setHint("タイトル");
-            LinearLayout ll = v.findViewById(R.id.titles_container);
+            editTitle.setHint(hintTitle);
+            if (title != null)
+                editTitle.setText(title);
+
+            editTitle.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    title = editable.length() == 0 ?
+                            "" : editable.toString();
+                }
+            });
+//            LinearLayout ll = .findViewById(R.id.titles_container);
             ll.removeAllViews();
             ll.addView(editTitle);
 
             ib.setImageResource(R.drawable.ic_publish_white_36dp);
         }
 
-        setContentView(v);
-    }
-
-    @AfterViews
-    void onAfterViews(){
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-//        textInputEditText.setOnFocusChangeListener(this);
-
-        initAdMob(this);
-        logAnalytics(TAG + "起動", this);
+        if (input != null)
+            editContent.setText(input);
+        editContent.addTextChangedListener(this);
     }
 
     @Click(R.id.add_comment)
@@ -204,6 +247,7 @@ public class EditDocActivity extends AppCompatActivity /*implements View.OnFocus
             Toast.makeText(this, toast, Toast.LENGTH_LONG).show();
             return false;
         }
+
         return true;
     }
 
@@ -213,6 +257,7 @@ public class EditDocActivity extends AppCompatActivity /*implements View.OnFocus
         for (User user : group.userList)
             if (user.getUserUid().equals(author))
                 return user;
+
         return null;
     }
 

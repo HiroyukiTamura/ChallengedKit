@@ -176,6 +176,8 @@
     <string name="edit_doc_act_name">EditDocActivity</string>
     <string name="edit_title_error">タイトルを入力してください</string>
     <string name="edit_content_error">内容を入力してください</string>
+    <string name="edit_hint">内容を入力</string>
+    <string name="edit_hint_title">タイトル</string>
 
     <!--boardまわり-->
     <string name="msgDlSuccess">ダウンロードが完了しました</string>
@@ -244,4 +246,5 @@
     <string name="qr_contents_dsc">QRコード</string>
     <string name="qr_button_value">相手のQRコードを撮影</string>
     <string name="added_friend_btn">ユーザーを追加</string>
+    <string name="doc">ドキュメント</string>
 </resources>
