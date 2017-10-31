@@ -4,6 +4,7 @@
 
 package com.cks.hiroyuki2.worksupport3.Activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -54,6 +55,12 @@ import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.SnackbarOnAnyDeniedMultiplePermissionsListener;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -65,11 +72,9 @@ import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.DimensionPixelSizeRes;
 
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 
 import icepick.Icepick;
-import icepick.State;
 import io.fabric.sdk.android.Fabric;
 
 import static android.view.View.INVISIBLE;
@@ -89,9 +94,10 @@ import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.getFabLp;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener/*, CalenderFragment.OnFragmentInteractionListener*/,
-        SocialFragment.IOnCompleteGroup, AnalyticsFragment.OnHamburgerClickListener, FragmentManager.OnBackStackChangedListener {
+        SocialFragment.IOnCompleteGroup, AnalyticsFragment.OnHamburgerClickListener, FragmentManager.OnBackStackChangedListener, MultiplePermissionsListener {
 
     private static final String TAG = "MANUAL_TAG: " + MainActivity.class.getSimpleName();
+    private static final String[] PERMISSIONS = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     static final int REQ_CODE_EDIT_MY_PROFILE = 1000;
     static final int REQ_CODE_ADD_USER = 1100;
     static final int REQ_OPEN_ICON_IMG = 1200;
@@ -131,15 +137,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             editor.apply();
         }
 
+        if (connector == null){
+            //ブロードキャストレシーバーの登録
+            connector = new ServiceConnector(this);
+            connector.setIntentFilter();
+            connector.startService();
+        }
+
         initNtfChannel();
         getSupportFragmentManager().addOnBackStackChangedListener(this);
 
-        //ブロードキャストレシーバーの登録
-        connector = new ServiceConnector(this);
-        connector.setIntentFilter();
-        connector.startService();
-
         logAnalytics(getClass().getSimpleName() + "起動", this);
+
+        if (savedInstanceState == null){//起動時
+            MultiplePermissionsListener listener = SnackbarOnAnyDeniedMultiplePermissionsListener.Builder.withContext(this)
+                    .withButtonText();
+
+            Dexter.withActivity(this)
+                    .withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .withListener()
+                    .check();
+        }
     }
 
     @Override
@@ -158,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             manager.createNotificationChannel(channel);
         }
     }
+
 
     @AfterViews
     void onAfterViews(){
@@ -544,5 +563,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setToolbarTitle(@StringRes int title){
         if (title != 0)
             toolbar.setTitle(title);
+    }
+
+    @Override
+    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+
+    }
+
+    @Override
+    public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
+
     }
 }

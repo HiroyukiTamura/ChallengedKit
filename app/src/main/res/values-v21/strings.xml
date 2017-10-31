@@ -247,4 +247,6 @@
     <string name="qr_button_value">相手のQRコードを撮影</string>
     <string name="added_friend_btn">ユーザーを追加</string>
     <string name="doc">ドキュメント</string>
+
+    <!--パーミッションまわり-->
 </resources>

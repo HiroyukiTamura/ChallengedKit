@@ -1,13 +1,20 @@
 package com.cks.hiroyuki2.worksupport3;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
 import android.support.annotation.StringRes;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.ContextCompat;
 import android.widget.FrameLayout;
 
 import com.cks.hiroyuki2.worksupprotlib.MainActivity;
@@ -18,6 +25,9 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.UploadTask;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 import static com.cks.hiroyuki2.worksupprotlib.Util.NOTIFICATION_CHANNEL;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -26,6 +36,18 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  */
 
 public class Util {
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef ({Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
+    @interface permission {}
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({CODE_WRITE_STORAGE, CODE_READ_STORAGE, CODE_CAMERA})
+    @interface codePermission{};
+
+    public static final int CODE_WRITE_STORAGE = 0;
+    public static final int CODE_READ_STORAGE = 1;
+    public static final int CODE_CAMERA = 2;
+
     public static void showUploadingNtf(UploadTask.TaskSnapshot taskSnapshot, String fileName, int id){
         String text = getApplicationContext().getString(R.string.msg_start_upload);
         NotificationCompat.Builder builder = createNtfBase(fileName, text, id)
@@ -92,5 +114,18 @@ public class Util {
         adFrameLayout.addView(adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
+    }
+
+    public static void checkPermission(@NonNull Activity activity, @permission String permission, @codePermission int code){
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
+
+            } else {
+                ActivityCompat.requestPermissions(activity, new String[]{permission}, code);
+            }
+        }
     }
 }
