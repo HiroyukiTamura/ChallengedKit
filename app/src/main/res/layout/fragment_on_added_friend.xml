@@ -9,7 +9,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal">
 
-    <android.support.v4.widget.CircleImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="48dp"
