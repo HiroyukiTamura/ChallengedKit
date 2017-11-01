@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupport3.Util;
 import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
 import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEventRange;
 
@@ -72,10 +73,10 @@ public class TimeEventRangeRVAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ButterKnife.bind(this, holder.itemView);
         TimeEvent timeEvent = range.getTimeEve(position);
-        String s = timeEvent.getTimeStr();
-        ((ViewHolder) holder).time.setText(s);
+        ((ViewHolder) holder).time.setText(timeEvent.getTimeStr());
         ((ViewHolder) holder).time.setTag(position);
-        ((ViewHolder) holder).value.setText(timeEvent.getName());
+        String value = Util.getStrOffset(timeEvent) + timeEvent.getName();
+        ((ViewHolder) holder).value.setText(value);
         ((ViewHolder) holder).value.setTag(position);
     }
 

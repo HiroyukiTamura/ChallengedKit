@@ -14,6 +14,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.widget.FrameLayout;
 
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
 import com.cks.hiroyuki2.worksupprotlib.MainActivity;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
@@ -120,5 +121,16 @@ public class Util {
                 .withPermissions(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .withListener(listener)
                 .check();
+    }
+
+    @NonNull
+    public static String getStrOffset(@NonNull TimeEvent timeEvent){
+        if (timeEvent.getOffset() <0){
+            return getApplicationContext().getString(R.string.yesterday);
+        } else if (timeEvent.getOffset() >0){
+            return getApplicationContext().getString(R.string.tomorrow);
+        } else {
+            return "";
+        }
     }
 }

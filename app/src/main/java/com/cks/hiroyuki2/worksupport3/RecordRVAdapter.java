@@ -125,7 +125,7 @@ public class RecordRVAdapter extends RecyclerView.Adapter<RecordRVAdapter.ViewHo
         final int hour = bundle.getInt(LIST_MAP_HOUR);
         int min = bundle.getInt(LIST_MAP_MIN);
         String time = time2String(hour, min);
-        holder.time.setText(time);
+        holder.time.setText(time);//timeEventはrangeEventとは違って、offsetが設定されることはない
 
         int colorNum = Integer.parseInt(values[1]);
         int colorId = R.color.blue_gray;

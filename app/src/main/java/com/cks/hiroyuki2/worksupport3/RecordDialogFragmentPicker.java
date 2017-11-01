@@ -28,12 +28,13 @@ import butterknife.ButterKnife;
 
 import static android.app.Activity.RESULT_OK;
 import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.TIME_EVENT;
+import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter.CALLBACK_RANGE_CLICK_TIME;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 
 /**
  * ダイアログ作成おじさん！
  */
-public class RecordDialogFragmentPicker extends DialogFragment implements DialogInterface.OnClickListener{
+public class RecordDialogFragmentPicker extends DialogFragment implements DialogInterface.OnClickListener, TimePickerDialog.OnTimeSetListener{
 
     private static final String TAG = "MANUAL_TAG: " + RecordDialogFragmentPicker.class.getSimpleName();
     static final String DIALOG_TIME_TIME = "DIALOG_TIME";
@@ -55,31 +56,47 @@ public class RecordDialogFragmentPicker extends DialogFragment implements Dialog
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         timeEvent = (TimeEvent) getArguments().getSerializable(TIME_EVENT);
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        View view = getActivity().getLayoutInflater().inflate(R.layout.timepicker_custom, null);
-        ButterKnife.bind(this, view);
-        timePicker.setIs24HourView(true);
-        if (timeEvent.getOffset() >0){
-            radioTommorow.toggle();
-        } else if (timeEvent.getOffset() <0){
-            radioYesterday.toggle();
+
+        if (getTargetRequestCode() == CALLBACK_RANGE_CLICK_TIME){
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            View view = getActivity().getLayoutInflater().inflate(R.layout.timepicker_custom, null);
+            ButterKnife.bind(this, view);
+            timePicker.setIs24HourView(true);
+            if (timeEvent.getOffset() >0){
+                radioTommorow.toggle();
+            } else if (timeEvent.getOffset() <0){
+                radioYesterday.toggle();
+            }
+            return UtilDialog.editBuilder(builder, null, R.string.ok, R.string.cancel, view, this, null).create();
+
+        } else {
+            TimePickerDialog dialog =  new TimePickerDialog(getActivity(), this, timeEvent.getHour(), timeEvent.getMin(), true);
+            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, getContext().getString(R.string.cancel), this);
+            return dialog;
         }
-        return UtilDialog.editBuilder(builder, null, R.string.ok, R.string.cancel, view, this, null).create();
-//        TimePickerDialog dialog =  new TimePickerDialog(getActivity(), this, timeEvent.getHour(), timeEvent.getMin(), true);
-//        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, getContext().getString(R.string.cancel), this);
     }
 
     @Override
     public void onClick(DialogInterface dialogInterface, int i) {
         if (i == Dialog.BUTTON_POSITIVE){
-            Fragment target = getTargetFragment();
-            if (target == null){
-                onError(getContext(), TAG + "target == null", R.string.error);
-                return;
-            }
+            sendIntent();
+        }
+    }
 
-            timeEvent.setHour(timePicker.getHour());
-            timeEvent.setMin(timePicker.getMinute());
+    @Override
+    public void onTimeSet(TimePicker timePicker, int i, int i1) {
+        sendIntent();
+    }
+
+    private void sendIntent(){
+        Fragment target = getTargetFragment();
+        if (target == null){
+            onError(getContext(), TAG + "target == null", R.string.error);
+            return;
+        }
+
+        if (getTargetRequestCode() == CALLBACK_RANGE_CLICK_TIME){
             int offset = 0;
             switch (radioGroup.getCheckedRadioButtonId()){
                 case R.id.yesterday:
@@ -92,10 +109,12 @@ public class RecordDialogFragmentPicker extends DialogFragment implements Dialog
                     break;
             }
             timeEvent.setOffset(offset);
-
-            Intent intent = new Intent();
-            intent.putExtras(getArguments());
-            target.onActivityResult(getTargetRequestCode(), RESULT_OK, intent);//targetはRecordFragment or EditTemplateFragmentのどちらかです
         }
+
+        timeEvent.setHour(timePicker.getHour());
+        timeEvent.setMin(timePicker.getMinute());
+        Intent intent = new Intent();
+        intent.putExtras(getArguments());
+        target.onActivityResult(getTargetRequestCode(), RESULT_OK, intent);//targetはRecordFragment or EditTemplateFragmentのどちらかです
     }
 }

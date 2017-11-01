@@ -251,4 +251,8 @@
     <!--パーミッションまわり-->
     <string name="permission_rational">権限がない場合、アプリの機能が制限されます</string>
     <string name="permission_snb_btn">許可する</string>
+
+    <!--timePickerまわり-->
+    <string name="yesterday">（前日）</string>
+    <string name="tomorrow">（翌日）</string>
 </resources>

@@ -96,9 +96,9 @@ public class TimeEventRVAdapter extends RecyclerView.Adapter implements Comparat
         ButterKnife.bind(this, holder.itemView);
 
         TimeEvent timeEvent = list.get(position);
-        ((ViewHolder)holder).itemLL.setTag(position);
+        ((ViewHolder) holder).itemLL.setTag(position);
         ((ViewHolder) holder).removeBtn.setTag(position);
-        ((ViewHolder)holder).time.setText(timeEvent.getTimeStr());
+        ((ViewHolder) holder).time.setText(timeEvent.getTimeStr());//timeEveはrangeではないのでoffsetを気にする必要はなし
         ((ViewHolder) holder).value.setText(timeEvent.getName());
         int color = ContextCompat.getColor(fragment.getContext(), colorId.get(timeEvent.getColorNum()));
         ((ViewHolder) holder).circle.setColorFilter(color);
