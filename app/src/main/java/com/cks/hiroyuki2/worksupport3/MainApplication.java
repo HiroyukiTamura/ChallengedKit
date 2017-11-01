@@ -30,6 +30,7 @@ public class MainApplication extends Application {
             //何も書き加えてはいけない
             return;
         }
+
         LeakCanary.install(this);
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }

@@ -17,8 +17,10 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -46,6 +48,7 @@ import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SocialFragment;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.ServiceConnector;
+import com.cks.hiroyuki2.worksupport3.Util;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
@@ -94,7 +97,7 @@ import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.getFabLp;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener/*, CalenderFragment.OnFragmentInteractionListener*/,
-        SocialFragment.IOnCompleteGroup, AnalyticsFragment.OnHamburgerClickListener, FragmentManager.OnBackStackChangedListener, MultiplePermissionsListener {
+        SocialFragment.IOnCompleteGroup, AnalyticsFragment.OnHamburgerClickListener, FragmentManager.OnBackStackChangedListener {
 
     private static final String TAG = "MANUAL_TAG: " + MainActivity.class.getSimpleName();
     private static final String[] PERMISSIONS = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -105,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ServiceConnector connector;
     private SharedPreferences pref;
     private LoginCheck check;
+//    private MultiplePermissionsListener listener;
 
     @ViewById(R.id.toolbar) public Toolbar toolbar;
     @ViewById(R.id.fab) public FloatingActionButton fab;
@@ -112,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @ViewById(R.id.nav_view) NavigationView navigationView;
     @ViewById(R.id.fragment_container_ll) LinearLayout container_outer;
     @ViewById(R.id.toolbar_shadow) View toolbarShadow;
+    @ViewById(R.id.coordinator) CoordinatorLayout cl;
     @DimensionPixelSizeRes(R.dimen.toolbar_height) int toolbarHeight;
     @Extra String groupKey;
     @org.androidannotations.annotations.res.StringRes(R.string.ntf_channel) String channelName;
@@ -149,15 +154,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         logAnalytics(getClass().getSimpleName() + "起動", this);
 
-        if (savedInstanceState == null){//起動時
-            MultiplePermissionsListener listener = SnackbarOnAnyDeniedMultiplePermissionsListener.Builder.withContext(this)
-                    .withButtonText();
-
-            Dexter.withActivity(this)
-                    .withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    .withListener()
-                    .check();
-        }
+//        if (listener == null)
+//            listener = SnackbarOnAnyDeniedMultiplePermissionsListener.Builder
+//                    .with(cl, R.string.permission_rational)
+//                    .withButton(R.string.permission_snb_btn, this)
+//                    .withCallback(new Snackbar.Callback(){
+//                        @Override
+//                        public void onShown(Snackbar sb) {
+//                            super.onShown(sb);
+//                        }
+//
+//                        @Override
+//                        public void onDismissed(Snackbar transientBottomBar, int event) {
+//                            super.onDismissed(transientBottomBar, event);
+//                        }
+//                    })
+//                    .build();
+//
+//        if (savedInstanceState == null){//起動時
+//            Util.checkPermission(this, listener);
+//        }
     }
 
     @Override
@@ -565,13 +581,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             toolbar.setTitle(title);
     }
 
-    @Override
-    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
-
-    }
-
-    @Override
-    public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
-
-    }
+//    @Override
+//    public void onClick(View view) {
+//        Log.d(TAG, "onClick: snackbar clicked");
+//        Util.checkPermission(this, listener);
+//    }
 }
