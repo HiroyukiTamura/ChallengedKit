@@ -116,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @ViewById(R.id.nav_view) NavigationView navigationView;
     @ViewById(R.id.fragment_container_ll) LinearLayout container_outer;
     @ViewById(R.id.toolbar_shadow) View toolbarShadow;
-    @ViewById(R.id.coordinator) CoordinatorLayout cl;
     @DimensionPixelSizeRes(R.dimen.toolbar_height) int toolbarHeight;
     @Extra String groupKey;
     @org.androidannotations.annotations.res.StringRes(R.string.ntf_channel) String channelName;
@@ -153,27 +152,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSupportFragmentManager().addOnBackStackChangedListener(this);
 
         logAnalytics(getClass().getSimpleName() + "起動", this);
-
-//        if (listener == null)
-//            listener = SnackbarOnAnyDeniedMultiplePermissionsListener.Builder
-//                    .with(cl, R.string.permission_rational)
-//                    .withButton(R.string.permission_snb_btn, this)
-//                    .withCallback(new Snackbar.Callback(){
-//                        @Override
-//                        public void onShown(Snackbar sb) {
-//                            super.onShown(sb);
-//                        }
-//
-//                        @Override
-//                        public void onDismissed(Snackbar transientBottomBar, int event) {
-//                            super.onDismissed(transientBottomBar, event);
-//                        }
-//                    })
-//                    .build();
-//
-//        if (savedInstanceState == null){//起動時
-//            Util.checkPermission(this, listener);
-//        }
     }
 
     @Override

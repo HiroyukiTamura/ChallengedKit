@@ -4,7 +4,6 @@
 
 package com.cks.hiroyuki2.worksupport3.Adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
@@ -16,7 +15,6 @@ import android.widget.ImageView;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.AddFriendFragment;
 import com.cks.hiroyuki2.worksupport3.R;
-import com.google.zxing.integration.android.IntentIntegrator;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -135,10 +133,10 @@ public class AddFriendVPAdapter extends PagerAdapter implements Callback{
 //        Frame frame = new Frame.Builder().setBitmap(myBitmap).build();
 //        SparseArray<Barcode> barcodes = detector.detect(frame);
 
-        IntentIntegrator integrator = new IntentIntegrator((Activity) context);
-        integrator.setBeepEnabled(false);
-        integrator.initiateScan();
+        fragment.checkPermission();
     }
+
+
 
 //    @Nullable
 //    private Bitmap encodeAsBitmap(String str) {

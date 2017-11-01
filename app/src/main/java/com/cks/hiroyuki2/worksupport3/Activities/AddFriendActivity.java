@@ -5,9 +5,16 @@
 package com.cks.hiroyuki2.worksupport3.Activities;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.AddFriendFragment;
@@ -15,6 +22,8 @@ import com.cks.hiroyuki2.worksupport3.Fragments.OnAddedFriendFragment;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.SnackbarOnAnyDeniedMultiplePermissionsListener;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -25,10 +34,35 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 
 @EActivity(R.layout.activity_add_fridend_acitivity)
-public class AddFriendActivity extends AppCompatActivity {
+public class AddFriendActivity extends AppCompatActivity implements View.OnClickListener{
     
     private static final String TAG = "MANUAL_TAG: " + AddFriendActivity.class.getSimpleName();
+    private MultiplePermissionsListener listener;
     @ViewById(R.id.toolbar) Toolbar toolbar;
+    @ViewById(R.id.coordinator) CoordinatorLayout cl;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+
+        listener = SnackbarOnAnyDeniedMultiplePermissionsListener.Builder
+                .with(cl, R.string.permission_rational)
+                .withButton(R.string.permission_snb_btn, this)
+                .withCallback(new Snackbar.Callback(){
+                    @Override
+                    public void onShown(Snackbar sb) {
+                        super.onShown(sb);
+                        // do nothing
+                    }
+
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                        super.onDismissed(transientBottomBar, event);
+
+                    }
+                })
+                .build();
+    }
 
     @AfterViews
     void onAfterViews(){
@@ -77,6 +111,18 @@ public class AddFriendActivity extends AppCompatActivity {
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    public MultiplePermissionsListener getListener() {
+        return listener;
+    }
+
+    @Override
+    public void onClick(View view) {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (fragment instanceof AddFriendFragment){
+            ((AddFriendFragment) fragment).onPermissionAdmitted();
         }
     }
 }
