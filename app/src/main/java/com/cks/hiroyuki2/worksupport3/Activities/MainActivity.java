@@ -359,7 +359,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackStackChanged() {
-        initToolBar(getSupportFragmentManager().getFragments().get(0));
+        if(!getSupportFragmentManager().getFragments().isEmpty())
+            initToolBar(getSupportFragmentManager().getFragments().get(0));
     }
 
     private void setContentFragment(){

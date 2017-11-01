@@ -35,6 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.refactor.library.SmoothCheckBox;
 
+import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickTimePickerDialog;
 import static com.cks.hiroyuki2.worksupprotlib.Util.INDEX;
 import static com.cks.hiroyuki2.worksupprotlib.Util.LIST_MAP_HOUR;
 import static com.cks.hiroyuki2.worksupprotlib.Util.LIST_MAP_MIN;
@@ -184,11 +185,8 @@ public class RecordRVAdapter extends RecyclerView.Adapter<RecordRVAdapter.ViewHo
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick position:" + holder.getAdapterPosition());
-                RecordDialogFragmentPicker dialog = RecordDialogFragmentPicker.newInstance(bundle);
                 bundle.putInt(KEY, key);
-                dialog.setTargetFragment(rf, CALLBACK_TIME);
-                dialog.show(fm, RecordDialogFragmentPicker.DIALOG_TIME_TIME);
+                kickTimePickerDialog(RecordDialogFragmentPicker.DIALOG_TIME_TIME, CALLBACK_TIME, bundle, rf);
             }
         });
 
@@ -197,12 +195,9 @@ public class RecordRVAdapter extends RecyclerView.Adapter<RecordRVAdapter.ViewHo
             holder.remove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d(TAG, "onClick: fire");
                     bundle.putString("from", DIALOG_LONGTAP);
-                    RecordDialogFragment dialog = RecordDialogFragment.newInstance(bundle);
                     bundle.putInt(KEY, key);
-                    dialog.setTargetFragment(rf, CALLBACK_LONGTAP);
-                    dialog.show(fm, DIALOG_LONGTAP);
+                    DialogKicker.kickDialogInOnClick(DIALOG_LONGTAP, CALLBACK_LONGTAP, bundle, rf);
                 }
             });
 

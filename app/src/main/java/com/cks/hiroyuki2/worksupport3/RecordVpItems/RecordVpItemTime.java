@@ -21,6 +21,10 @@ import com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter;
 import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.RecordFragment;
 import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEventDataSet;
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEventRange;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,13 +41,9 @@ import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.TIME_EV
 import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter.POS_IN_LIST;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickCircleAndInputDialog;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickTimePickerDialog;
-import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.colorId;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getTimeEveDataSetFromRecordData;
 import static com.cks.hiroyuki2.worksupprotlib.Util.initRecycler;
-import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEventDataSet;
-import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEventRange;
-import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
-import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
+import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.colorId;
 
 /**
  * RecordVpItem兄弟！Timelineおじさん！
@@ -131,15 +131,15 @@ public class RecordVpItemTime extends RecordVpItem {
     void onClickAddTimeEveBtn() {
         Bundle bundle = new Bundle();
         bundle.putInt(DATA_NUM, getDataNum());
-        TimeEvent timeEvent = new TimeEvent("", 0, getCopyOfCal());
+        TimeEvent timeEvent = new TimeEvent("", 0, getCopyOfCal(), 0);
         bundle.putSerializable(TIME_EVENT, timeEvent);
         kickTimePickerDialog(DIALOG_TAG_ITEM_ADD, CALLBACK_ITEM_ADD, bundle, getFragment());
     }
 
     @OnClick(R.id.add_range)
     void onClickAddRangeBtn() {
-        TimeEvent start = new TimeEvent("起床", 0, getCopyOfCal());
-        TimeEvent end = new TimeEvent("就寝", 0, getCopyOfCal());
+        TimeEvent start = new TimeEvent("起床", 0, getCopyOfCal(), 0);
+        TimeEvent end = new TimeEvent("就寝", 0, getCopyOfCal(), 0);
         TimeEventRange range = new TimeEventRange(start, end);
 
         addRangeItem(range, rangePairList.size());
