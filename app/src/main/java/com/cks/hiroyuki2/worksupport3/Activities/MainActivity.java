@@ -94,6 +94,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.getFabLp;
+import android.support.v4.app.AppLaunchChecker;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener/*, CalenderFragment.OnFragmentInteractionListener*/,
@@ -131,14 +132,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        initDefaultTemplate(this);
 
         pref = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        boolean launchFst = pref.getBoolean(PREF_KEY_FIRST_LAUNCH, true);
-        if (launchFst){
-            if (!initDefaultTemplate(this)){
+        if(!AppLaunchChecker.hasStartedFromLauncher(this)){
+            if (initDefaultTemplate(this))
+                AppLaunchChecker.onActivityCreate(this);
+            else
                 onError(this, "onCreate: !initDefaultTemplate()", null);
-            }
-            SharedPreferences.Editor editor = pref.edit();
-            editor.putBoolean(PREF_KEY_FIRST_LAUNCH, false);
-            editor.apply();
         }
 
         if (connector == null){
