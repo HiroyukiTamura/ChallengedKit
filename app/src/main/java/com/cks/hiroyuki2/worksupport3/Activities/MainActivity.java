@@ -17,10 +17,9 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.AppLaunchChecker;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -48,22 +47,16 @@ import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SocialFragment;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.ServiceConnector;
-import com.cks.hiroyuki2.worksupport3.Util;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupprotlib.LoginCheck;
 import com.crashlytics.android.Crashlytics;
+import com.facebook.FacebookSdk;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.karumi.dexter.listener.multi.SnackbarOnAnyDeniedMultiplePermissionsListener;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -86,7 +79,6 @@ import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 import static com.cks.hiroyuki2.worksupprotlib.LoginCheck.checkIsLogin;
 import static com.cks.hiroyuki2.worksupprotlib.TemplateEditor.initDefaultTemplate;
 import static com.cks.hiroyuki2.worksupprotlib.Util.NOTIFICATION_CHANNEL;
-import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_KEY_FIRST_LAUNCH;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_KEY_WIDTH;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
 import static com.cks.hiroyuki2.worksupprotlib.Util.RC_SIGN_IN;
@@ -94,7 +86,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.getFabLp;
-import android.support.v4.app.AppLaunchChecker;
+import com.facebook.appevents.AppEventsLogger;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener/*, CalenderFragment.OnFragmentInteractionListener*/,
@@ -128,6 +120,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Icepick.restoreInstanceState(this, savedInstanceState);
 
         Fabric.with(this, new Crashlytics());
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
 
 //        initDefaultTemplate(this);
 
@@ -502,9 +496,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 onError(this, "handleSignInResponse: unknown_error", R.string.error);
                 return;
             }
-        }
 
-        onError(this, "handleSignInResponse: unknown_sign_in_response", R.string.error);
+            onError(this, "handleSignInResponse: unknown_sign_in_response", R.string.error);
+        }
     }
 
     public void editMyProf(){
