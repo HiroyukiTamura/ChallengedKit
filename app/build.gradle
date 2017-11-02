@@ -50,8 +50,8 @@ android {
         applicationId "com.cks.hiroyuki2.worksupport3"
         minSdkVersion 18
         targetSdkVersion 27
-        versionCode 2
-        versionName "0.1.1"
+        versionCode 3
+        versionName "0.1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled false
     }
@@ -93,7 +93,7 @@ dependencies {
     compile 'com.takisoft.fix:preference-v7:26.1.0.3'
     compile 'org.jetbrains:annotations-java5:15.0'
     //    compile 'com.github.channguyen:rsv:1.0.1'
-    compile 'com.github.HiroyukTamura:WorkSupprotLib:1.0.11'
+    compile 'com.github.HiroyukTamura:WorkSupprotLib:1.0.12'
     compile 'com.prolificinteractive:material-calendarview:1.4.3'
     compile 'com.firebaseui:firebase-ui:3.1.0'
     compile 'com.google.firebase:firebase-core:11.4.2'
