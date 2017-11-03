@@ -98,6 +98,8 @@ public class RecordVpItemTime extends RecordVpItem {
 
         @OnClick(R.id.color_fl)
         void onClickColorFl(){
+            if (getFragment() instanceof RecordFragment)
+                return;
             Bundle bundle = new Bundle();
             bundle.putInt(DATA_NUM, getDataNum());
             bundle.putInt(POS_IN_LIST, posInList);
