@@ -374,7 +374,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
             //合計時間を計算して小数第2位で四捨五入
             long hourLong = (range.getEnd().getHourLong() + endOffset*24) - (range.getStart().getHourLong() + startOffset*24);
             BigDecimal bigDecimal = BigDecimal.valueOf(hourLong);
-            String hourStr = bigDecimal.setScale(0, BigDecimal.ROUND_HALF_UP).toString();
+            String hourStr = bigDecimal.setScale(0, BigDecimal.ROUND_HALF_UP).toString() + "h";
 
             FlowLayout fl = (FlowLayout) ((ViewGroup)tableLL.getChildAt(i)).getChildAt(dataRow+1);
             TextView tv = createNormalTv();

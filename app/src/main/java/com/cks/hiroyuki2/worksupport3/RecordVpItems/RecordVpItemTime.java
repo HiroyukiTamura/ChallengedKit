@@ -76,6 +76,7 @@ public class RecordVpItemTime extends RecordVpItem {
         @BindView(R.id.end_circle) ImageView endCircle;
         @BindView(R.id.stroke) View stroke;
         @BindView(R.id.rv) RecyclerView rv;
+        @BindView(R.id.add_range) ImageView
         int posInList;
 
         TimeEventRangeParams(int posInList){
