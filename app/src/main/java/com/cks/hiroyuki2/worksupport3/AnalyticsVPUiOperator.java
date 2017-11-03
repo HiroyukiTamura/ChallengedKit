@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.AnalyticsFragment;
 import com.cks.hiroyuki2.worksupprotlib.AnalyticsCommentObserver;
@@ -41,7 +42,9 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -81,7 +84,7 @@ import com.cks.hiroyuki2.worksupprotlib.RecordDataUtil;
  * AnalyticsVPAdapterのお助けやくおじさん！みんな協力して働くんだね！
  */
 
-public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatter, ViewTreeObserver.OnScrollChangedListener {
+public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatter, ViewTreeObserver.OnScrollChangedListener, OnChartValueSelectedListener {
 
     private static final String TAG = "MANUAL_TAG: " + AnalyticsVPUiOperator.class.getSimpleName();
     private static final float LINE_WIDTH = 3f;
@@ -161,7 +164,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         if (dataSet != null){
             rangeNum = dataSet.getRangeList().size();
             for (TimeEventRange range: dataSet.getRangeList()) {
-                String name = range.getTimeEve(0).getName() + "→" + range.getTimeEve(1).getName();
+                String name = range.getStart().getName() + "→" + range.getEnd().getName();
                 setNormalColumn(name);
             }
         }
@@ -426,7 +429,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
 
         List<TimeEvent> eveList = timeEveSet.getEventList();
         for (TimeEvent timeEve: eveList) {
-            addTimeEve2Line(timeEve.getColorNum(), timeEve.getHour(), dataRow);
+            addTimeEve2Line(timeEve.getColorNum(), timeEve.getHour(), dataRow, createHighLightVal(timeEve));
         }
 
         setLegend(timeEveSet);
@@ -440,7 +443,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
             //●のないただの線分を描画
             addWithoutValueAndCircle2Line(true, startOffset, range.getStart().getHour(), dataRow, range.getColorNum());
             //次に●を片方だけ描画
-            addTimeEve2Line(range.getColorNum(), range.getStart().getHour(), dataRow + startOffset);
+            addTimeEve2Line(range.getColorNum(), range.getStart().getHour(), dataRow + startOffset, createHighLightVal(range));
         }
     }
 
@@ -448,14 +451,14 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         //24時以降を描画
         if (!isAfterWeek(endOffset, dataRow)){
             addWithoutValueAndCircle2Line(false, endOffset, range.getEnd().getHour(), dataRow, range.getColorNum());
-            addTimeEve2Line(range.getColorNum(), range.getEnd().getHour(), dataRow + endOffset);
+            addTimeEve2Line(range.getColorNum(), range.getEnd().getHour(), dataRow + endOffset, createHighLightVal(range));
         }
     }
 
     private void add2LineNormal(TimeEventRange range, int dataRow, int offset){
         List<Entry> entryList = new ArrayList<>();
-        entryList.add(new Entry(range.getStart().getHour(), dataRow + offset));
-        entryList.add(new Entry(range.getEnd().getHour(), dataRow + offset));
+        entryList.add(new Entry(range.getStart().getHour(), dataRow + offset, createHighLightVal(range)));
+        entryList.add(new Entry(range.getEnd().getHour(), dataRow + offset, createHighLightVal(range)));
         add2Lines(entryList, range.getColorNum());
     }
 
@@ -469,9 +472,9 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         return endOffset == 1 && dataRaw == 6;
     }
 
-    private void addTimeEve2Line(int colorNum, int hour, int dataRow){
+    private void addTimeEve2Line(int colorNum, int hour, int dataRow, String highLight){
         List<Entry> entryTimeEve = new ArrayList<>();
-        entryTimeEve.add(new Entry(hour, dataRow));
+        entryTimeEve.add(new Entry(hour, dataRow, highLight));
         add2Lines(entryTimeEve, colorNum);
     }
 
@@ -481,8 +484,8 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     private void addWithoutValueAndCircle2Line(boolean isStart, int offset, int hour, int dataRow, int colorNum){
         List<Entry> entryList = new ArrayList<>();
         int edge = isStart ? 24 : 0;
-        entryList.add(new Entry(hour, dataRow + offset));
-        entryList.add(new Entry(edge, dataRow + offset));
+        entryList.add(new Entry(hour, dataRow + offset));//サークルがないのでハイライトは不要
+        entryList.add(new Entry(edge, dataRow + offset));//サークルがないのでハイライトは不要
 
         LineDataSet dataSet = new LineDataSet(entryList, "Label");
         dataSet.setDrawValues(false);
@@ -652,6 +655,18 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         legendFl.setLayoutParams(lp);
     }
 
+    @NonNull
+    private String createHighLightVal(TimeEventRange range){
+        return range.getStart().getTimeStr() +" "+ range.getStart().getName()
+                +" → "
+                + range.getEnd().getTimeStr() +" "+ range.getEnd().getName();
+    }
+
+    @NonNull
+    private String createHighLightVal(TimeEvent event){
+        return event.getTimeStr() +" "+event.getName();
+    }
+
     private void configChart(){
         chart.getAxisLeft().setAxisMinimum(-0.5f);
         chart.getAxisLeft().setAxisMaximum(6.5f);
@@ -677,6 +692,9 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         chart.setNoDataText(rootView.getResources().getText(R.string.no_data_txt).toString());
         chart.setNoDataTextColor(ContextCompat.getColor(rootView.getContext(), R.color.colorPrimaryDark));
         chart.getDescription().setEnabled(false);
+
+        chart.setOnChartValueSelectedListener(this);
+        chart.setHighlightPerTapEnabled(true);
     }
 
     private void setLegend(@NonNull TimeEventDataSet timeEveSet){
@@ -740,7 +758,6 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         hsv.getViewTreeObserver().addOnScrollChangedListener(this);
     }
 
-
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
         if (!dataSnapshot.exists()){
@@ -764,5 +781,15 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     @OnClick(R.id.down_btn)
     void wOnClickDownBtn(){
         analyticsFragment.onClickDownBtn();
+    }
+
+    @Override
+    public void onNothingSelected() {
+
+    }
+
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+        Toast.makeText(rootView.getContext(), (String)e.getData(), Toast.LENGTH_LONG).show();
     }
 }
