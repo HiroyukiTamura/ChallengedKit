@@ -77,6 +77,7 @@ public class RecordVpItemTime extends RecordVpItem {
         @BindView(R.id.end_circle) ImageView endCircle;
         @BindView(R.id.stroke) View stroke;
         @BindView(R.id.rv) RecyclerView rv;
+        @BindView(R.id.color_fl) FrameLayout colorFl;
         int posInList;
 
         TimeEventRangeParams(int posInList){
@@ -174,6 +175,10 @@ public class RecordVpItemTime extends RecordVpItem {
 
         TimeEventRangeParams params = new TimeEventRangeParams(i);
         ButterKnife.bind(params, v);
+        if (getFragment() instanceof RecordFragment) {
+            params.colorFl.setBackground(null);
+            params.colorFl.setForeground(null);
+        }
         int colorIdC = colorId.get(range.getColorNum());
         params.setColor(colorIdC);
         TimeEventRangeRVAdapter rangeAdapter = new TimeEventRangeRVAdapter(getFragment(), range, getDataNum(), i);
