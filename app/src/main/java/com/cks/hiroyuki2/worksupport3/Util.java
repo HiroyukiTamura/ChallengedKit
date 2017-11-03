@@ -6,14 +6,17 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.icu.text.AlphabeticIndex;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 import android.support.annotation.StringRes;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.widget.FrameLayout;
 
+import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
 import com.cks.hiroyuki2.worksupprotlib.MainActivity;
 import com.google.android.gms.ads.AdRequest;
@@ -27,6 +30,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.List;
 
 import static com.cks.hiroyuki2.worksupprotlib.Util.NOTIFICATION_CHANNEL;
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -123,6 +127,7 @@ public class Util {
                 .check();
     }
 
+    //todo ライブラリに移植するべき
     @NonNull
     public static String getStrOffset(@NonNull TimeEvent timeEvent){
         if (timeEvent.getOffset() <0){
@@ -132,5 +137,16 @@ public class Util {
         } else {
             return "";
         }
+    }
+
+    //todo ライブラリに移植するべき
+    @Nullable
+    public static RecordData getRecordDataByType(List<RecordData> dataList, int dataType){
+        for (RecordData data: dataList) {
+            if (data.getDataType() == dataType){
+                return data;
+            }
+        }
+        return null;
     }
 }

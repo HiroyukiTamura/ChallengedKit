@@ -116,6 +116,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     private AnalyticsFragment analyticsFragment;
     private List<Pair<Integer, String>> legendListForRange = new ArrayList<>();
     private List<Pair<Integer, String>> legendListForTimeEve = new ArrayList<>();
+    private int rangeNum;
 
     public AnalyticsVPUiOperator(@NonNull View rootView, Calendar startCal, AnalyticsFragment analyticsFragment){
         ButterKnife.bind(this, rootView.getRootView());
@@ -152,20 +153,24 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     }
 
     private void setColumns(){
+
+        RecordData timeLine = com.cks.hiroyuki2.worksupport3.Util.getRecordDataByType(tempateList, 1);
+        TimeEventDataSet dataSet = getTimeEveDataSetFromRecordData(timeLine);
+        if (dataSet != null){
+            rangeNum = dataSet.getRangeList().size();
+            for (TimeEventRange range: dataSet.getRangeList()) {
+                String name = range.getTimeEve(0).getName() + "→" + range.getTimeEve(1).getName();
+                setNormalColumn(name);
+            }
+        }
+
         for (int m=0; m<tempateList.size(); m++) {
 
             RecordData data = tempateList.get(m);
             switch (data.dataType){
                 case 2:
                 case 4://タグプール
-                {
-                    LinearLayout column = (LinearLayout) inflater.inflate(R.layout.analytics_columun, tableLL, false);
-                    tableLL.addView(column);
-                    TextView legendCell = column.findViewById(R.id.legend_cell);
-                    if (data.dataName.length() > COLUMN_NAME_LINE_LIMIT)
-                        legendCell.setLines(2);
-                    legendCell.setText(data.dataName);
-                }
+                    setNormalColumn(data.dataName);
                     break;
 
                 case 3://params
@@ -194,6 +199,15 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
                     break;
             }
         }
+    }
+
+    private void setNormalColumn(String columnName){
+        LinearLayout column = (LinearLayout) inflater.inflate(R.layout.analytics_columun, tableLL, false);
+        tableLL.addView(column);
+        TextView legendCell = column.findViewById(R.id.legend_cell);
+        if (columnName.length() > COLUMN_NAME_LINE_LIMIT)
+            legendCell.setLines(2);
+        legendCell.setText(columnName);
     }
 
     private LinearLayout makeColumn(){
@@ -288,7 +302,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     }
 
     private void drawData(List<RecordData> list, int dataRow){
-        int count = 0;
+        int count = rangeNum;
         for (RecordData data: list) {
             if (data.dataType == 0)
                 continue;
@@ -353,6 +367,9 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
                 addWithoutValueAndCircle2Line(true, 0, 0, dataRow, colorNum);//24時間分の線分を描画
                 add2LineAfter24h(endOffset, dataRow, colorNum, range);
             }
+
+            //合計時間を計算して描く
+            range.getStart().getHour();
         }
 
         List<TimeEvent> eveList = timeEveSet.getEventList();
