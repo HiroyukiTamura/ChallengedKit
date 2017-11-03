@@ -254,7 +254,8 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         String[] dof = rootView.getResources().getStringArray(R.array.dof);
         String[] axisValue = new String[7];
         loadCal = new ArrayList<>(7);
-        for (int i = 0; i < 7; i++) {
+        //前週最終日と翌週初日も取得する。
+        for (int i = -1; i < 8; i++) {
             final int n = i;
             String ymd = cal2date(cal, datePattern);
             int ymdInt = Integer.parseInt(ymd);
@@ -262,6 +263,11 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
             if (util.dataMap.containsKey(ymdInt) && util.dataMap.get(ymdInt) != null && !util.dataMap.get(ymdInt).isEmpty()){
                 List<RecordData> list = util.dataMap.get(ymdInt);
                 Log.d(TAG, "onCreateView: こいつデータあります！");
+
+                if (n == -1 || n == 7){
+                    drawOffset(list, n);
+                    continue;
+                }
                 drawData(list, n);
 
                 loadCal.add(cal);
@@ -278,6 +284,11 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
                 public void onOnDataChange(DataSnapshot dataSnapshot, boolean isSnapShotExist) {
                     if (isSnapShotExist && !list.isEmpty()){//listはnonNull、かつ、listは空でありうることに注意してください。
                         Log.w(TAG, "onOnDataChange: " + dataSnapshot.getRef().toString());
+                        if (n == -1 || n == 7){
+                            drawOffset(list, n);
+                            return;
+                        }
+
                         drawData(list, n);
                     }
                     loadCal.add(cal);
@@ -300,6 +311,39 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
             axisValue[i] = cal.get(Calendar.DATE)+ "("+dof[i]+")";
 
             cal.add(Calendar.DATE, 1);
+        }
+    }
+
+    private void drawOffset(List<RecordData> list, int n){
+        RecordData data = Util.getRecordDataByType(list, 1);
+        TimeEventDataSet dataSet = Util.getTimeEveDataSetFromRecordData(data);
+        if (dataSet == null)
+            return;
+
+        for (TimeEventRange range: dataSet.getRangeList()) {
+
+            switch (n){
+                case -1:
+                    if (range.getEnd().getOffset() != 1)
+                        continue;
+
+                    if (range.getStart().getOffset() == 1){
+                        add2LineNormal(range, n, 1);
+                    } else {
+                        add2LineAfter24h(1, n, range);
+                    }
+                    break;
+                case 7:
+                    if (range.getStart().getOffset() != -1)
+                        continue;
+
+                    if (range.getEnd().getOffset() == -1){
+                        add2LineNormal(range, n, -1);
+                    } else {
+                        add2LineBefore24h(-1, n, range);
+                    }
+                    break;
+            }
         }
     }
 
@@ -357,18 +401,16 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
                     //初日の前日or最後日の翌日であれば描画しない
                     continue;
                 }
-                List<Entry> entryList = new ArrayList<>();
-                addRangeEntryToList(entryList, range, dataRow, startOffset);
-                add2Lines(entryList, colorNum);
+                add2LineNormal(range, dataRow, startOffset);
 
             } else if (endOffset - startOffset == 1) {
-                add2LineBefore24h(startOffset, dataRow, colorNum, range);
-                add2LineAfter24h(endOffset, dataRow, colorNum, range);
+                add2LineBefore24h(startOffset, dataRow, range);
+                add2LineAfter24h(endOffset, dataRow, range);
 
             } else if (endOffset - startOffset == 2){
-                add2LineBefore24h(startOffset, dataRow, colorNum, range);
+                add2LineBefore24h(startOffset, dataRow, range);
                 addWithoutValueAndCircle2Line(true, 0, 0, dataRow, colorNum);//24時間分の線分を描画
-                add2LineAfter24h(endOffset, dataRow, colorNum, range);
+                add2LineAfter24h(endOffset, dataRow, range);
             }
 
             //合計時間を計算して小数第2位で四捨五入
@@ -393,21 +435,28 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     /**
      * 24時以前を描画
      */
-    private void add2LineBefore24h(int startOffset, int dataRow, int colorNum, TimeEventRange range){
+    private void add2LineBefore24h(int startOffset, int dataRow, TimeEventRange range){
         if (!isBeforeWeek(startOffset, dataRow)){
             //●のないただの線分を描画
-            addWithoutValueAndCircle2Line(true, startOffset, range.getStart().getHour(), dataRow, colorNum);
+            addWithoutValueAndCircle2Line(true, startOffset, range.getStart().getHour(), dataRow, range.getColorNum());
             //次に●を片方だけ描画
-            addTimeEve2Line(colorNum, range.getStart().getHour(), dataRow + startOffset);
+            addTimeEve2Line(range.getColorNum(), range.getStart().getHour(), dataRow + startOffset);
         }
     }
 
-    private void add2LineAfter24h(int endOffset, int dataRow, int colorNum, TimeEventRange range){
+    private void add2LineAfter24h(int endOffset, int dataRow, TimeEventRange range){
         //24時以降を描画
         if (!isAfterWeek(endOffset, dataRow)){
-            addWithoutValueAndCircle2Line(false, endOffset, range.getEnd().getHour(), dataRow, colorNum);
-            addTimeEve2Line(colorNum, range.getEnd().getHour(), dataRow + endOffset);
+            addWithoutValueAndCircle2Line(false, endOffset, range.getEnd().getHour(), dataRow, range.getColorNum());
+            addTimeEve2Line(range.getColorNum(), range.getEnd().getHour(), dataRow + endOffset);
         }
+    }
+
+    private void add2LineNormal(TimeEventRange range, int dataRow, int offset){
+        List<Entry> entryList = new ArrayList<>();
+        entryList.add(new Entry(range.getStart().getHour(), dataRow + offset));
+        entryList.add(new Entry(range.getEnd().getHour(), dataRow + offset));
+        add2Lines(entryList, range.getColorNum());
     }
 
     @Contract(pure = true)
@@ -418,11 +467,6 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     @Contract(pure = true)
     private static boolean isAfterWeek(int endOffset, int dataRaw){
         return endOffset == 1 && dataRaw == 6;
-    }
-
-    private static void addRangeEntryToList(List<Entry> entryList, TimeEventRange range, int dataRow, int offset){
-        entryList.add(new Entry(range.getStart().getHour(), dataRow + offset));
-        entryList.add(new Entry(range.getEnd().getHour(), dataRow + offset));
     }
 
     private void addTimeEve2Line(int colorNum, int hour, int dataRow){
