@@ -35,6 +35,7 @@ public class TutorialActivity extends AppIntro {
     @ColorRes(R.color.bc_input) int cb1;
     @ColorRes(R.color.bc_analytics) int cb2;
     @ColorRes(R.color.bc_meeting) int cb3;
+    @ColorRes(R.color.text_input) int txtColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class TutorialActivity extends AppIntro {
 
         currentFrag = firstFrag = makeSlide(title0, desc0, R.drawable.mixer, cb0);
         addSlide(firstFrag);
-        addSlide(makeSlide(title1, desc1, R.drawable.tutorial_input, cb1));
+        addSlide(makeSlide(title1, desc1, R.drawable.tutorial_input, cb1, txtColor));
         addSlide(makeSlide(title2, desc2, R.drawable.tutorial_analytics, cb2));
         addSlide(makeSlide(title3, desc3, R.drawable.tutorial_meeting, cb3));
     }
@@ -63,6 +64,11 @@ public class TutorialActivity extends AppIntro {
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
         finish();
+    }
+
+    @NonNull
+    private AppIntroFragment makeSlide(String title, String desc, @DrawableRes int imgRes, @ColorInt int color, @ColorInt int textColor){
+        return AppIntroFragment.newInstance(title, null, desc, null, imgRes, color, textColor, textColor);
     }
 
     @NonNull

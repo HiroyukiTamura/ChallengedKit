@@ -147,10 +147,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         logAnalytics(getClass().getSimpleName() + "起動", this);
 
-//        if (isFirstLaunch){
+        if (isFirstLaunch){
             Intent intent = new Intent(this, TutorialActivity_.class);
             startActivity(intent);
-//        }
+        }
     }
 
     @Override

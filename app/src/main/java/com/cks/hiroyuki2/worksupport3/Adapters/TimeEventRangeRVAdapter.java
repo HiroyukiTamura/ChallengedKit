@@ -75,7 +75,7 @@ public class TimeEventRangeRVAdapter extends RecyclerView.Adapter {
         TimeEvent timeEvent = range.getTimeEve(position);
         ((ViewHolder) holder).time.setText(timeEvent.getTimeStr());
         ((ViewHolder) holder).time.setTag(position);
-        String value = Util.getStrOffset(timeEvent) + timeEvent.getName();
+        String value = timeEvent.getName() + Util.getStrOffset(timeEvent);
         ((ViewHolder) holder).value.setText(value);
         ((ViewHolder) holder).value.setTag(position);
     }

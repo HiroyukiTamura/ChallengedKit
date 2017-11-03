@@ -50,6 +50,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.apmem.tools.layouts.FlowLayout;
+import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -324,51 +325,102 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
 
     //region dataType == 1 系列
     private void drawLine(RecordData data, int dataRow){
-        List<Entry> entryList0 = new ArrayList<>();
-        List<Entry> entryList1 = new ArrayList<>();
-        List<Entry> entryList2 = new ArrayList<>();
-        List<Entry> entryList3 = new ArrayList<>();
-
         TimeEventDataSet timeEveSet = getTimeEveDataSetFromRecordData(data);
         if (timeEveSet == null)
             return;
 
         List<TimeEventRange> ranges = timeEveSet.getRangeList();
         for (TimeEventRange range : ranges) {
-            switch (range.getColorNum()){
-                case 0:
-                    addRangeEntryToList(entryList0, range, dataRow);
-                    break;
-                case 1:
-                    addRangeEntryToList(entryList1, range, dataRow);
-                    break;
-                case 2:
-                    addRangeEntryToList(entryList2, range, dataRow);
-                    break;
-                case 3:
-                    addRangeEntryToList(entryList3, range, dataRow);
-                    break;
+            int colorNum = range.getColorNum();
+            int startOffset = range.getStart().getOffset();
+            int endOffset = range.getEnd().getOffset();
+
+            if (startOffset == endOffset){
+                if ((isBeforeWeek(startOffset, dataRow)|| isAfterWeek(startOffset, dataRow))){
+                    //初日の前日or最後日の翌日であれば描画しない
+                    continue;
+                }
+                List<Entry> entryList = new ArrayList<>();
+                addRangeEntryToList(entryList, range, dataRow, startOffset);
+                add2Lines(entryList, colorNum);
+
+            } else if (endOffset - startOffset == 1) {
+                add2LineBefore24h(startOffset, dataRow, colorNum, range);
+                add2LineAfter24h(endOffset, dataRow, colorNum, range);
+
+            } else if (endOffset - startOffset == 2){
+                add2LineBefore24h(startOffset, dataRow, colorNum, range);
+                addWithoutValueAndCircle2Line(true, 0, 0, dataRow, colorNum);//24時間分の線分を描画
+                add2LineAfter24h(endOffset, dataRow, colorNum, range);
             }
         }
 
         List<TimeEvent> eveList = timeEveSet.getEventList();
         for (TimeEvent timeEve: eveList) {
-            List<Entry> entryTimeEve = new ArrayList<>();
-            entryTimeEve.add(new Entry(timeEve.getHour(), dataRow));
-            add2Lines(entryTimeEve, timeEve.getColorNum());
+            addTimeEve2Line(timeEve.getColorNum(), timeEve.getHour(), dataRow);
         }
-
-        add2Lines(entryList0, 0);
-        add2Lines(entryList1, 1);
-        add2Lines(entryList2, 2);
-        add2Lines(entryList3, 3);
 
         setLegend(timeEveSet);
     }
 
-    private static void addRangeEntryToList(List<Entry> entryList, TimeEventRange range, int dataRow){
-        entryList.add(new Entry(range.getStart().getHour(), dataRow));
-        entryList.add(new Entry(range.getEnd().getHour(), dataRow));
+    /**
+     * 24時以前を描画
+     */
+    private void add2LineBefore24h(int startOffset, int dataRow, int colorNum, TimeEventRange range){
+        if (!isBeforeWeek(startOffset, dataRow)){
+            //●のないただの線分を描画
+            addWithoutValueAndCircle2Line(true, startOffset, range.getStart().getHour(), dataRow, colorNum);
+            //次に●を片方だけ描画
+            addTimeEve2Line(colorNum, range.getStart().getHour(), dataRow + startOffset);
+        }
+    }
+
+    private void add2LineAfter24h(int endOffset, int dataRow, int colorNum, TimeEventRange range){
+        //24時以降を描画
+        if (!isAfterWeek(endOffset, dataRow)){
+            addWithoutValueAndCircle2Line(false, endOffset, range.getEnd().getHour(), dataRow, colorNum);
+            addTimeEve2Line(colorNum, range.getEnd().getHour(), dataRow + endOffset);
+        }
+    }
+
+    @Contract(pure = true)
+    private static boolean isBeforeWeek(int startOffset, int dataRaw){
+        return startOffset == -1 && dataRaw == 0;
+    }
+
+    @Contract(pure = true)
+    private static boolean isAfterWeek(int endOffset, int dataRaw){
+        return endOffset == 1 && dataRaw == 6;
+    }
+
+    private static void addRangeEntryToList(List<Entry> entryList, TimeEventRange range, int dataRow, int offset){
+        entryList.add(new Entry(range.getStart().getHour(), dataRow + offset));
+        entryList.add(new Entry(range.getEnd().getHour(), dataRow + offset));
+    }
+
+    private void addTimeEve2Line(int colorNum, int hour, int dataRow){
+        List<Entry> entryTimeEve = new ArrayList<>();
+        entryTimeEve.add(new Entry(hour, dataRow));
+        add2Lines(entryTimeEve, colorNum);
+    }
+
+    /**
+     * 時刻も●もない線分をlinesに加える。これは、日を跨いだrangeに用いられる
+     */
+    private void addWithoutValueAndCircle2Line(boolean isStart, int offset, int hour, int dataRow, int colorNum){
+        List<Entry> entryList = new ArrayList<>();
+        int edge = isStart ? 24 : 0;
+        entryList.add(new Entry(hour, dataRow + offset));
+        entryList.add(new Entry(edge, dataRow + offset));
+
+        LineDataSet dataSet = new LineDataSet(entryList, "Label");
+        dataSet.setDrawValues(false);
+        dataSet.setDrawCircles(false);
+        int color = ContextCompat.getColor(rootView.getContext(),  colorId.get(colorNum));
+        dataSet.setColor(color);
+        dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        dataSet.setLineWidth(LINE_WIDTH);
+        lines.add(dataSet);
     }
     //endregion
 
@@ -496,16 +548,16 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         dataSet.setValueFormatter(this);
         setWholeCircleColor(dataSet, colorId.get(num));
         dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
-        dataSet.setValueTextSize(14f);//これはdp指定であることに注意してください
+        dataSet.setValueTextSize(12f);//これはdp指定であることに注意してください
         dataSet.setLineWidth(LINE_WIDTH);
         lines.add(dataSet);
     }
 
     private void setWholeCircleColor(LineDataSet dataSet, int colorId){
         int color = ContextCompat.getColor(rootView.getContext(), colorId);
+        dataSet.setDrawCircleHole(false);
         dataSet.setColor(color);
         dataSet.setCircleColor(color);
-        dataSet.setCircleColorHole(color);
     }
 
     private void showData(){

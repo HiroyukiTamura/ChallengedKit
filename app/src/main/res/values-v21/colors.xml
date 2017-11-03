@@ -41,6 +41,7 @@
 
     <!--tutorial-->
     <color name="bc_input">#e9e5d9</color>
+    <color name="text_input">#5d5b56</color>
     <color name="bc_analytics">#9ebabe</color>
     <color name="bc_meeting">#5996cd</color>
 </resources>
