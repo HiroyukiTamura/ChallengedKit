@@ -89,7 +89,6 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     private static final String TAG = "MANUAL_TAG: " + AnalyticsVPUiOperator.class.getSimpleName();
     private static final float LINE_WIDTH = 3f;
     private static final int COLUMN_NAME_LINE_LIMIT = 15;
-    private View rootView;
     @BindView(R.id.chart) LineChart chart;
     @BindView(R.id.scroll) HorizontalScrollView hsv;
     @BindView(R.id.table) LinearLayout tableLL;
@@ -123,13 +122,12 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     private List<Pair<Integer, String>> legendListForTimeEve = new ArrayList<>();
     private int rangeNum;
 
-    public AnalyticsVPUiOperator(@NonNull View rootView, Calendar startCal, AnalyticsFragment analyticsFragment){
-        ButterKnife.bind(this, rootView.getRootView());
+    public AnalyticsVPUiOperator(Calendar startCal, AnalyticsFragment analyticsFragment){
+        ButterKnife.bind(this, analyticsFragment.getRootView());
 
-        this.rootView = rootView;
         this.startCal = startCal;
         this.analyticsFragment = analyticsFragment;
-        tempateList = TemplateEditor.deSerialize(rootView.getContext());
+        tempateList = TemplateEditor.deSerialize(analyticsFragment.getContext());
         if (tempateList == null) return;//エラー処理？？
 
         initParams();
@@ -142,7 +140,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     private void initParams(){
         verticalRowPad = padding*2;
         hsv.getViewTreeObserver().addOnScrollChangedListener(this);
-        inflater = (LayoutInflater) rootView.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) analyticsFragment.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 //        mListener = (IAnalyticsVPUiOperator)rootView.getContext();
     }
 
@@ -216,7 +214,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     }
 
     private LinearLayout makeColumn(){
-        LinearLayout column = new LinearLayout(rootView.getContext());
+        LinearLayout column = new LinearLayout(analyticsFragment.getContext());
         column.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
         column.setMinimumWidth(columnMinWidth);
         column.setOrientation(LinearLayout.VERTICAL);
@@ -224,7 +222,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     }
 
     private LinearLayout makeBigArticleColumn(){
-        LinearLayout column = new LinearLayout(rootView.getContext());
+        LinearLayout column = new LinearLayout(analyticsFragment.getContext());
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
         column.setLayoutParams(lp);
         column.setOrientation(LinearLayout.HORIZONTAL);
@@ -233,7 +231,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     }
 
     private TextView setLegendBigCellOfParams(String string){
-        TextView tv = new TextView(rootView.getContext());
+        TextView tv = new TextView(analyticsFragment.getContext());
         tv.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, legendHeight/2));
         tv.setText(string);
         tv.setPadding(padding, 0, padding, 0);
@@ -254,7 +252,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         cal.setTime(date);
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("usersParam").child(analyticsFragment.uid);
         RecordDataUtil util = RecordDataUtil.getInstance();
-        String[] dof = rootView.getResources().getStringArray(R.array.dof);
+        String[] dof = analyticsFragment.getResources().getStringArray(R.array.dof);
 //        String[] axisValue = new String[7];
         loadCal = new ArrayList<>(7);
         //前週最終日と翌週初日も取得する。
@@ -285,7 +283,8 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
             FirebaseEventHandler handler = new FirebaseEventHandler(cal) {
                 @Override
                 public void onOnDataChange(DataSnapshot dataSnapshot, boolean isSnapShotExist) {
-                    if (isSnapShotExist && !list.isEmpty()){//listはnonNull、かつ、listは空でありうることに注意してください。
+                    if (analyticsFragment.getContext() != null //非同期で、且つcontextが必要な処理をするので、ここでnullチェックをします
+                            &&isSnapShotExist && !list.isEmpty()){//listはnonNull、かつ、listは空でありうることに注意してください。
                         Log.w(TAG, "onOnDataChange: " + dataSnapshot.getRef().toString());
                         if (n == -1 || n == 7){
                             drawOffset(list, n);
@@ -490,7 +489,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         LineDataSet dataSet = new LineDataSet(entryList, "Label");
         dataSet.setDrawValues(false);
         dataSet.setDrawCircles(false);
-        int color = ContextCompat.getColor(rootView.getContext(),  colorId.get(colorNum));
+        int color = ContextCompat.getColor(analyticsFragment.getContext(),  colorId.get(colorNum));
         dataSet.setColor(color);
         dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
         dataSet.setLineWidth(LINE_WIDTH);
@@ -549,13 +548,13 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
 
     /** なぜDrawableをFrameLayoutラップしているかというと、imageViewはgravityを指定できないし、親ビューがFlowLayoutになるので、layout_gravityも効かないためです*/
     private FrameLayout createCheckView(boolean isCheck){
-        ImageView iv = new ImageView(rootView.getContext());
+        ImageView iv = new ImageView(analyticsFragment.getContext());
         FrameLayout.LayoutParams lp = isCheck
                 ? new FrameLayout.LayoutParams(checkSize, checkSize)
                 : new FrameLayout.LayoutParams(checkSize/2, uncheckThickSize);
         lp.gravity = Gravity.CENTER;
         iv.setLayoutParams(lp);
-        FrameLayout flWrapper = new FrameLayout(rootView.getContext());
+        FrameLayout flWrapper = new FrameLayout(analyticsFragment.getContext());
         flWrapper.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         flWrapper.addView(iv);
 
@@ -573,7 +572,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     }
 
     private TextView createDigitView(int max, int digit, @NonNull String txt){
-        TextView tv = new TextView(rootView.getContext());
+        TextView tv = new TextView(analyticsFragment.getContext());
         tv.setTextSize(18);
         tv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         tv.setGravity(Gravity.CENTER);
@@ -607,7 +606,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     //endregion
 
     private TextView createNormalTv(){
-        TextView tv = new TextView(rootView.getContext());
+        TextView tv = new TextView(analyticsFragment.getContext());
         tv.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         tv.setGravity(Gravity.CENTER);
         return tv;
@@ -633,7 +632,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     }
 
     private void setWholeCircleColor(LineDataSet dataSet, int colorId){
-        int color = ContextCompat.getColor(rootView.getContext(), colorId);
+        int color = ContextCompat.getColor(analyticsFragment.getContext(), colorId);
         dataSet.setDrawCircleHole(false);
         dataSet.setColor(color);
         dataSet.setCircleColor(color);
@@ -690,7 +689,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         chart.getXAxis().setDrawAxisLine(false);
 
         chart.setNoDataText(rootView.getResources().getText(R.string.no_data_txt).toString());
-        chart.setNoDataTextColor(ContextCompat.getColor(rootView.getContext(), R.color.colorPrimaryDark));
+        chart.setNoDataTextColor(ContextCompat.getColor(analyticsFragment.getContext(), R.color.colorPrimaryDark));
         chart.getDescription().setEnabled(false);
 
         chart.setOnChartValueSelectedListener(this);
@@ -726,7 +725,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         TextView tv = view.findViewById(R.id.tv);
         tv.setText(value);
         int colorId = UtilSpec.colorId.get(colorNum);
-        int color = ContextCompat.getColor(rootView.getContext(), colorId);
+        int color = ContextCompat.getColor(analyticsFragment.getContext(), colorId);
         ImageView iv = view.findViewById(R.id.circle);
         iv.getDrawable().mutate().setColorFilter(color, PorterDuff.Mode.SRC);
         return view;
@@ -743,7 +742,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     public void onScrollChanged() {
         int scrollX = hsv.getScrollX();
         if (scrollX == 0) return;
-        fr.castorflex.android.verticalviewpager.VerticalViewPager vp = rootView.getRootView().findViewById(R.id.vertical_vp);
+        fr.castorflex.android.verticalviewpager.VerticalViewPager vp = analyticsFragment.getRootView().findViewById(R.id.vertical_vp);
         if (vp == null) return;
             
         scroll(vp.getCurrentItem()+1, scrollX);
@@ -751,7 +750,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     }
 
     private void scroll(int pos, int scrollX){
-        View item = rootView.getRootView().findViewWithTag(pos);
+        View item = analyticsFragment.getRootView().findViewWithTag(pos);
         HorizontalScrollView hsv = item.findViewById(R.id.scroll);
         hsv.getViewTreeObserver().removeOnScrollChangedListener(this);
         hsv.scrollTo(scrollX, 0);
@@ -790,6 +789,6 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
 
     @Override
     public void onValueSelected(Entry e, Highlight h) {
-        Toast.makeText(rootView.getContext(), (String)e.getData(), Toast.LENGTH_LONG).show();
+        Toast.makeText(analyticsFragment.getContext(), (String)e.getData(), Toast.LENGTH_LONG).show();
     }
 }
