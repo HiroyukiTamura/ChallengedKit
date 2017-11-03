@@ -126,27 +126,4 @@ public class Util {
                 .withListener(listener)
                 .check();
     }
-
-    //todo ライブラリに移植するべき
-    @NonNull
-    public static String getStrOffset(@NonNull TimeEvent timeEvent){
-        if (timeEvent.getOffset() <0){
-            return getApplicationContext().getString(R.string.yesterday);
-        } else if (timeEvent.getOffset() >0){
-            return getApplicationContext().getString(R.string.tomorrow);
-        } else {
-            return "";
-        }
-    }
-
-    //todo ライブラリに移植するべき
-    @Nullable
-    public static RecordData getRecordDataByType(List<RecordData> dataList, int dataType){
-        for (RecordData data: dataList) {
-            if (data.getDataType() == dataType){
-                return data;
-            }
-        }
-        return null;
-    }
 }

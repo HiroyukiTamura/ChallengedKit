@@ -52,6 +52,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.apmem.tools.layouts.FlowLayout;
 import org.jetbrains.annotations.Contract;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -74,6 +75,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getTimeEveDataSetFromRecordData;
 import static com.cks.hiroyuki2.worksupprotlib.Util.time2String;
 import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.colorId;
+import com.cks.hiroyuki2.worksupprotlib.RecordDataUtil;
 
 /**
  * AnalyticsVPAdapterのお助けやくおじさん！みんな協力して働くんだね！
@@ -154,7 +156,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
 
     private void setColumns(){
 
-        RecordData timeLine = com.cks.hiroyuki2.worksupport3.Util.getRecordDataByType(tempateList, 1);
+        RecordData timeLine = Util.getRecordDataByType(tempateList, 1);
         TimeEventDataSet dataSet = getTimeEveDataSetFromRecordData(timeLine);
         if (dataSet != null){
             rangeNum = dataSet.getRangeList().size();
@@ -344,7 +346,8 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
             return;
 
         List<TimeEventRange> ranges = timeEveSet.getRangeList();
-        for (TimeEventRange range : ranges) {
+        for (int i = 0; i < ranges.size(); i++) {
+            TimeEventRange range = ranges.get(i);
             int colorNum = range.getColorNum();
             int startOffset = range.getStart().getOffset();
             int endOffset = range.getEnd().getOffset();
@@ -368,8 +371,15 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
                 add2LineAfter24h(endOffset, dataRow, colorNum, range);
             }
 
-            //合計時間を計算して描く
-            range.getStart().getHour();
+            //合計時間を計算して小数第2位で四捨五入
+            long hourLong = (range.getEnd().getHourLong() + endOffset*24) - (range.getStart().getHourLong() + startOffset*24);
+            BigDecimal bigDecimal = BigDecimal.valueOf(hourLong);
+            String hourStr = bigDecimal.setScale(0, BigDecimal.ROUND_HALF_UP).toString();
+
+            FlowLayout fl = (FlowLayout) ((ViewGroup)tableLL.getChildAt(i)).getChildAt(dataRow+1);
+            TextView tv = createNormalTv();
+            tv.setText(hourStr);
+            fl.addView(tv);
         }
 
         List<TimeEvent> eveList = timeEveSet.getEventList();
@@ -540,9 +550,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
 
     @NonNull
     private TextView createCommentTv(RecordData data){
-        TextView tv = new TextView(rootView.getContext());
-        tv.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        tv.setGravity(Gravity.CENTER_VERTICAL);
+        TextView tv = createNormalTv();
         if (data.data.containsKey("comment") && data.data.get("comment") != null){
             String string = (String) data.data.get("comment");
             tv.setText(string);
@@ -550,6 +558,13 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         return tv;
     }
     //endregion
+
+    private TextView createNormalTv(){
+        TextView tv = new TextView(rootView.getContext());
+        tv.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        tv.setGravity(Gravity.CENTER);
+        return tv;
+    }
 
     static private float hourMin2Hour(@NonNull String string){
         String[] hm = string.split(":");

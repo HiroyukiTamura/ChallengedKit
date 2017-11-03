@@ -15,7 +15,7 @@ import com.cks.hiroyuki2.worksupport3.Activities.SharedCalendarActivity;
 import com.cks.hiroyuki2.worksupport3.Adapters.SharedCalendarVPAdapter;
 import com.cks.hiroyuki2.worksupprotlib.Entity.CalendarOneEvent;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
-import com.cks.hiroyuki2.worksupport3.RecordDataUtil;
+import com.cks.hiroyuki2.worksupprotlib.RecordDataUtil;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.google.firebase.database.DataSnapshot;

@@ -26,7 +26,7 @@ import com.cks.hiroyuki2.worksupport3.Adapters.SocialListRVAdapter;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
-import com.cks.hiroyuki2.worksupport3.RecordDataUtil;
+import com.cks.hiroyuki2.worksupprotlib.RecordDataUtil;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.RecordDialogFragment;
 import com.google.firebase.auth.FirebaseAuth;

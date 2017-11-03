@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.Util;
+import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
 import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEventRange;
 
@@ -75,7 +75,7 @@ public class TimeEventRangeRVAdapter extends RecyclerView.Adapter {
         TimeEvent timeEvent = range.getTimeEve(position);
         ((ViewHolder) holder).time.setText(timeEvent.getTimeStr());
         ((ViewHolder) holder).time.setTag(position);
-        String value = timeEvent.getName() + Util.getStrOffset(timeEvent);
+        String value = timeEvent.getName() + Util.getStrOffset(fragment.getContext(), timeEvent);
         ((ViewHolder) holder).value.setText(value);
         ((ViewHolder) holder).value.setTag(position);
     }

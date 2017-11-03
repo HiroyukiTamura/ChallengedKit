@@ -24,7 +24,7 @@ import com.cks.hiroyuki2.worksupprotlib.FirebaseEventHandler;
 import com.cks.hiroyuki2.worksupport3.Fragments.RecordFragment;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
-import com.cks.hiroyuki2.worksupport3.RecordDataUtil;
+import com.cks.hiroyuki2.worksupprotlib.RecordDataUtil;
 import com.cks.hiroyuki2.worksupport3.RecordRVAdapter;
 import com.cks.hiroyuki2.worksupport3.RecordUiOperator;
 import com.cks.hiroyuki2.worksupprotlib.TemplateEditor;

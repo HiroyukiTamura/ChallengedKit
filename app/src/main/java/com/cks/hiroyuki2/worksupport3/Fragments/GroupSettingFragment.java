@@ -24,7 +24,7 @@ import android.widget.Toast;
 import com.cks.hiroyuki2.worksupport3.Adapters.GroupSettingRVAdapter;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
-import com.cks.hiroyuki2.worksupport3.RecordDataUtil;
+import com.cks.hiroyuki2.worksupprotlib.RecordDataUtil;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.Util;
