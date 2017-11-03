@@ -134,3 +134,6 @@
 -keep class butterknife.*
 -keepclasseswithmembernames class * { @butterknife.* <methods>; }
 -keepclasseswithmembernames class * { @butterknife.* <fields>; }
+
+#################### MaterialSheetFab ###################
+-keep class io.codetail.animation.arcanimator.** { *; }

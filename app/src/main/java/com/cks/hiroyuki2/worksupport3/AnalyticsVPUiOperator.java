@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
+import android.support.v4.widget.NestedScrollView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -55,6 +56,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.apmem.tools.layouts.FlowLayout;
 import org.jetbrains.annotations.Contract;
 
+import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -76,6 +78,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
 import static com.cks.hiroyuki2.worksupprotlib.Util.datePattern;
 import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getTimeEveDataSetFromRecordData;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.time2String;
 import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.colorId;
 import com.cks.hiroyuki2.worksupprotlib.RecordDataUtil;
@@ -84,11 +87,12 @@ import com.cks.hiroyuki2.worksupprotlib.RecordDataUtil;
  * AnalyticsVPAdapterのお助けやくおじさん！みんな協力して働くんだね！
  */
 
-public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatter, ViewTreeObserver.OnScrollChangedListener, OnChartValueSelectedListener {
+public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatter, ViewTreeObserver.OnScrollChangedListener, OnChartValueSelectedListener, View.OnScrollChangeListener {
 
     private static final String TAG = "MANUAL_TAG: " + AnalyticsVPUiOperator.class.getSimpleName();
     private static final float LINE_WIDTH = 3f;
     private static final int COLUMN_NAME_LINE_LIMIT = 15;
+
     @BindView(R.id.chart) LineChart chart;
     @BindView(R.id.scroll) HorizontalScrollView hsv;
     @BindView(R.id.table) LinearLayout tableLL;
@@ -111,6 +115,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     @BindDimen(R.dimen.def_mp_chart_padding) int defChardPadding;
     @BindDimen(R.dimen.wof_width) int wofWidth;
 //    private LineChart chart;
+    private View root;
     private ArrayList<ILineDataSet> lines = new ArrayList<> ();
     private ArrayList<Calendar> loadCal;
     private int verticalRowPad;
@@ -121,14 +126,23 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     private List<Pair<Integer, String>> legendListForRange = new ArrayList<>();
     private List<Pair<Integer, String>> legendListForTimeEve = new ArrayList<>();
     private int rangeNum;
+    private ScrollViewListener listener;
 
-    public AnalyticsVPUiOperator(Calendar startCal, AnalyticsFragment analyticsFragment){
-        ButterKnife.bind(this, analyticsFragment.getRootView());
+    public AnalyticsVPUiOperator(WeakReference<View> root, Calendar startCal, AnalyticsFragment analyticsFragment){
+        ButterKnife.bind(this, root.get());
 
+        this.root = root.get();
         this.startCal = startCal;
         this.analyticsFragment = analyticsFragment;
         tempateList = TemplateEditor.deSerialize(analyticsFragment.getContext());
-        if (tempateList == null) return;//エラー処理？？
+        if (tempateList == null) {
+            onError(analyticsFragment, "tempateList == null", R.string.error);
+            return;
+        }
+
+        if (analyticsFragment instanceof ScrollViewListener){
+            listener = (ScrollViewListener) analyticsFragment;
+        }
 
         initParams();
         setDate();
@@ -137,10 +151,15 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         configChart();
     }
 
+    public interface ScrollViewListener {
+        void onScrollChanged(HorizontalScrollView scrollView, int x, int y, int oldx, int oldy);
+    }
+
     private void initParams(){
         verticalRowPad = padding*2;
         hsv.getViewTreeObserver().addOnScrollChangedListener(this);
         inflater = (LayoutInflater) analyticsFragment.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        hsv.setOnScrollChangeListener(this);
 //        mListener = (IAnalyticsVPUiOperator)rootView.getContext();
     }
 
@@ -790,5 +809,12 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     @Override
     public void onValueSelected(Entry e, Highlight h) {
         Toast.makeText(analyticsFragment.getContext(), (String)e.getData(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onScrollChange(View view, int x, int y, int oldx, int oldy) {
+        if (listener != null) {
+            listener.onScrollChanged((HorizontalScrollView) view, x, y, oldx, oldy);
+        }
     }
 }

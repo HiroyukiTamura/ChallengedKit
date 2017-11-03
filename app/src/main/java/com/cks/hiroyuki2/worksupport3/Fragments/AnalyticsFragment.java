@@ -8,17 +8,21 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.Adapters.AnalyticsVPAdapter;
+import com.cks.hiroyuki2.worksupport3.AnalyticsVPUiOperator;
+import com.cks.hiroyuki2.worksupport3.Fab;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
@@ -26,12 +30,14 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.gordonwong.materialsheetfab.MaterialSheetFab;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.res.ColorRes;
 
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +49,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.UID;
 import static com.cks.hiroyuki2.worksupprotlib.Util.time2String;
 
 @EFragment(R.layout.analytics_vp)
-public class AnalyticsFragment extends Fragment implements ValueEventListener, IValueFormatter {
+public class AnalyticsFragment extends Fragment implements ValueEventListener, IValueFormatter, AnalyticsVPUiOperator.ScrollViewListener {
     private static final String TAG = "MANUAL_TAG: " + AnalyticsFragment.class.getSimpleName();
 
     @ViewById(R.id.vertical_vp) VerticalViewPager vp;
@@ -51,11 +57,17 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
     @ViewById(R.id.hamburger) ImageView hamburger;
     @ViewById(R.id.in_wof_ll) LinearLayout wofLL;
 //    @ViewById(R.id.spacer) public Space space;
+    @ViewById(R.id.fab) Fab fab;
+    @ViewById(R.id.fab_sheet) View sheetView;
+    @ViewById(R.id.overlay) View overlay;
+    @ColorRes(R.color.blue_gray) int fabSheetCol;
+    @ColorRes(R.color.colorAccent) int fabColor;
     private OnHamburgerClickListener mListener;
     @FragmentArg("uid") public String uid;
     @FragmentArg("isMine") boolean isMine;
     private View rootView;
     private Context context;
+    private MaterialSheetFab materialSheetFab;
 
     @Override
     public void onAttach(Context context) {
@@ -90,6 +102,8 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
         vp.setAdapter(adapter);
         vp.setCurrentItem(AnalyticsVPAdapter.PAGE/2);
         vp.setOffscreenPageLimit(2);
+
+        materialSheetFab = new MaterialSheetFab<>(fab, sheetView, overlay, fabSheetCol, fabColor);
     }
 
     private void showWeekOfDay(){
@@ -151,5 +165,17 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
     @Click(R.id.hamburger)
     void openNavigation(){
         mListener.onHamburgerClick();
+    }
+
+    @Click(R.id.fab)
+    void onClickFab(){
+
+    }
+
+    @Override
+    public void onScrollChanged(HorizontalScrollView scrollView, int x, int y, int oldx, int oldy) {
+        if (x == 0){
+            fab.hide();
+        }
     }
 }

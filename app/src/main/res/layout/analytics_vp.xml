@@ -72,6 +72,8 @@
             android:layout_height="match_parent"
             android:background="@drawable/vertical_back_shadow" />
 
+        <include layout="@layout/custom_fab" />
+
     </FrameLayout>
 
 </LinearLayout>
