@@ -24,6 +24,8 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.SnackbarOnAnyDeniedMultiplePermissionsListener;
+import com.karumi.dexter.listener.single.PermissionListener;
+import com.karumi.dexter.listener.single.SnackbarOnDeniedPermissionListener;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -37,7 +39,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 public class AddFriendActivity extends AppCompatActivity implements View.OnClickListener{
     
     private static final String TAG = "MANUAL_TAG: " + AddFriendActivity.class.getSimpleName();
-    private MultiplePermissionsListener listener;
+    private PermissionListener listener;
     @ViewById(R.id.toolbar) Toolbar toolbar;
     @ViewById(R.id.coordinator) CoordinatorLayout cl;
 
@@ -45,7 +47,7 @@ public class AddFriendActivity extends AppCompatActivity implements View.OnClick
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
 
-        listener = SnackbarOnAnyDeniedMultiplePermissionsListener.Builder
+        listener = SnackbarOnDeniedPermissionListener.Builder
                 .with(cl, R.string.permission_rational)
                 .withButton(R.string.permission_snb_btn, this)
                 .withCallback(new Snackbar.Callback(){
@@ -114,7 +116,7 @@ public class AddFriendActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    public MultiplePermissionsListener getListener() {
+    public PermissionListener getListener() {
         return listener;
     }
 

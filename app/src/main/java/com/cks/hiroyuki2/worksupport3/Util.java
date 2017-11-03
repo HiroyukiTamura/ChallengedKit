@@ -23,7 +23,7 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.UploadTask;
 import com.karumi.dexter.Dexter;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -116,9 +116,9 @@ public class Util {
         adView.loadAd(adRequest);
     }
 
-    public static void checkPermission(@NonNull Activity activity, MultiplePermissionsListener listener){
+    public static void checkPermission(@NonNull Activity activity, PermissionListener listener){
         Dexter.withActivity(activity)
-                .withPermissions(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withPermission(Manifest.permission.CAMERA)
                 .withListener(listener)
                 .check();
     }
