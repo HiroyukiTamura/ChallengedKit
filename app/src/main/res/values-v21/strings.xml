@@ -255,4 +255,14 @@
     <!--timePickerまわり-->
     <string name="yesterday">（前日）</string>
     <string name="tomorrow">（翌日）</string>
+
+    <!--tutorialまわり-->
+    <string name="title0">WorkSupport</string>
+    <string name="desc0">ダウンロードありがとうございます。WorkSupportは、障害者の方がより働きやすくなるための体調管理・共有アプリです。</string>
+    <string name="title1">体調を記録</string>
+    <string name="desc1">睡眠時間や服薬の有無など、毎日の体調を記録しましょう。</string>
+    <string name="title2">記録を見える化して分析</string>
+    <string name="desc2">生活リズムや症状が出るパターンなど、記録を分析することができます。</string>
+    <string name="title3">データをシェア</string>
+    <string name="desc3">体調の記録のほか、スケジュール、画像や文書を共有できます。配慮事項や診察の日時など、様々なデータを共有しましょう。</string>
 </resources>
