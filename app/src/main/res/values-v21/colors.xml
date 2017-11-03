@@ -40,7 +40,7 @@
     <color name="material_icon_inactive">#1A000000</color>
 
     <!--tutorial-->
-    <color name="bc_input">#54c7cc</color>
+    <color name="bc_input">#e9d5d9</color>
     <color name="bc_analytics">#9ebabe</color>
     <color name="bc_meeting">#5996cd</color>
 </resources>
