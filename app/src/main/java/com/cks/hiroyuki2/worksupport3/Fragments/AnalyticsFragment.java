@@ -11,6 +11,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.Pair;
+import android.support.v4.view.ViewPager;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -24,6 +27,7 @@ import com.cks.hiroyuki2.worksupport3.Adapters.AnalyticsVPAdapter;
 import com.cks.hiroyuki2.worksupport3.AnalyticsVPUiOperator;
 import com.cks.hiroyuki2.worksupport3.Fab;
 import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupport3.Util;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
@@ -38,6 +42,7 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.ColorRes;
+import org.apmem.tools.layouts.FlowLayout;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +54,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.UID;
 import static com.cks.hiroyuki2.worksupprotlib.Util.time2String;
 
 @EFragment(R.layout.analytics_vp)
-public class AnalyticsFragment extends Fragment implements ValueEventListener, IValueFormatter, AnalyticsVPUiOperator.ScrollViewListener {
+public class AnalyticsFragment extends Fragment implements ValueEventListener, IValueFormatter, AnalyticsVPUiOperator.ScrollViewListener, ViewPager.OnPageChangeListener {
     private static final String TAG = "MANUAL_TAG: " + AnalyticsFragment.class.getSimpleName();
 
     @ViewById(R.id.vertical_vp) VerticalViewPager vp;
@@ -60,6 +65,7 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
     @ViewById(R.id.fab) Fab fab;
     @ViewById(R.id.fab_sheet) View sheetView;
     @ViewById(R.id.overlay) View overlay;
+    @ViewById(R.id.fl) FlowLayout fl;
     @ColorRes(R.color.blue_gray) int fabSheetCol;
     @ColorRes(R.color.colorAccent) int fabColor;
     private OnHamburgerClickListener mListener;
@@ -68,6 +74,7 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
     private View rootView;
     private Context context;
     private MaterialSheetFab materialSheetFab;
+    private AnalyticsVPAdapter adapter;
 
     @Override
     public void onAttach(Context context) {
@@ -98,12 +105,13 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
         }
 
         showWeekOfDay();
-        AnalyticsVPAdapter adapter = new AnalyticsVPAdapter(getContext(), this);
+        adapter = new AnalyticsVPAdapter(getContext(), this);
         vp.setAdapter(adapter);
         vp.setCurrentItem(AnalyticsVPAdapter.PAGE/2);
         vp.setOffscreenPageLimit(2);
-
+        vp.setOnPageChangeListener(this);
         materialSheetFab = new MaterialSheetFab<>(fab, sheetView, overlay, fabSheetCol, fabColor);
+        editLegend(vp.getCurrentItem());
     }
 
     private void showWeekOfDay(){
@@ -174,8 +182,36 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
 
     @Override
     public void onScrollChanged(HorizontalScrollView scrollView, int x, int y, int oldx, int oldy) {
-        if (x == 0){
+        if (x != 0){
             fab.hide();
+        } else {
+            fab.show();
         }
+    }
+
+    private void innerEditLegend(List<Pair<Integer, String>> legendList){
+        for (Pair<Integer, String> pair: legendList) {
+            View v = Util.makeCircleAndTxt(getContext(), pair.second, pair.first);
+            fl.addView(v);
+        }
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        editLegend(position);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {}
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+    private void editLegend(int position){
+        AnalyticsVPUiOperator operator = adapter.getOperators().get(position);
+        List<Pair<Integer, String>> rangeLegendList = operator.getLegendListForRange();
+        List<Pair<Integer, String>> timeEveLegendList = operator.getLegendListForTimeEve();
+        innerEditLegend(rangeLegendList);
+        innerEditLegend(timeEveLegendList);
     }
 }

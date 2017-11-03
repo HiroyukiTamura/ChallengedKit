@@ -525,7 +525,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
             String strings[] = s.split(delimiter);
             if (strings[2].equals(Boolean.toString(false)))
                 continue;
-            final View view = makeCircleAndTxt(strings[0], Integer.parseInt(strings[1]));
+            final View view = com.cks.hiroyuki2.worksupport3.Util.makeCircleAndTxt(analyticsFragment.getContext(), strings[0], Integer.parseInt(strings[1]));
             tagList.add(view);
         }
         new AnalyticsTagpoolObserver(fl, tagList);
@@ -731,23 +731,11 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         if (legendList.contains(pair))
             return;
         legendList.add(pair);
-        View tag = makeCircleAndTxt(value, colorNum);
+        View tag = com.cks.hiroyuki2.worksupport3.Util.makeCircleAndTxt(analyticsFragment.getContext(), value, colorNum);
         legendFl.addView(tag);
         //タグが見切れている場合には隠す
         if (legendFl.getBaseline() < tag.getBaseline())
             tag.setVisibility(GONE);
-    }
-
-    @NonNull
-    private View makeCircleAndTxt(@NonNull String value, int colorNum){
-        View view = inflater.inflate(R.layout.analytics_table_tag, null);
-        TextView tv = view.findViewById(R.id.tv);
-        tv.setText(value);
-        int colorId = UtilSpec.colorId.get(colorNum);
-        int color = ContextCompat.getColor(analyticsFragment.getContext(), colorId);
-        ImageView iv = view.findViewById(R.id.circle);
-        iv.getDrawable().mutate().setColorFilter(color, PorterDuff.Mode.SRC);
-        return view;
     }
 
     @Override
@@ -816,5 +804,13 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         if (listener != null) {
             listener.onScrollChanged((HorizontalScrollView) view, x, y, oldx, oldy);
         }
+    }
+
+    public List<Pair<Integer, String>> getLegendListForRange() {
+        return legendListForRange;
+    }
+
+    public List<Pair<Integer, String>> getLegendListForTimeEve() {
+        return legendListForTimeEve;
     }
 }

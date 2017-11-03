@@ -6,6 +6,8 @@ package com.cks.hiroyuki2.worksupport3.Adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.v4.util.Pair;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +19,11 @@ import com.cks.hiroyuki2.worksupport3.Fragments.AnalyticsFragment;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.Util;
 
+import org.jetbrains.annotations.Contract;
+
+import java.lang.ref.WeakReference;
 import java.util.Calendar;
+import java.util.List;
 import java.util.TreeMap;
 
 /**
@@ -62,7 +68,7 @@ public class AnalyticsVPAdapter extends PagerAdapter {
         root.setTag(position);
         Calendar cal = getCal(position);
         Log.d(TAG, "instantiateItem: "+ cal.getTime().toString());
-        AnalyticsVPUiOperator operator = new AnalyticsVPUiOperator(root, cal, analyticsFragment);
+        AnalyticsVPUiOperator operator = new AnalyticsVPUiOperator(new WeakReference<View>(root), cal, analyticsFragment);
         operators.put(position, operator);
         container.addView(root);
         return root;
@@ -84,5 +90,10 @@ public class AnalyticsVPAdapter extends PagerAdapter {
         cal.setTime(startCal.getTime());
         cal.add(Calendar.DATE, 7*(position - PAGE/2));
         return cal;
+    }
+
+    @Contract(pure = true)
+    public TreeMap<Integer, AnalyticsVPUiOperator> getOperators(){
+        return operators;
     }
 }
