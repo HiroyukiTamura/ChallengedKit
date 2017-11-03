@@ -76,7 +76,7 @@ public class RecordVpItemTime extends RecordVpItem {
         @BindView(R.id.end_circle) ImageView endCircle;
         @BindView(R.id.stroke) View stroke;
         @BindView(R.id.rv) RecyclerView rv;
-        @BindView(R.id.add_range) ImageView
+        @BindView(R.id.add_range) addRange;
         int posInList;
 
         TimeEventRangeParams(int posInList){
@@ -112,6 +112,9 @@ public class RecordVpItemTime extends RecordVpItem {
     public View buildView() {
         View view = getFragment().getLayoutInflater().inflate(R.layout.record_vp_item_timeline2, null);
         ButterKnife.bind(this, view);
+        if (getFragment() instanceof RecordFragment) {
+            addRange.setVisibility(Visibility.GONE);
+        }
         dataSet = getTimeEveDataSetFromRecordData(getData());
         if (dataSet == null)
             return null;
