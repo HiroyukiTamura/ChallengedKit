@@ -59,6 +59,7 @@ public class RecordVpItemTime extends RecordVpItem {
     public static String TIME_EVE_RANGE = "TIME_EVE_RANGE";
     @BindView(R.id.time_event_rv) RecyclerView timeEventRv;
     @BindView(R.id.rv_container) LinearLayout container;
+    @BindView(R.id.add_range) ImageView addRange;
 
     public RecordVpItemTime(RecordData data, int dataNum, Calendar cal, RecordFragment fragment) {
         super(data, dataNum, cal, fragment);
@@ -76,7 +77,6 @@ public class RecordVpItemTime extends RecordVpItem {
         @BindView(R.id.end_circle) ImageView endCircle;
         @BindView(R.id.stroke) View stroke;
         @BindView(R.id.rv) RecyclerView rv;
-        @BindView(R.id.add_range) ImageView addRange;
         int posInList;
 
         TimeEventRangeParams(int posInList){
@@ -113,7 +113,7 @@ public class RecordVpItemTime extends RecordVpItem {
         View view = getFragment().getLayoutInflater().inflate(R.layout.record_vp_item_timeline2, null);
         ButterKnife.bind(this, view);
         if (getFragment() instanceof RecordFragment) {
-            addRange.setVisibility(Visibility.GONE);
+            addRange.setVisibility(View.GONE);
         }
         dataSet = getTimeEveDataSetFromRecordData(getData());
         if (dataSet == null)
