@@ -1,6 +1,5 @@
 package com.cks.hiroyuki2.worksupport3.Activities;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
@@ -41,13 +40,11 @@ public class TutorialActivity extends AppIntro {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        firstFrag = makeSlide(title0, desc0, R.drawable.mixer, cb0);
+        currentFrag = firstFrag = makeSlide(title0, desc0, R.drawable.mixer, cb0);
         addSlide(firstFrag);
         addSlide(makeSlide(title1, desc1, R.drawable.tutorial_input, cb1));
         addSlide(makeSlide(title2, desc2, R.drawable.tutorial_analytics, cb2));
         addSlide(makeSlide(title3, desc3, R.drawable.tutorial_meeting, cb3));
-
-        setFadeAnimation();
     }
 
     @Override
@@ -59,12 +56,12 @@ public class TutorialActivity extends AppIntro {
     @Override
     public void onSkipPressed(Fragment currentFragment) {
         super.onSkipPressed(currentFragment);
+        finish();
     }
 
     @Override
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
-        setResult(Activity.RESULT_OK);
         finish();
     }
 
@@ -75,11 +72,10 @@ public class TutorialActivity extends AppIntro {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-
         if (currentFrag.equals(firstFrag)){
-            setResult(Activity.RESULT_CANCELED);
             finish();
+        } else {
+            super.onBackPressed();
         }
     }
 }

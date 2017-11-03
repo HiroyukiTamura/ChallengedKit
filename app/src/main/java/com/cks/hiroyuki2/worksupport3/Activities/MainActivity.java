@@ -98,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static final int REQ_CODE_ADD_USER = 1100;
     static final int REQ_OPEN_ICON_IMG = 1200;
     static final int REQ_CODE_GROUP_SETTING = 1300;
-    static final int REQ_CODE_INTRO = 1400;
     private ServiceConnector connector;
     private SharedPreferences pref;
     private LoginCheck check;
@@ -148,10 +147,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         logAnalytics(getClass().getSimpleName() + "起動", this);
 
-        if (isFirstLaunch){
+//        if (isFirstLaunch){
             Intent intent = new Intent(this, TutorialActivity_.class);
-            startActivityForResult(intent, REQ_CODE_INTRO);
-        }
+            startActivity(intent);
+//        }
     }
 
     @Override
@@ -516,11 +515,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(this, R.string.exe_logout, Toast.LENGTH_LONG).show();
             new LoginCheck(this).signIn(true);
         }
-    }
-
-    @OnActivityResult(REQ_CODE_INTRO)
-    void onResultIntro(){
-
     }
 
     @OnActivityResult(REQ_CODE_GROUP_SETTING)
