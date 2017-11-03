@@ -252,7 +252,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("usersParam").child(analyticsFragment.uid);
         RecordDataUtil util = RecordDataUtil.getInstance();
         String[] dof = rootView.getResources().getStringArray(R.array.dof);
-        String[] axisValue = new String[7];
+//        String[] axisValue = new String[7];
         loadCal = new ArrayList<>(7);
         //前週最終日と翌週初日も取得する。
         for (int i = -1; i < 8; i++) {
@@ -260,11 +260,11 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
             String ymd = cal2date(cal, datePattern);
             int ymdInt = Integer.parseInt(ymd);
 
-            if (util.dataMap.containsKey(ymdInt) && util.dataMap.get(ymdInt) != null && !util.dataMap.get(ymdInt).isEmpty()){
+            if (util.dataMap.containsKey(ymdInt) && util.dataMap.get(ymdInt) != null && !util.dataMap.get(ymdInt).isEmpty()) {
                 List<RecordData> list = util.dataMap.get(ymdInt);
                 Log.d(TAG, "onCreateView: こいつデータあります！");
 
-                if (n == -1 || n == 7){
+                if (n == -1 || n == 7) {
                     drawOffset(list, n);
                     continue;
                 }
@@ -308,7 +308,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
             handler.initValueEventListener();
             refer.addListenerForSingleValueEvent(handler.getListener());
 
-            axisValue[i] = cal.get(Calendar.DATE)+ "("+dof[i]+")";
+//            axisValue[i] = cal.get(Calendar.DATE)+ "("+dof[i]+")";
 
             cal.add(Calendar.DATE, 1);
         }
