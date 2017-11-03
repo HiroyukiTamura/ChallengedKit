@@ -688,7 +688,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         chart.getXAxis().setDrawLabels(false);
         chart.getXAxis().setDrawAxisLine(false);
 
-        chart.setNoDataText(rootView.getResources().getText(R.string.no_data_txt).toString());
+        chart.setNoDataText(analyticsFragment.getResources().getText(R.string.no_data_txt).toString());
         chart.setNoDataTextColor(ContextCompat.getColor(analyticsFragment.getContext(), R.color.colorPrimaryDark));
         chart.getDescription().setEnabled(false);
 
