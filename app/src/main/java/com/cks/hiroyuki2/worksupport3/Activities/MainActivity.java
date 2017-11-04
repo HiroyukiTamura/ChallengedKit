@@ -327,14 +327,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } else {
                 Toast.makeText(this, R.string.error, Toast.LENGTH_LONG).show();
             }
-        } else if (id == R.id.nav_share) {
-            changeContentFragment(AboutFragment_.builder().build());
-        } else if (id == R.id.nav_send) {
-            initDefaultTemplate(this);
         } else if (id == R.id.social){
             changeContentFragment(com.cks.hiroyuki2.worksupport3.Fragments.SocialFragment_
                     .builder()
                     .build());
+        } else if (id == R.id.nav_share) {
+            changeContentFragment(AboutFragment_.builder().build());
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

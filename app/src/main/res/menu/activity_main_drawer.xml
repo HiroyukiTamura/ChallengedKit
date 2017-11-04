@@ -6,38 +6,29 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item android:title="@string/menu_group_title0">
-            <menu>
+        <!--<item android:title="@string/menu_group_title0">-->
+            <!--<menu>-->
                 <item
                     android:id="@+id/nav_camera"
-                    android:icon="@drawable/ic_menu_camera"
+                    android:icon="@drawable/ic_mode_edit_black_24dp"
                     android:title="@string/item0" />
                 <item
                     android:id="@+id/nav_slideshow"
-                    android:icon="@drawable/ic_menu_slideshow"
+                    android:icon="@drawable/ic_featured_play_list_black_24dp"
                     android:title="@string/item1" />
                 <item
                     android:id="@+id/nav_manage"
-                    android:icon="@drawable/ic_menu_manage"
+                    android:icon="@drawable/ic_insert_chart_black_24dp"
                     android:title="@string/item2" />
                 <item
                     android:id="@+id/social"
                     android:icon="@drawable/ic_menu_share"
                     android:title="@string/item3" />
-            </menu>
-        </item>
-
-        <item android:title="@string/menu_group_title2">
-            <menu>
                 <item
                     android:id="@+id/nav_share"
-                    android:icon="@drawable/ic_menu_share"
+                    android:icon="@drawable/ic_menu_manage"
                     android:title="@string/item4" />
-                <item
-                    android:id="@+id/nav_send"
-                    android:icon="@drawable/ic_menu_send"
-                    android:title="@string/item5" />
-            </menu>
-        </item>
+            <!--</menu>-->
+        <!--</item>-->
     </group>
 </menu>
