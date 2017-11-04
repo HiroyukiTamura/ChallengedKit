@@ -27,12 +27,19 @@ public class AboutVPAdapter extends PagerAdapter {
     private LayoutInflater inflater;
     private String title0;
     private String title1;
+    private IAboutVPAdapter listener;
 
-    public AboutVPAdapter(@NonNull Context context){
+    public AboutVPAdapter(@NonNull Context context, IAboutVPAdapter listener){
         this.context = context;
+        this.listener = listener;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         title0 = context.getString(R.string.about_vp_title0);
         title1 = context.getString(R.string.about_vp_title1);
+    }
+
+    public interface IAboutVPAdapter{
+        void onClickLibItem();
+        void onClickLauncher();
     }
 
     public class Item0{
@@ -49,12 +56,12 @@ public class AboutVPAdapter extends PagerAdapter {
     public class Item1{
         @OnClick(R.id.ll0)
         void onClickLL0(){
-
+            listener.onClickLibItem();
         }
 
         @OnClick(R.id.ll1)
         void onClickLL1(){
-
+            listener.onClickLauncher();
         }
 
         @OnClick(R.id.ll2)
