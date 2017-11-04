@@ -15,6 +15,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
 
 /**
  * Created by hiroyuki2 on 2017/11/04.
@@ -24,12 +25,14 @@ public class AboutVPAdapter extends PagerAdapter {
     private static final int page = 2;
     private Context context;
     private LayoutInflater inflater;
-    @BindString(R.string.about_vp_title0) String title0;
-    @BindString(R.string.about_vp_title1) String title1;
+    private String title0;
+    private String title1;
 
     public AboutVPAdapter(@NonNull Context context){
         this.context = context;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        title0 = context.getString(R.string.about_vp_title0);
+        title1 = context.getString(R.string.about_vp_title1);
     }
 
     public class Item0{
@@ -44,7 +47,20 @@ public class AboutVPAdapter extends PagerAdapter {
     }
 
     public class Item1{
+        @OnClick(R.id.ll0)
+        void onClickLL0(){
 
+        }
+
+        @OnClick(R.id.ll1)
+        void onClickLL1(){
+
+        }
+
+        @OnClick(R.id.ll2)
+        void onCLickLL2(){
+
+        }
     }
 
     @NonNull
@@ -53,14 +69,15 @@ public class AboutVPAdapter extends PagerAdapter {
         View view = new View(context);
         switch (position){
             case 0:
-                view = inflater.inflate(R.layout.about_vp_item0, container, false);
+                view = inflater.inflate(R.layout.about_vp_item0, null);
                 ButterKnife.bind(new Item0(), view);
                 break;
             case 1:
-                view = inflater.inflate(R.layout.about_vp_item1, container, false);
+                view = inflater.inflate(R.layout.about_vp_item1, null);
                 ButterKnife.bind(new Item1(), view);
                 break;
         }
+        container.addView(view);
         return view;
     }
 

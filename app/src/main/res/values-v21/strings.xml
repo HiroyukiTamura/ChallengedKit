@@ -106,8 +106,8 @@
     <string name="tab_titel1">著作権表示</string>
     <string name="license">ライセンス</string>
     <string name="dev_msg">もし不具合や改善点、「こんな機能があったらいいな」といった要望などありましたら、ぜひぜひメールしてください。開発のヒントになるので、遠慮なくお願いします。</string>
-    <string name="dev_address">hirotamu3@gmail.com</string>
-    <string name="dev_name">田村浩幸</string>
+    <string name="dev_address">hiroyuktamura@gmail.com</string>
+    <string name="dev_name">田村 浩幸</string>
     <string name="overview">今後予定している改善点</string>
     <string name="beforeview">これまでの経過</string>
     <string name="overview_msg">・テンプレートの並び替え\n・初期起動時に操作説明を行う\n・祝日の反映\n・週の始まりの曜日を設定できるようにする</string>

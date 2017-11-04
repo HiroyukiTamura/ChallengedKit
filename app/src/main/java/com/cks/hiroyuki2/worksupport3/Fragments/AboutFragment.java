@@ -34,13 +34,12 @@ public class AboutFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new AboutVPAdapter();
     }
 
     @AfterViews
     public void afterViews(){
+        vp.setAdapter(new AboutVPAdapter(getContext()));
         tab.setupWithViewPager(vp);
-        vp.setAdapter(adapter);
     }
 
 //    @Click(R.id.mail)
