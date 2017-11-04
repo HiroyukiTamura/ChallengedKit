@@ -115,6 +115,9 @@
         0.0.9 : テストリリース
         \n0.0.10 : 軽微なバグの修正
     </string>
+    <string name="about_vp_title0">設定</string>
+    <string name="about_vp_title1">アバウト</string>
+    <string name="library">ライブラリ</string>
 
     <!--ログインまわり-->
     <string name="facebook_app_id">123697191641575</string>
@@ -265,4 +268,7 @@
     <string name="desc2">生活リズムや症状が出るパターンなど、記録を分析することができます。</string>
     <string name="title3">データをシェア</string>
     <string name="desc3">体調の記録のほか、スケジュール、画像や文書を共有できます。配慮事項や診察の日時など、様々なデータを共有しましょう。</string>
+    <string name="about_set_val1">チュートリアルアイコンを表示する</string>
+    <string name="launcher_icon">ランチャーアイコン</string>
+    <string name="illustration">イラスト</string>
 </resources>
