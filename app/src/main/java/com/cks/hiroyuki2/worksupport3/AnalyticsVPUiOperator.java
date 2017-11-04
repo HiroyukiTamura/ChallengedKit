@@ -730,12 +730,8 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         Pair<Integer, String> pair = new Pair<>(colorNum, value);
         if (legendList.contains(pair))
             return;
-        legendList.add(pair);
-        View tag = com.cks.hiroyuki2.worksupport3.Util.makeCircleAndTxt(analyticsFragment.getContext(), value, colorNum);
-        legendFl.addView(tag);
-        //タグが見切れている場合には隠す
-        if (legendFl.getBaseline() < tag.getBaseline())
-            tag.setVisibility(GONE);
+        if (!legendList.contains(pair))
+            legendList.add(pair);
     }
 
     @Override

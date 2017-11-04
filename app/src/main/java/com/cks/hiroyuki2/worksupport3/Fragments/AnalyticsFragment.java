@@ -110,7 +110,7 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
         vp.setCurrentItem(AnalyticsVPAdapter.PAGE/2);
         vp.setOffscreenPageLimit(2);
         vp.setOnPageChangeListener(this);
-        materialSheetFab = new MaterialSheetFab<>(fab, sheetView, overlay, fabSheetCol, fabColor);
+        materialSheetFab = new MaterialSheetFab<>(fab, sheetView, overlay, Color.WHITE, fabColor);
         editLegend(vp.getCurrentItem());
     }
 
