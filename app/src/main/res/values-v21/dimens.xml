@@ -26,6 +26,7 @@
     <dimen name="grid_padding">4dp</dimen>
     <dimen name="column_min_width">50dp</dimen>
     <dimen name="bottom_padding">4dp</dimen>
+    <dimen name="tooltip_margin_table">8dp</dimen>
 
     <!--analyticsまわり-->
     <dimen name="wof_width">40dp</dimen>

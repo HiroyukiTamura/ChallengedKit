@@ -6,7 +6,10 @@ package com.cks.hiroyuki2.worksupport3.Fragments;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -28,6 +31,7 @@ import com.cks.hiroyuki2.worksupport3.AnalyticsVPUiOperator;
 import com.cks.hiroyuki2.worksupport3.Fab;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.Util;
+import com.cks.hiroyuki2.worksupprotlib.UtilSpec;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
@@ -42,6 +46,8 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.ColorRes;
+import org.androidannotations.annotations.res.DimensionPixelSizeRes;
+import org.androidannotations.annotations.res.DrawableRes;
 import org.apmem.tools.layouts.FlowLayout;
 
 import java.util.HashMap;
@@ -68,6 +74,9 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
     @ViewById(R.id.fl) FlowLayout fl;
     @ColorRes(R.color.blue_gray) int fabSheetCol;
     @ColorRes(R.color.colorAccent) int fabColor;
+    @ColorRes(R.color.cardview_dark_background) int textColor;
+    @DimensionPixelSizeRes(R.dimen.tooltip_margin_table) int margin;
+    @DrawableRes(R.drawable.circle) Drawable circle;
     private OnHamburgerClickListener mListener;
     @FragmentArg("uid") public String uid;
     @FragmentArg("isMine") boolean isMine;
@@ -192,6 +201,12 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
     private void innerEditLegend(List<Pair<Integer, String>> legendList){
         for (Pair<Integer, String> pair: legendList) {
             View v = Util.makeCircleAndTxt(getContext(), pair.second, pair.first);
+            v.setPadding(margin, 0, margin, 0);
+            if (v == null)
+                continue;
+            TextView tv = v.findViewById(R.id.tv);
+            tv.setTextColor(textColor);
+            tv.setTextSize(18);
             fl.addView(v);
         }
     }
