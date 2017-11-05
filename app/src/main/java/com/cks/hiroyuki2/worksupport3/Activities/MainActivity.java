@@ -18,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.AppLaunchChecker;
@@ -34,6 +35,8 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -111,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @ViewById(R.id.nav_view) NavigationView navigationView;
     @ViewById(R.id.fragment_container_ll) LinearLayout container_outer;
     @ViewById(R.id.toolbar_shadow) View toolbarShadow;
+    @ViewById(R.id.fragment_container) FrameLayout fragContainer;
     @DimensionPixelSizeRes(R.dimen.toolbar_height) int toolbarHeight;
     @Extra String groupKey;
     @org.androidannotations.annotations.res.StringRes(R.string.ntf_channel) String channelName;
@@ -455,12 +459,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setToolBarVisibility(boolean toolbarVisibility){
-        appbar.setExpanded(toolbarVisibility);
-//        if (getSupportActionBar() != null)
-//            if (toolbarVisibility) {
-//                getSupportActionBar().show();
-//            } else
-//                getSupportActionBar().hide();
+        if (getSupportActionBar() != null)
+            if (toolbarVisibility) {
+                fragContainer.setPadding(0, toolbarHeight, 0, 0);
+                getSupportActionBar().show();
+            } else {
+                fragContainer.setPadding(0, 0, 0, 0);
+                getSupportActionBar().hide();
+            }
+
     }
     //endregion
 
