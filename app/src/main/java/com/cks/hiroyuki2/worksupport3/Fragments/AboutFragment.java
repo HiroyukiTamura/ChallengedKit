@@ -51,6 +51,7 @@ public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAd
                 .withLibraries("android-drag-FlowLayout", "autofittextview", "material_calendarview")
                 .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
                 .withActivityTitle(getString(R.string.license))
+                .withAboutAppName(getString(R.string.app_name))
                 .start(getContext());
     }
 

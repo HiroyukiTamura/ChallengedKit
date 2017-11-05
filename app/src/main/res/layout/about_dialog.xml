@@ -20,11 +20,13 @@
         <include layout="@layout/about_dialog_cont" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/ok"
             android:textColor="@color/colorAccent"
-            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:background="?android:attr/selectableItemBackground"
             android:layout_margin="16dp"
             android:id="@+id/ok"/>
 

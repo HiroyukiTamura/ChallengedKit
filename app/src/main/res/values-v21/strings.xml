@@ -117,7 +117,7 @@
     </string>
     <string name="about_vp_title0">設定</string>
     <string name="about_vp_title1">アバウト</string>
-    <string name="library">ライブラリ</string>
+    <string name="library">アプリ・ライブラリ</string>
 
     <!--ログインまわり-->
     <string name="facebook_app_id">123697191641575</string>
@@ -271,7 +271,7 @@
     <string name="about_set_val1">チュートリアルアイコンを表示する</string>
 
     <string name="launcher_icon">ランチャーアイコン</string>
-    <string name="illustration">イラスト</string>
+    <string name="illustration">画像</string>
     <string name="about_launcher_credit">designed by Dimi Kazak from Flaticon</string>
     <string name="about_analytics_credit">&lt;a href=&quot;http://www.freepik.com&quot;&gt;Designed by Photoroyalty / Freepik&lt;/a&gt;</string>
     <string name="about_input_credit">&lt;a href=&quot;http://www.freepik.com&quot;&gt;Designed by Freepik&lt;/a&gt;</string>
