@@ -1,0 +1,66 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.cks.hiroyuki2.worksupport3.Fragments.HelpFragment">
+
+    <!--<item-->
+        <!--android:id="@+id/nav_camera"-->
+        <!--android:icon="@drawable/ic_mode_edit_black_24dp"-->
+        <!--android:title="@string/item0" />-->
+    <!--<item-->
+        <!--android:id="@+id/nav_slideshow"-->
+        <!--android:icon="@drawable/ic_featured_play_list_black_24dp"-->
+        <!--android:title="@string/item1" />-->
+    <!--<item-->
+        <!--android:id="@+id/nav_manage"-->
+        <!--android:icon="@drawable/ic_insert_chart_black_24dp"-->
+        <!--android:title="@string/item2" />-->
+    <!--<item-->
+        <!--android:id="@+id/social"-->
+        <!--android:icon="@drawable/ic_menu_share"-->
+        <!--android:title="@string/item3" />-->
+    <!--<item-->
+        <!--android:id="@+id/nav_share"-->
+        <!--android:icon="@drawable/ic_menu_manage"-->
+        <!--android:title="@string/item4" />-->
+
+    <include layout="@layout/help_item" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/blue_gray" />
+
+    <include layout="@layout/help_item" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/blue_gray" />
+
+    <include layout="@layout/help_item" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/blue_gray" />
+
+    <include layout="@layout/help_item" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/blue_gray" />
+
+    <include layout="@layout/help_item" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/blue_gray" />
+
+    <include layout="@layout/help_item" />
+
+</LinearLayout>

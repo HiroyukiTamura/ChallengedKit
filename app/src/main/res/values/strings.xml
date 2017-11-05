@@ -13,4 +13,8 @@
     <string name="illustration">イラスト</string>
     <string name="about_launcher_credit">designed by Dimi Kazak from Flaticon</string>
     <string name="error_load_img">画像の読み込みに失敗しました</string>
+    <string name="title_activity_help">HelpActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
