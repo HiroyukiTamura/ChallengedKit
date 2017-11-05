@@ -245,14 +245,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            List<Fragment> list = getSupportFragmentManager().getFragments();
-            Log.d(TAG, "onBackPressed: " + list.toString());
-            if (getSupportFragmentManager().getBackStackEntryCount() > 1)
-                getSupportFragmentManager().popBackStack();
-            else
-                finish();//最初のFragmentだったらfinish()
+            return;
         }
+
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (fragment instanceof AnalyticsFragment){
+            if (((AnalyticsFragment) fragment).isSheetVisible()){
+                ((AnalyticsFragment) fragment).hideSheet();
+                return;
+            }
+        }
+
+        List<Fragment> list = getSupportFragmentManager().getFragments();
+        Log.d(TAG, "onBackPressed: " + list.toString());
+        if (getSupportFragmentManager().getBackStackEntryCount() > 1)
+            getSupportFragmentManager().popBackStack();
+        else
+            finish();//最初のFragmentだったらfinish()
     }
 
     @Override

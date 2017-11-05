@@ -4,6 +4,7 @@
 
 package com.cks.hiroyuki2.worksupport3.Activities;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
@@ -41,5 +42,18 @@ public class SharedDataViewActivity extends AppCompatActivity implements Analyti
     @Override
     public void onHamburgerClick() {
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (fragment instanceof AnalyticsFragment){
+            if (((AnalyticsFragment) fragment).isSheetVisible()){
+                ((AnalyticsFragment) fragment).hideSheet();
+                return;
+            }
+        }
+
+        super.onBackPressed();
     }
 }

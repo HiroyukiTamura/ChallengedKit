@@ -229,4 +229,12 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
         innerEditLegend(rangeLegendList);
         innerEditLegend(timeEveLegendList);
     }
+
+    public boolean isSheetVisible(){
+        return materialSheetFab.isSheetVisible();
+    }
+
+    public void hideSheet(){
+        materialSheetFab.hideSheet();
+    }
 }
