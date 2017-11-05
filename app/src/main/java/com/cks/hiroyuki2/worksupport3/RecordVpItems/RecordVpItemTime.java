@@ -139,25 +139,19 @@ public class RecordVpItemTime extends RecordVpItem {
     void onClickAddTimeEveBtn() {
         Bundle bundle = new Bundle();
         bundle.putInt(DATA_NUM, getDataNum());
-        TimeEvent timeEvent = new TimeEvent("", 0, getCopyOfCal(), 0);
+        TimeEvent timeEvent = new TimeEvent("", 0, com.cks.hiroyuki2.worksupport3.Util.getCopyOfCal(getCal()), 0);
         bundle.putSerializable(TIME_EVENT, timeEvent);
         kickTimePickerDialog(DIALOG_TAG_ITEM_ADD, CALLBACK_ITEM_ADD, bundle, getFragment());
     }
 
     @OnClick(R.id.add_range)
     void onClickAddRangeBtn() {
-        TimeEvent start = new TimeEvent("起床", 0, getCopyOfCal(), 0);
-        TimeEvent end = new TimeEvent("就寝", 0, getCopyOfCal(), 0);
+        TimeEvent start = new TimeEvent("起床", 0, com.cks.hiroyuki2.worksupport3.Util.getCopyOfCal(getCal()), 0);
+        TimeEvent end = new TimeEvent("就寝", 0, com.cks.hiroyuki2.worksupport3.Util.getCopyOfCal(getCal()), 0);
         TimeEventRange range = new TimeEventRange(start, end);
 
         addRangeItem(range, rangePairList.size());
         addRangeToList(range);
-    }
-
-    private Calendar getCopyOfCal(){
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(getCal().getTime());
-        return cal;
     }
 
     public void updateTime(@IntRange(from = 0) int dataNum, TimeEvent timeEvent) {

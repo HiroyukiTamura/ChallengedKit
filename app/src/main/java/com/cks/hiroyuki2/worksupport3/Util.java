@@ -39,6 +39,7 @@ import org.jetbrains.annotations.Contract;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Calendar;
 import java.util.List;
 
 import static com.cks.hiroyuki2.worksupprotlib.Util.NOTIFICATION_CHANNEL;
@@ -153,5 +154,12 @@ public class Util {
         ImageView iv = view.findViewById(R.id.circle);
         iv.getDrawable().mutate().setColorFilter(color, PorterDuff.Mode.SRC);
         return view;
+    }
+
+    // TODO: 2017/11/04 Libに移植すること
+    public static Calendar getCopyOfCal(Calendar target){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(target.getTime());
+        return cal;
     }
 }

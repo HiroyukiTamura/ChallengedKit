@@ -412,7 +412,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         supportInvalidateOptionsMenu();
 
         if (attachedFrag instanceof RecordFragment){
-            innerInitToolBar(false, R.string.app_name, true);
+            innerInitToolBar(false, 0, true);//タイトルはRecordFragment側でいじる
             fab.hide();
         } else if (attachedFrag instanceof AboutFragment){
             innerInitToolBar(true, R.string.item4, true);

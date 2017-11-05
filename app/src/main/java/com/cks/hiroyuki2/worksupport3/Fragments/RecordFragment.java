@@ -6,6 +6,7 @@ package com.cks.hiroyuki2.worksupport3.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupport3.Adapters.RecordTabVPAdapter;
 import com.cks.hiroyuki2.worksupport3.Adapters.RecordVPAdapter;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
@@ -47,9 +49,11 @@ import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter.CA
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickCircleAndInputDialog;
 import static com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemTime.CALLBACK_RANGE_COLOR;
 import static com.cks.hiroyuki2.worksupprotlib.Util.date2Cal;
+import static com.cks.hiroyuki2.worksupprotlib.Util.datePattern;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 //import static com.cks.hiroyuki2.worksupprotlib.Util.KEY;
 import static com.cks.hiroyuki2.worksupprotlib.Util.INDEX;
+import static com.cks.hiroyuki2.worksupprotlib.Util.time2String;
 
 
 @EFragment(R.layout.record_vp_content)
@@ -78,11 +82,13 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
     @FragmentArg int dayMed;
     private Calendar cal = Calendar.getInstance();
     private Context context;
+    private SharedPreferences pref;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         cal.set(yearMed, monMed, dayMed);
+        pref = context.getSharedPreferences(Util.PREF_NAME, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -242,8 +248,32 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
     @PageSelected(R.id.tab)
-    void onTabVpSelected(){
-        Log.d(TAG, "onTabVpSelected() called");
+    public void onTabVpSelected(){
+        Calendar opeCal = null;
+        if (tabVPAdapter.currentItem != null){
+            int tag = (int)tabVPAdapter.currentItem.getTag();
+            try {
+                Calendar calC = Util.date2Cal(Integer.toString(tag), datePattern);
+                opeCal = com.cks.hiroyuki2.worksupport3.Util.getCopyOfCal(calC);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return;
+            }
+        } else {
+//            tabVPAdapter.currentItem == null、つまり初回動作時
+            opeCal = com.cks.hiroyuki2.worksupport3.Util.getCopyOfCal(cal);
+        }
+
+        int monthBf = opeCal.get(Calendar.MONTH)+1;//monthは0始まりだから
+        opeCal.add(Calendar.DATE, 7);
+        int monthAf = opeCal.get(Calendar.MONTH)+1;
+
+        String s = monthBf + "月";
+        if (monthBf != monthAf){
+            s = s +" → "+ monthAf + "月";
+        }
+
+        ((MainActivity)getActivity()).setToolbarTitle(s);
     }
 
     @Override
