@@ -17,6 +17,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.AppLaunchChecker;
@@ -103,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private LoginCheck check;
 //    private MultiplePermissionsListener listener;
 
+    @ViewById(R.id.appbar) AppBarLayout appbar;
     @ViewById(R.id.toolbar) public Toolbar toolbar;
     @ViewById(R.id.fab) public FloatingActionButton fab;
     @ViewById(R.id.drawer_layout) DrawerLayout drawer;
@@ -423,7 +425,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (attachedFrag instanceof SocialFragment){
             innerInitToolBar(true, R.string.item3, true);
         } else if (attachedFrag instanceof AnalyticsFragment) {
-            innerInitToolBar(true, 0, false);
+            innerInitToolBar(false, 0, false);
             fab.hide();
         } else if (attachedFrag instanceof SettingFragment) {
             innerInitToolBar(true, R.string.setting_toolbar_title, true);
@@ -453,11 +455,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setToolBarVisibility(boolean toolbarVisibility){
-        if (getSupportActionBar() != null)
-            if (toolbarVisibility) {
-                getSupportActionBar().show();
-            } else
-                getSupportActionBar().hide();
+        appbar.setExpanded(toolbarVisibility);
+//        if (getSupportActionBar() != null)
+//            if (toolbarVisibility) {
+//                getSupportActionBar().show();
+//            } else
+//                getSupportActionBar().hide();
     }
     //endregion
 

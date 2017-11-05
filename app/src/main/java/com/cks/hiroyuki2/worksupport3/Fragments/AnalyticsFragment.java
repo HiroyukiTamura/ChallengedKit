@@ -192,7 +192,7 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
 
     @Override
     public void onScrollChanged(HorizontalScrollView scrollView, int x, int y, int oldx, int oldy) {
-        if (x != 0){
+        if (x >= 0){
             fab.hide();
         } else {
             fab.show();
@@ -214,6 +214,7 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
 
     @Override
     public void onPageSelected(int position) {
+        fl.removeAllViews();
         editLegend(position);
     }
 

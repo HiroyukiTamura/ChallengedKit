@@ -121,13 +121,11 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     private ArrayList<ILineDataSet> lines = new ArrayList<> ();
     private ArrayList<Calendar> loadCal;
     private int verticalRowPad;
-    private List<RecordData> tempateList;
     private Calendar startCal;
     private LayoutInflater inflater;
     private AnalyticsFragment analyticsFragment;
     private List<Pair<Integer, String>> legendListForRange = new ArrayList<>();
     private List<Pair<Integer, String>> legendListForTimeEve = new ArrayList<>();
-//    private int rangeNum;
     private ScrollViewListener listener;
     private List<Pair<String, Integer>> columnList = new ArrayList<>();//firstにはdataNameが、secondにはdataTypeが代入される。ただし、dataType==1の場合はcolumnTimeListに"start.name → end.name"として追加する
     private List<String> columnTimeList = new ArrayList<>();
@@ -138,11 +136,6 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         this.root = root.get();
         this.startCal = startCal;
         this.analyticsFragment = analyticsFragment;
-        tempateList = TemplateEditor.deSerialize(analyticsFragment.getContext());
-        if (tempateList == null) {
-            onError(analyticsFragment, "tempateList == null", R.string.error);
-            return;
-        }
 
         if (analyticsFragment instanceof ScrollViewListener){
             listener = (ScrollViewListener) analyticsFragment;
@@ -150,7 +143,6 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
 
         initParams();
         setDate();
-//        setColumns();
         initData(startCal.getTime());
         configChart();
     }
