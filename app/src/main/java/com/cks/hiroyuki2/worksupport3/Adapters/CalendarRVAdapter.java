@@ -161,11 +161,4 @@ public class CalendarRVAdapter extends RecyclerView.Adapter<CalendarRVAdapter.Vi
         Set<Integer> set = treeMap.keySet();
         return new ArrayList<>(set).indexOf(date);
     }
-
-    @NonNull
-    public static String cal2DateWithSlash(@NonNull Calendar cal, @NonNull Context context){
-        String md = cal2date(cal, DATE_PATTERN_SLASH_MD);
-        String[] dof = context.getResources().getStringArray(R.array.dof);
-        return md +" "+ dof[cal.get(Calendar.DAY_OF_WEEK)];
-    }
 }
