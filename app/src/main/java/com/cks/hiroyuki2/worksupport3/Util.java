@@ -136,30 +136,4 @@ public class Util {
                 .withListener(listener)
                 .check();
     }
-
-    // TODO: 2017/11/04 Libに移植すること 
-    @Contract("null, _, _ -> null")
-    @Nullable
-    public static View makeCircleAndTxt(@Nullable Context context, @NonNull String value, int colorNum){
-        if (context == null) return null;
-        
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE); 
-        if (inflater == null) return null;
-        
-        View view = inflater.inflate(R.layout.analytics_table_tag, null);
-        TextView tv = view.findViewById(R.id.tv);
-        tv.setText(value);
-        int colorId = UtilSpec.colorId.get(colorNum);
-        int color = ContextCompat.getColor(context, colorId);
-        ImageView iv = view.findViewById(R.id.circle);
-        iv.getDrawable().mutate().setColorFilter(color, PorterDuff.Mode.SRC);
-        return view;
-    }
-
-    // TODO: 2017/11/04 Libに移植すること
-    public static Calendar getCopyOfCal(Calendar target){
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(target.getTime());
-        return cal;
-    }
 }
