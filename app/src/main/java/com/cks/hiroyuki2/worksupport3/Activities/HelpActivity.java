@@ -11,6 +11,7 @@ import android.view.View;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.HelpFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.HelpFragment_;
 import com.cks.hiroyuki2.worksupport3.R;
 
 import org.androidannotations.annotations.AfterViews;

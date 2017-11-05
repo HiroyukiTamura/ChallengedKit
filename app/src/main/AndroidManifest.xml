@@ -120,9 +120,14 @@
             android:label="@string/title_activity_tutorial"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.HelpActivity"
+            android:name=".Activities.HelpActivity_"
             android:label="@string/title_activity_help"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:parentActivityName=".Activities.MainActivity_"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="Activities.MainActivity_" />
+        </activity>
     </application>
 
 </manifest>
