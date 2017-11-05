@@ -82,6 +82,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.time2String;
 import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.colorId;
 import com.cks.hiroyuki2.worksupprotlib.RecordDataUtil;
+import com.google.gson.Gson;
 
 /**
  * AnalyticsVPAdapterのお助けやくおじさん！みんな協力して働くんだね！
@@ -96,9 +97,10 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     @BindView(R.id.chart) LineChart chart;
     @BindView(R.id.scroll) HorizontalScrollView hsv;
     @BindView(R.id.table) LinearLayout tableLL;
+    @BindView(R.id.table_time) LinearLayout tableTime;
     @BindView(R.id.date_tv) TextView dateTv;
     @BindView(R.id.left_screen) LinearLayout leftLL;
-    @BindView(R.id.legend_fl) FlowLayout legendFl;
+//    @BindView(R.id.legend_fl) FlowLayout legendFl;
     @BindDimen(R.dimen.column_min_width) int columnMinWidth;
     @BindDimen(R.dimen.grid_padding) int padding;
     @BindDimen(R.dimen.legend_total_height) int legendHeight;
@@ -125,8 +127,10 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     private AnalyticsFragment analyticsFragment;
     private List<Pair<Integer, String>> legendListForRange = new ArrayList<>();
     private List<Pair<Integer, String>> legendListForTimeEve = new ArrayList<>();
-    private int rangeNum;
+//    private int rangeNum;
     private ScrollViewListener listener;
+    private List<Pair<String, Integer>> columnList = new ArrayList<>();//firstにはdataNameが、secondにはdataTypeが代入される。ただし、dataType==1の場合はcolumnTimeListに"start.name → end.name"として追加する
+    private List<String> columnTimeList = new ArrayList<>();
 
     public AnalyticsVPUiOperator(WeakReference<View> root, Calendar startCal, AnalyticsFragment analyticsFragment){
         ButterKnife.bind(this, root.get());
@@ -146,7 +150,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
 
         initParams();
         setDate();
-        setColumns();
+//        setColumns();
         initData(startCal.getTime());
         configChart();
     }
@@ -174,58 +178,32 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         dateTv.setText(title);
     }
 
-    private void setColumns(){
+    private void setParamsCulumn(RecordData data){
+        LinearLayout column = makeColumn();
+        tableLL.addView(column);
+        //まず大項目を追加
+        TextView bigArticleCell = setLegendBigCellOfParams(data.dataName);
+        column.addView(bigArticleCell);
+        //次に小項目を追加
+        LinearLayout bigColumn = makeBigArticleColumn();
+        column.addView(bigColumn);
 
-        RecordData timeLine = Util.getRecordDataByType(tempateList, 1);
-        TimeEventDataSet dataSet = getTimeEveDataSetFromRecordData(timeLine);
-        if (dataSet != null){
-            rangeNum = dataSet.getRangeList().size();
-            for (TimeEventRange range: dataSet.getRangeList()) {
-                String name = range.getStart().getName() + "→" + range.getEnd().getName();
-                setNormalColumn(name);
-            }
-        }
+        for (String key : data.data.keySet()) {
+            LinearLayout smallColumn = (LinearLayout) inflater.inflate(R.layout.analytics_columun, bigColumn, false);
+            bigColumn.addView(smallColumn);
+            String value = (String) data.data.get(key);
+            if (value == null) continue;
+            String smlArticle = value.split(delimiter)[1];
 
-        for (int m=0; m<tempateList.size(); m++) {
-
-            RecordData data = tempateList.get(m);
-            switch (data.dataType){
-                case 2:
-                case 4://タグプール
-                    setNormalColumn(data.dataName);
-                    break;
-
-                case 3://params
-                {
-                    LinearLayout column = makeColumn();
-                    tableLL.addView(column);
-                    //まず大項目を追加
-                    TextView bigArticleCell = setLegendBigCellOfParams(data.dataName);
-                    column.addView(bigArticleCell);
-                    //次に小項目を追加
-                    LinearLayout bigColumn = makeBigArticleColumn();
-                    column.addView(bigColumn);
-
-                    for (String key : data.data.keySet()) {
-                        LinearLayout smallColumn = (LinearLayout) inflater.inflate(R.layout.analytics_columun, bigColumn, false);
-                        bigColumn.addView(smallColumn);
-                        String value = (String) data.data.get(key);
-                        if (value == null) continue;
-                        String smlArticle = value.split(delimiter)[1];
-
-                        TextView smallCell = smallColumn.findViewById(R.id.legend_cell);
-                        smallCell.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, legendHeight / 2));
-                        smallCell.setText(smlArticle);
-                    }
-                }
-                    break;
-            }
+            TextView smallCell = smallColumn.findViewById(R.id.legend_cell);
+            smallCell.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, legendHeight / 2));
+            smallCell.setText(smlArticle);
         }
     }
 
-    private void setNormalColumn(String columnName){
-        LinearLayout column = (LinearLayout) inflater.inflate(R.layout.analytics_columun, tableLL, false);
-        tableLL.addView(column);
+    private void setNormalColumn(String columnName, LinearLayout table){
+        LinearLayout column = (LinearLayout) inflater.inflate(R.layout.analytics_columun, table, false);
+        table.addView(column);
         TextView legendCell = column.findViewById(R.id.legend_cell);
         if (columnName.length() > COLUMN_NAME_LINE_LIMIT)
             legendCell.setLines(2);
@@ -369,17 +347,53 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     }
 
     private void drawData(List<RecordData> list, int dataRow){
-        int count = rangeNum;
+
+        RecordData timeLine = Util.getRecordDataByType(list, 1);
+        TimeEventDataSet dataSet = Util.getTimeEveDataSetFromRecordData(timeLine);
+
+        //まずTimeのカラムを追加
+        if (dataSet != null)
+            for (TimeEventRange range: dataSet.getRangeList()) {
+                String name = range.getStart().getName() +" → "+ range.getEnd().getName();
+                if (columnTimeList.contains(name))
+                    continue;
+                columnTimeList.add(name);
+                setNormalColumn(name, tableTime);
+            }
+
+
+        //次にそれ以外のカラムを追加
+        for (RecordData data : list) {
+            if (data.getDataType() == 0 || data.getDataType() == 1)
+                continue;
+
+            Pair<String, Integer> pair = new Pair<>(data.getDataName(), data.getDataType());
+            if (columnList.contains(pair))
+                continue;
+
+            if (data.getDataType() == 2 || data.getDataType() == 4){
+                setNormalColumn(data.dataName, tableLL);
+                columnList.add(pair);
+            } else if (data.getDataType() == 3){
+                setParamsCulumn(data);
+                columnList.add(pair);
+            }
+        }
+
+
+//        int count = 0;
         for (RecordData data: list) {
             if (data.dataType == 0)
                 continue;
 
             if ((data.data == null || data.data.isEmpty())
                     && (data.dataType == 2 || data.dataType == 3 || data.dataType == 4)) {
-                count++;
+//                count++;
                 continue;
             }
 
+            Pair<String, Integer> pair = new Pair<>(data.dataName, data.dataType);
+            int count = columnList.indexOf(pair);
             LinearLayout column = (LinearLayout) tableLL.getChildAt(count);
 
             if (data.dataType == 1){
@@ -388,18 +402,18 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
             } else if (data.dataType == 2) {
                 FlowLayout fl = (FlowLayout) column.getChildAt(dataRow+1);//一行目は項目名
                 addTag2Fl(data, fl);
-                count++;
+//                count++;
 
             } else if (data.dataType == 3){//params
                 addParams2Fl(data, column, dataRow);
-                count++;
+//                count++;
 
             } else if (data.dataType == 4){
 //                FlowLayout fl = (FlowLayout) column.getChildAt(dataRow+1);//一行目は項目名
 //                TextView tv = createCommentTv(data);
 //                fl.addView(tv);
                 addComment2Fl(column, dataRow, data);
-                count++;
+//                count++;
             }
         }
     }
@@ -439,7 +453,9 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
             BigDecimal bigDecimal = BigDecimal.valueOf(hourLong);
             String hourStr = bigDecimal.setScale(0, BigDecimal.ROUND_HALF_UP).toString() + "h";
 
-            FlowLayout fl = (FlowLayout) ((ViewGroup)tableLL.getChildAt(i)).getChildAt(dataRow+1);
+            String str = range.getStart().getName() + " → " + range.getEnd().getName();
+            int num = columnTimeList.indexOf(str);
+            FlowLayout fl = (FlowLayout) ((ViewGroup)tableTime.getChildAt(num)).getChildAt(dataRow+1);
             TextView tv = createNormalTv();
             tv.setText(hourStr);
             fl.addView(tv);
@@ -516,7 +532,6 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
     }
     //endregion
 
-
     //region dataType == 2 系列
     private void addTag2Fl(RecordData data, FlowLayout fl){
         List<View> tagList = new LinkedList<>();
@@ -525,7 +540,7 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
             String strings[] = s.split(delimiter);
             if (strings[2].equals(Boolean.toString(false)))
                 continue;
-            final View view = com.cks.hiroyuki2.worksupport3.Util.makeCircleAndTxt(analyticsFragment.getContext(), strings[0], Integer.parseInt(strings[1]));
+            final View view = Util.makeCircleAndTxt(analyticsFragment.getContext(), strings[0], Integer.parseInt(strings[1]));
             tagList.add(view);
         }
         new AnalyticsTagpoolObserver(fl, tagList);
@@ -664,14 +679,14 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         chart.setViewPortOffsets(defChardPadding, 0, defChardPadding, 0);
         chart.invalidate();
 
-        setLegendLayoutPrams();
+//        setLegendLayoutPrams();
     }
 
-    private void setLegendLayoutPrams(){
-        RelativeLayout.LayoutParams lp = (new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (chart.getHeight()+defChardPadding*2)/(7*2)));
-        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        legendFl.setLayoutParams(lp);
-    }
+//    private void setLegendLayoutPrams(){
+//        RelativeLayout.LayoutParams lp = (new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (chart.getHeight()+defChardPadding*2)/(7*2)));
+//        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+//        legendFl.setLayoutParams(lp);
+//    }
 
     @NonNull
     private String createHighLightVal(TimeEventRange range){
@@ -712,7 +727,6 @@ public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatte
         chart.getDescription().setEnabled(false);
 
         chart.setOnChartValueSelectedListener(this);
-        chart.setHighlightPerTapEnabled(true);
     }
 
     private void setLegend(@NonNull TimeEventDataSet timeEveSet){

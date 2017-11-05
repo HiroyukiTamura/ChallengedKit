@@ -28,7 +28,7 @@ import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.Adapters.AnalyticsVPAdapter;
 import com.cks.hiroyuki2.worksupport3.AnalyticsVPUiOperator;
-import com.cks.hiroyuki2.worksupport3.Fab;
+import com.cks.hiroyuki2.worksupprotlib.Fab;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.Util;
 import com.cks.hiroyuki2.worksupprotlib.UtilSpec;
@@ -57,6 +57,7 @@ import fr.castorflex.android.verticalviewpager.VerticalViewPager;
 
 import static com.cks.hiroyuki2.worksupprotlib.Util.IS_DATA_MINE;
 import static com.cks.hiroyuki2.worksupprotlib.Util.UID;
+import static com.cks.hiroyuki2.worksupprotlib.Util.makeCircleAndTxt;
 import static com.cks.hiroyuki2.worksupprotlib.Util.time2String;
 
 @EFragment(R.layout.analytics_vp)
@@ -200,7 +201,7 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
 
     private void innerEditLegend(List<Pair<Integer, String>> legendList){
         for (Pair<Integer, String> pair: legendList) {
-            View v = Util.makeCircleAndTxt(getContext(), pair.second, pair.first);
+            View v = makeCircleAndTxt(getContext(), pair.second, pair.first);
             v.setPadding(margin, 0, margin, 0);
             if (v == null)
                 continue;

@@ -66,32 +66,48 @@
 
             </LinearLayout>
 
-            <RelativeLayout
+            <!--<RelativeLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0dp"-->
+                <!--android:layout_weight="1" >-->
+
+                <!--<com.github.mikephil.charting.charts.LineChart-->
+                    <!--android:id="@+id/chart"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent" />-->
+
+                <!--<org.apmem.tools.layouts.FlowLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:paddingTop="4dp"-->
+                    <!--android:layout_alignParentBottom="true"-->
+                    <!--android:id="@+id/legend_fl" />-->
+
+            <!--</RelativeLayout>-->
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chart"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" >
-
-                <com.github.mikephil.charting.charts.LineChart
-                    android:id="@+id/chart"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <org.apmem.tools.layouts.FlowLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="4dp"
-                    android:layout_alignParentBottom="true"
-                    android:id="@+id/legend_fl" />
-
-            </RelativeLayout>
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:id="@+id/table">
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:id="@+id/table_time" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:id="@+id/table" />
 
         </LinearLayout>
 

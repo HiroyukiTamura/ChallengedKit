@@ -254,14 +254,14 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
             int tag = (int)tabVPAdapter.currentItem.getTag();
             try {
                 Calendar calC = Util.date2Cal(Integer.toString(tag), datePattern);
-                opeCal = com.cks.hiroyuki2.worksupport3.Util.getCopyOfCal(calC);
+                opeCal = Util.getCopyOfCal(calC);
             } catch (ParseException e) {
                 e.printStackTrace();
                 return;
             }
         } else {
 //            tabVPAdapter.currentItem == null、つまり初回動作時
-            opeCal = com.cks.hiroyuki2.worksupport3.Util.getCopyOfCal(cal);
+            opeCal = Util.getCopyOfCal(cal);
         }
 
         int monthBf = opeCal.get(Calendar.MONTH)+1;//monthは0始まりだから
