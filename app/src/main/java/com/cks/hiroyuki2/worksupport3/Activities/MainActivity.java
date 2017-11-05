@@ -346,6 +346,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .build());
         } else if (id == R.id.nav_share) {
             changeContentFragment(AboutFragment_.builder().build());
+        } else if (id == R.id.menu_help) {
+            Intent i = new Intent(this, HelpActivity_.class);
+            startActivity(i);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

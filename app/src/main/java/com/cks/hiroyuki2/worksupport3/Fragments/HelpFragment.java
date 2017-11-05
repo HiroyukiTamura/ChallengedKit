@@ -1,6 +1,7 @@
 package com.cks.hiroyuki2.worksupport3.Fragments;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -23,6 +24,24 @@ public class HelpFragment extends Fragment implements View.OnClickListener{
 
     private final static int[] valRess = {R.string.item0, R.string.item1, R.string.item2, R.string.item3, R.string.item4};
     private final static int[] ImgRess = {R.drawable.ic_mode_edit_black_24dp, R.drawable.ic_featured_play_list_black_24dp, R.drawable.ic_insert_chart_black_24dp, R.drawable.ic_menu_share, R.drawable.ic_menu_manage};
+    private IHelpFragment listener;
+
+    interface IHelpFragment{
+        void onClickItem(int tag);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof IHelpFragment)
+            listener = (IHelpFragment) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
 
     @AfterViews
     void afterViews(){
@@ -43,5 +62,6 @@ public class HelpFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View view) {
         int tag = (int) view.getTag();
+        listener.onClickItem(tag);
     }
 }

@@ -117,9 +117,6 @@ public class RecordVpItemTime extends RecordVpItem {
     public View buildView() {
         View view = getFragment().getLayoutInflater().inflate(R.layout.record_vp_item_timeline2, null);
         ButterKnife.bind(this, view);
-        if (getFragment() instanceof RecordFragment) {
-            addRange.setVisibility(View.GONE);
-        }
         dataSet = getTimeEveDataSetFromRecordData(getData());
         if (dataSet == null)
             return null;
