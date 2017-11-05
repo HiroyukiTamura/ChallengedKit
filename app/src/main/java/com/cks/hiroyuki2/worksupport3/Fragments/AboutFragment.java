@@ -31,6 +31,8 @@ public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAd
     private AboutVPAdapter adapter;
     public static final String TAG_LAUNCHER_ICON = "TAG_LAUNCHER_ICON";
     public static final int CALLBACK_LAUNCHER_ICON = 198937;
+    public static final String TAG_ILLUSTRATION ="TAG_ILLUSTRATION";
+    public static final int CALLBACK_TAG_ILLUST = 198938;
     @ViewById(R.id.vp) ViewPager vp;
     @ViewById(R.id.tab) TabLayout tab;
 
@@ -59,6 +61,13 @@ public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAd
         Bundle bundle = new Bundle();
         bundle.putString("from", TAG_LAUNCHER_ICON);
         DialogKicker.kickDialogInOnClick(TAG_LAUNCHER_ICON, CALLBACK_LAUNCHER_ICON, bundle, this);
+    }
+
+    @Override
+    public void onClickIllustration() {
+        Bundle bundle = new Bundle();
+        bundle.putString("from", TAG_ILLUSTRATION);
+        DialogKicker.kickDialogInOnClick(TAG_ILLUSTRATION, CALLBACK_TAG_ILLUST, bundle, this);
     }
 
     //    @Click(R.id.mail)

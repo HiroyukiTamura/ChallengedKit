@@ -40,6 +40,7 @@ public class AboutVPAdapter extends PagerAdapter {
     public interface IAboutVPAdapter{
         void onClickLibItem();
         void onClickLauncher();
+        void onClickIllustration();
     }
 
     public class Item0{
@@ -66,7 +67,7 @@ public class AboutVPAdapter extends PagerAdapter {
 
         @OnClick(R.id.ll2)
         void onCLickLL2(){
-
+            listener.onClickIllustration();
         }
     }
 

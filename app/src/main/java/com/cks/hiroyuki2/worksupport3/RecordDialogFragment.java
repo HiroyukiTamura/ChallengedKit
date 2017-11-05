@@ -194,9 +194,24 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
                         .setMessage("「"+ user.getName() +"」さんをグループから退会させますか？");
                 break;}
             case AboutFragment.TAG_LAUNCHER_ICON:{
-                builder.setView(R.layout.about_dialog_launcher)
-                        .setPositiveButton(R.string.ok, this)
-                        .show();
+                View v = getActivity().getLayoutInflater().inflate(R.layout.about_dialog_launcher, null);
+                v.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dismiss();
+                    }
+                });
+                builder.setView(v);
+                break;}
+            case AboutFragment.TAG_ILLUSTRATION:{
+                View v = getActivity().getLayoutInflater().inflate(R.layout.about_dialog_launcher, null);
+                v.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dismiss();
+                    }
+                });
+                builder.setView(v);
                 break;}
         }
         return builder.create();
