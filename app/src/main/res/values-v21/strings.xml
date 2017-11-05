@@ -269,7 +269,11 @@
     <string name="title3">データをシェア</string>
     <string name="desc3">体調の記録のほか、スケジュール、画像や文書を共有できます。配慮事項や診察の日時など、様々なデータを共有しましょう。</string>
     <string name="about_set_val1">チュートリアルアイコンを表示する</string>
+
     <string name="launcher_icon">ランチャーアイコン</string>
     <string name="illustration">イラスト</string>
     <string name="about_launcher_credit">designed by Dimi Kazak from Flaticon</string>
+    <string name="about_analytics_credit">&lt;a href=&quot;http://www.freepik.com&quot;&gt;Designed by Photoroyalty / Freepik&lt;/a&gt;</string>
+    <string name="about_input_credit">&lt;a href=&quot;http://www.freepik.com&quot;&gt;Designed by Freepik&lt;/a&gt;</string>
+    <string name="about_meeting_credit">&lt;a href=&quot;http://www.freepik.com&quot;&gt;Designed by Freepik&lt;/a&gt;</string>
 </resources>

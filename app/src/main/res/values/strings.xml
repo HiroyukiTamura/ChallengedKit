@@ -12,4 +12,5 @@
     <string name="launcher_icon">ランチャーアイコン</string>
     <string name="illustration">イラスト</string>
     <string name="about_launcher_credit">designed by Dimi Kazak from Flaticon</string>
+    <string name="error_load_img">画像の読み込みに失敗しました</string>
 </resources>

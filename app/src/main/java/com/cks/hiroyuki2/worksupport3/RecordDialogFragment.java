@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -18,6 +19,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,6 +48,8 @@ import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.cks.hiroyuki2.worksupprotlib.UtilDialog;
 import com.cks.hiroyuki2.worksupprotlib.UtilSpec;
 import com.cks.hiroyuki2.worksupprotlib.RecordDataUtil;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import org.apmem.tools.layouts.FlowLayout;
 
@@ -55,6 +59,7 @@ import java.util.List;
 
 import cn.refactor.library.SmoothCheckBox;
 
+import static android.text.Html.FROM_HTML_MODE_COMPACT;
 import static com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment.GROUP;
 import static com.cks.hiroyuki2.worksupprotlib.Util.LIST_MAP_VALUE;
 import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
@@ -194,27 +199,58 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
                         .setMessage("「"+ user.getName() +"」さんをグループから退会させますか？");
                 break;}
             case AboutFragment.TAG_LAUNCHER_ICON:{
-                View v = getActivity().getLayoutInflater().inflate(R.layout.about_dialog_launcher, null);
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dismiss();
-                    }
-                });
-                builder.setView(v);
-                break;}
-            case AboutFragment.TAG_ILLUSTRATION:{
-                View v = getActivity().getLayoutInflater().inflate(R.layout.about_dialog_launcher, null);
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dismiss();
-                    }
-                });
-                builder.setView(v);
+                builder.setView(setAboutDialog());
                 break;}
         }
         return builder.create();
+    }
+
+    private View setAboutDialog(){
+        View v = getActivity().getLayoutInflater().inflate(R.layout.about_dialog, null);
+        LinearLayout container = v.findViewById(R.id.container);
+
+        for (int i = 0; i < container.getChildCount(); i++) {
+            int imgRes = 0;
+            String string = null;
+            TextView tv = container.getChildAt(i).findViewById(R.id.tv);
+            switch (i){
+                case 0:
+                    imgRes = R.drawable.mixer;
+                    tv.setText(R.string.about_launcher_credit);
+                    break;
+                case 1:
+                    imgRes = R.drawable.tutorial_input;
+                    tv.setText(Html.fromHtml(getString(R.string.about_input_credit)));
+                    break;
+                case 2:
+                    imgRes = R.drawable.tutorial_analytics;
+                    tv.setText(Html.fromHtml(getString(R.string.about_analytics_credit)));
+                    break;
+                case 3:
+                    imgRes = R.drawable.tutorial_meeting;
+                    tv.setText(Html.fromHtml(getString(R.string.about_meeting_credit)));
+                    break;
+                default://ここには来ないはず
+                    continue;
+            }
+
+            ImageView iv = container.getChildAt(i).findViewById(R.id.iv);
+            final TextView tvError = container.getChildAt(i).findViewById(R.id.error_tv);
+            Picasso.with(getContext())
+                    .load(imgRes)
+                    .into(iv, new Callback() {
+                        @Override
+                        public void onSuccess() {}
+
+                        @Override
+                        public void onError() {
+                            tvError.setVisibility(View.VISIBLE);
+                        }
+                    });
+        }
+
+        v.findViewById(R.id.ok).setOnClickListener(this);
+        return v;
     }
 
     private TextWatcher createTw(AlertDialog dialog, View rootView, List<String> multiList){
@@ -403,6 +439,11 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
     @Override
     public void onClick(View view) {
         Log.d(TAG, "onClick: fire");
+
+        if (from.equals(AboutFragment.TAG_LAUNCHER_ICON)){
+            dismiss();
+            return;
+        }
 
         if (!(/*from.equals(CalenderFragment.EDIT_TAG) || from.equals(RecordVPAdapter.HEADER_TAG_EDIT) ||*/ from.equals(Util.TEMPLATE_TAG_EDIT)))
             return;
