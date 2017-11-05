@@ -7,6 +7,7 @@ package com.cks.hiroyuki2.worksupport3.Activities;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
@@ -44,5 +45,13 @@ public class GroupSettingActivity extends AppCompatActivity {
         FragmentTransaction t = getSupportFragmentManager().beginTransaction();
         GroupSettingFragment fragment = GroupSettingFragment.newInstance(group);
         t.add(R.id.fragment_container, fragment).commit();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            super.onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

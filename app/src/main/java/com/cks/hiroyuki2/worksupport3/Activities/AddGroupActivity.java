@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.AddGroupFragment;
@@ -20,6 +21,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
@@ -82,5 +84,13 @@ public class AddGroupActivity extends AppCompatActivity implements AddGroupFragm
         intent.putParcelableArrayListExtra(KEY_PARCELABLE, (ArrayList<? extends Parcelable>) fragment.userAdapter.getCheckedUsers());
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            super.onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
