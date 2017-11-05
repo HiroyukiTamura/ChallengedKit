@@ -26,7 +26,7 @@ public class HelpFragment extends Fragment implements View.OnClickListener{
     private final static int[] ImgRess = {R.drawable.ic_mode_edit_black_24dp, R.drawable.ic_featured_play_list_black_24dp, R.drawable.ic_insert_chart_black_24dp, R.drawable.ic_menu_share, R.drawable.ic_menu_manage};
     private IHelpFragment listener;
 
-    interface IHelpFragment{
+    public interface IHelpFragment{
         void onClickItem(int tag);
     }
 

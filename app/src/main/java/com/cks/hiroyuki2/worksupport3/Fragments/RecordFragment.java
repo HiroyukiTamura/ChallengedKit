@@ -7,6 +7,7 @@ package com.cks.hiroyuki2.worksupport3.Fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -33,6 +34,9 @@ import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.PageSelected;
 import org.androidannotations.annotations.ViewById;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;

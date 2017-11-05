@@ -13,6 +13,7 @@ import com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.HelpFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.HelpFragment_;
 import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupprotlib.Util;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -21,7 +22,7 @@ import org.androidannotations.annotations.ViewById;
 import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 
 @EActivity(R.layout.activity_help)
-public class HelpActivity extends AppCompatActivity {
+public class HelpActivity extends AppCompatActivity implements HelpFragment.IHelpFragment{
 
     @ViewById(R.id.toolbar) Toolbar toolbar;
 
@@ -46,5 +47,10 @@ public class HelpActivity extends AppCompatActivity {
             super.onBackPressed();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClickItem(int tag) {
+
     }
 }
