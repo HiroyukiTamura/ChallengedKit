@@ -71,6 +71,10 @@ public class RecordVpItemTime extends RecordVpItem {
         super(data, dataNum, Calendar.getInstance(), fragment);
     }
 
+    public RecordVpItemTime(RecordData data, int dataNum, HelpFragment fragment) {
+        super(data, dataNum, cal, fragment);
+    }
+
     /**
      * posInListは、アイテムが削除されるたびに値が変更されることに注意してください。
      */

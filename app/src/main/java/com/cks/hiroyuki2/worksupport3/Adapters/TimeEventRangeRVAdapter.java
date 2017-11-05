@@ -30,7 +30,6 @@ import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickTimePickerDialog;
 /**
  * Created by hiroyuki2 on 2017/10/14.
  */
-
 public class TimeEventRangeRVAdapter extends RecyclerView.Adapter {
 
     private TimeEventRange range;
@@ -108,7 +107,7 @@ public class TimeEventRangeRVAdapter extends RecyclerView.Adapter {
     }
 
     public void updateTime(TimeEvent timeEvent, int pos){
-        range.sort();
+//        range.sort();
         notifyDataSetChanged();
     }
 

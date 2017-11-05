@@ -7,6 +7,7 @@ package com.cks.hiroyuki2.worksupport3;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -55,11 +56,11 @@ public class RecordUiOperator implements RecordVpItemTagPool.onClickCardListener
     private List<RecordData> list;
     private LinearLayout ll;
     private Calendar cal;
-    private RecordFragment fragment;
+    private Fragment fragment;
     private EditTemplateFragment editFrag;
     private List<RecordVpItem> itemList;
 
-    public RecordUiOperator(@NonNull List<RecordData> list/*このRecordDataの中身のcalは特に使われていません*/, LinearLayout ll, Calendar cal, RecordFragment fragment){
+    public RecordUiOperator(@NonNull List<RecordData> list/*このRecordDataの中身のcalは特に使われていません*/, LinearLayout ll, Calendar cal, Fragment fragment){
         this.list = list;
         this.ll = ll;
         this.cal = cal;
