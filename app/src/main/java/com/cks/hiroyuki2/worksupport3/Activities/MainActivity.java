@@ -207,8 +207,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        setContentFragment();
 
 //        signIn();
-
-//        Twitter.initialize(this);
     }
 
     @Override
