@@ -21,6 +21,7 @@ import com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter;
 import com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter;
 import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.RecordFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.HelpFragment;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
