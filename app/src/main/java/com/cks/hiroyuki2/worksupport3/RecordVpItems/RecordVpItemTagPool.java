@@ -26,7 +26,7 @@ import static android.view.View.GONE;
 import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.setNullableText;
-
+import android.support.v4.app.Fragment;
 /**
  * Created by hiroyuki2 on 2017/09/17.
  */

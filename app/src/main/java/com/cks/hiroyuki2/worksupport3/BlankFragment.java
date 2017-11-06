@@ -11,11 +11,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cks.hiroyuki2.worksupprotlib.*;
+import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.ColorRes;
+
+import java.util.List;
 
 @EFragment(R.layout.fragment_blank)
 public class BlankFragment extends Fragment {
@@ -43,6 +48,13 @@ public class BlankFragment extends Fragment {
             }
         }
 
-        RecordUiOperator operator = new RecordUiOperator(, tabLL);
+
+        List<RecordData> list = TemplateEditor.deSerializeDefault(getContext());
+        if (list == null){
+            com.cks.hiroyuki2.worksupprotlib.Util.onError(this, "list == null", R.string.error);
+            return;
+        }
+
+        RecordUiOperator operator = new RecordUiOperator(list, tabLL, null, this);
     }
 }
