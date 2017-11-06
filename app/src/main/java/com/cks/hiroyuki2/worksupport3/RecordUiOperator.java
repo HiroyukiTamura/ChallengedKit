@@ -275,4 +275,8 @@ public class RecordUiOperator implements RecordVpItemTagPool.onClickCardListener
             hashMap = new HashMap<>();
         return hashMap;
     }
+
+    public RecordVpItem getItem(int pos){
+        return itemList.get(pos);
+    }
 }

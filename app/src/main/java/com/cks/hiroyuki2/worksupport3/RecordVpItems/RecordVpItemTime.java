@@ -61,6 +61,7 @@ public class RecordVpItemTime extends RecordVpItem {
     public static final String DIALOG_TAG_RANGE_COLOR = "DIALOG_TAG_RANGE_COLOR";
     public static final int CALLBACK_RANGE_COLOR = 2048;
     public static String TIME_EVE_RANGE = "TIME_EVE_RANGE";
+    private View view;
     @BindView(R.id.time_event_rv) RecyclerView timeEventRv;
     @BindView(R.id.rv_container) LinearLayout container;
     @BindView(R.id.add_range) ImageView addRange;
@@ -117,7 +118,7 @@ public class RecordVpItemTime extends RecordVpItem {
     @Override
     @Nullable
     public View buildView() {
-        View view = getFragment().getLayoutInflater().inflate(R.layout.record_vp_item_timeline2, null);
+        view = getFragment().getLayoutInflater().inflate(R.layout.record_vp_item_timeline2, null);
         ButterKnife.bind(this, view);
         dataSet = getTimeEveDataSetFromRecordData(getData());
         if (dataSet == null)
@@ -208,5 +209,9 @@ public class RecordVpItemTime extends RecordVpItem {
 
     private void addRangeToList(@NonNull TimeEventRange range){
         dataSet.getRangeList().add(range);
+    }
+
+    public View getView(){
+        return view;
     }
 }
