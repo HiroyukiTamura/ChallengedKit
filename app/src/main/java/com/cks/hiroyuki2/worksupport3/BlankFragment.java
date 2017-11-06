@@ -26,6 +26,7 @@ import java.util.List;
 public class BlankFragment extends Fragment {
     @FragmentArg int tag;
     @ViewById(R.id.date_container) LinearLayout tabLL;
+    @ViewById(R.id.content) LinearLayout content;
     @ColorRes(R.color.pink) int pink;
 
     @AfterViews
@@ -38,16 +39,6 @@ public class BlankFragment extends Fragment {
     }
 
     private void initOnTag0(){
-        for (int i = 0; i < tabLL.getChildCount(); i++) {
-            TextView tv = tabLL.getChildAt(i).findViewById(R.id.tv);
-            tv.setText(i);
-            if (i == 0){
-                tv.setTextColor(pink);
-                ImageView iv = tabLL.getChildAt(i).findViewById(R.id.iv);
-                iv.setColorFilter(Color.WHITE);
-            }
-        }
-
 
         List<RecordData> list = TemplateEditor.deSerializeDefault(getContext());
         if (list == null){
@@ -55,6 +46,7 @@ public class BlankFragment extends Fragment {
             return;
         }
 
-        RecordUiOperator operator = new RecordUiOperator(list, tabLL, null, this);
+        RecordUiOperator operator = new RecordUiOperator(list, content, null, this);
+        operator.initRecordData();
     }
 }

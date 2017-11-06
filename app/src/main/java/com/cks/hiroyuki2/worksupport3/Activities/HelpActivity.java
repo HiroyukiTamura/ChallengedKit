@@ -8,7 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 
+import com.cks.hiroyuki2.worksupport3.BlankFragment;
+import com.cks.hiroyuki2.worksupport3.BlankFragment_;
 import com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.HelpFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.HelpFragment_;
@@ -25,12 +28,13 @@ import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 public class HelpActivity extends AppCompatActivity implements HelpFragment.IHelpFragment{
 
     @ViewById(R.id.toolbar) Toolbar toolbar;
+    @ViewById(R.id.fragment_container) FrameLayout fl;
 
     @AfterViews
     void afterViews(){
+        setSupportActionBar(toolbar);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setSupportActionBar(toolbar);
         initAdMob(this);
         setFragment();
     }
@@ -51,6 +55,9 @@ public class HelpActivity extends AppCompatActivity implements HelpFragment.IHel
 
     @Override
     public void onClickItem(int tag) {
-
+        FragmentTransaction t = getSupportFragmentManager().beginTransaction();
+        BlankFragment fragment = BlankFragment_.builder().tag(tag).build();
+        t.replace(R.id.fragment_container, fragment);
+        t.commit();
     }
 }

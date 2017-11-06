@@ -56,11 +56,4 @@
 
     <include layout="@layout/help_item" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/blue_gray" />
-
-    <include layout="@layout/help_item" />
-
 </LinearLayout>
