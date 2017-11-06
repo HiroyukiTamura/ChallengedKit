@@ -220,26 +220,25 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
                 updateComment(bundle);
                 break;}
 
-            case Util.CALLBACK_TEMPLATE_TIME_COLOR: {
-                boolean isNewItem = bundle.getBoolean(RecordRVAdapter.ITEM_ADD, false);
-                int key = bundle.getInt(RecordRVAdapter.KEY, 100);
-                if (timeAdapterTree == null || !timeAdapterTree.containsKey(key) || key == 100)
-                    break;
-                RecordRVAdapter rvAdapter = timeAdapterTree.get(key);
-                if (isNewItem) {
-                    if (rvAdapter != null)
-                        rvAdapter.postAddItem(bundle, key);//テンプレ書き換えはこのメソッド内で行う
-                    bundle.putBoolean(RecordRVAdapter.ITEM_ADD, false);//元に戻す
-                } else {
-                    rvAdapter.changeData(bundle, key, this);//テンプレ書き換えはこのメソッド内で行う
-                }
+//            case Util.CALLBACK_TEMPLATE_TIME_COLOR: {
+//                boolean isNewItem = bundle.getBoolean(RecordRVAdapter.ITEM_ADD, false);
+//                int key = bundle.getInt(RecordRVAdapter.KEY, 100);
+//                if (timeAdapterTree == null || !timeAdapterTree.containsKey(key) || key == 100)
+//                    break;
+//                RecordRVAdapter rvAdapter = timeAdapterTree.get(key);
+//                if (isNewItem) {
+//                    if (rvAdapter != null)
+//                        rvAdapter.postAddItem(bundle, key);//テンプレ書き換えはこのメソッド内で行う
+//                    bundle.putBoolean(RecordRVAdapter.ITEM_ADD, false);//元に戻す
+//                } else {
+//                    rvAdapter.changeData(bundle, key, this);//テンプレ書き換えはこのメソッド内で行う
+//                }
 //                RecordRVAdapter adapter = timeAdapterTree.get(bundle.getInt(RecordRVAdapter.KEY));
 //                int key = bundle.getInt(RecordRVAdapter.KEY, 100);
 //                if (timeAdapterTree == null || key == 100 || !timeAdapterTree.containsKey(key))
 //                    break;
 //                adapter.updateCircle(bundle, key);//テンプレ書き換えはこのメソッド内で行う
-                break;
-            }
+//                break;
             case CALLBACK_TEMPLATE_ADD:{
                 addNewWidget(bundle);
                 break;}
