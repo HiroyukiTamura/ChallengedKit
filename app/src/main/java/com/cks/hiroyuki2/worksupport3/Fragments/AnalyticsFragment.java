@@ -26,11 +26,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.cks.hiroyuki2.worksupport3.Adapters.AnalyticsVPAdapter;
 import com.cks.hiroyuki2.worksupprotlib.Fab;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.Util;
 import com.cks.hiroyuki2.worksupprotlib.UtilSpec;
+import com.example.hiroyuki3.worksupportlibw.Adapters.AnalyticsVPAdapter;
 import com.example.hiroyuki3.worksupportlibw.Presenter.AnalyticsVPUiOperator;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
@@ -115,7 +115,7 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
         }
 
         showWeekOfDay();
-        adapter = new AnalyticsVPAdapter(getContext(), this);
+        adapter = new AnalyticsVPAdapter(getContext(), this, uid);
         vp.setAdapter(adapter);
         vp.setCurrentItem(AnalyticsVPAdapter.PAGE/2);
         vp.setOffscreenPageLimit(2);
@@ -191,7 +191,7 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
     }
 
     @Override
-    public void onScrollChanged(HorizontalScrollView scrollView, int x, int y, int oldx, int oldy) {
+    public void onScrollChanged(HorizontalScrollView horizontalScrollView, int x) {
         if (x >= 0){
             fab.hide();
         } else {
