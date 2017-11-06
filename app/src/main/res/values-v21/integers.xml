@@ -4,8 +4,8 @@
   -->
 
 <resources>
-    <integer name="firebase_min_pw_len">6</integer><!--6以上です！-->
-    <integer name="firebase_account_max">15</integer>
-    <integer name="comment_max_len">5000</integer>
-    <integer name="tag_max_len">100</integer>
+    <!--<integer name="firebase_min_pw_len">6</integer>&lt;!&ndash;6以上です！&ndash;&gt;-->
+    <!--<integer name="firebase_account_max">15</integer>-->
+    <!--<integer name="comment_max_len">5000</integer>-->
+    <!--<integer name="tag_max_len">100</integer>-->
 </resources>
