@@ -10,39 +10,4 @@
     <dimen name="nav_header_vertical_spacing">16dp</dimen>
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="fab_margin_min400dp">32dp</dimen>
-    <dimen name="fab_margin_min720dp">50dp</dimen>
-    <dimen name="fab_margin_over720dp">90dp</dimen>
-    <dimen name="banner_size0">400dp</dimen>
-    <dimen name="banner_size1">720dp</dimen>
-    <dimen name="elevation_default">8dp</dimen>
-    <dimen name="elevation_default_half">4dp</dimen>
-    <dimen name="cal_txt_size">16sp</dimen>
-    <dimen name="cal_day_of_week">14sp</dimen>
-
-    <!--tableまわり-->
-    <dimen name="record_header_addbtn_padding">48dp</dimen>
-    <dimen name="def_mp_chart_padding">15dp</dimen>
-    <dimen name="grid_padding">4dp</dimen>
-    <dimen name="column_min_width">50dp</dimen>
-    <dimen name="bottom_padding">4dp</dimen>
-    <dimen name="tooltip_margin_table">8dp</dimen>
-
-    <!--analyticsまわり-->
-    <dimen name="wof_width">40dp</dimen>
-    <dimen name="legend_total_height">56dp</dimen><!--これは?atter/actionBarSizeの値です-->
-    <dimen name="check_drw_size">24dp</dimen>
-    <dimen name="unchek_drw_thickness">2dp</dimen>
-    <dimen name="toolbar_height">56dp</dimen>
-    <dimen name="msv_top_margin">24dp</dimen>
-
-    <!--boardまわり-->
-    <dimen name="board_icon">48dp</dimen>
-    <dimen name="board_icon_padding">4dp</dimen>
-    <dimen name="horizontal_margin">16dp</dimen>
-
-    <!--docEditorまわり-->
-    <dimen name="hsv_icon_size">56dp</dimen>
-    <dimen name="app_bar_height">180dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
 </resources>
