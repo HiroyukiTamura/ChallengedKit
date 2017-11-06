@@ -32,6 +32,7 @@ import butterknife.OnClick;
 
 import static com.cks.hiroyuki2.worksupprotlib.Util.DATE_PATTERN_SLASH_MD;
 import static com.cks.hiroyuki2.worksupprotlib.Util.DATE_PATTERN_YM;
+import static com.cks.hiroyuki2.worksupprotlib.Util.cal2DateWithSlash;
 import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
 import static com.cks.hiroyuki2.worksupprotlib.Util.date2Cal;
 import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.colorId;

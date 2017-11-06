@@ -13,6 +13,8 @@ import com.cks.hiroyuki2.worksupport3.Adapters.RecordVPAdapter;
 import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
+import com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment;
+import com.cks.hiroyuki2.worksupprotlib.SettingDialogFragment;
 
 /**
  * RecordDialogFragmentを呼ぶのおじさん！シンプル！

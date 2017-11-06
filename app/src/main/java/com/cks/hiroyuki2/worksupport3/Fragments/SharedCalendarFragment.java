@@ -29,10 +29,10 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.Calendar;
 
-import static com.cks.hiroyuki2.worksupport3.CalendarDialogFragment.ADD_SCHEDULE;
-import static com.cks.hiroyuki2.worksupport3.CalendarDialogFragment.CALENDAR;
-import static com.cks.hiroyuki2.worksupport3.CalendarDialogFragment.CALLBACK_ADD_SCHEDULE;
-import static com.cks.hiroyuki2.worksupport3.CalendarDialogFragment.INPUT;
+import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.ADD_SCHEDULE;
+import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.CALENDAR;
+import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.CALLBACK_ADD_SCHEDULE;
+import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.INPUT;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickCalendarDialog;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_SET_VALUE;
 import com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter;
