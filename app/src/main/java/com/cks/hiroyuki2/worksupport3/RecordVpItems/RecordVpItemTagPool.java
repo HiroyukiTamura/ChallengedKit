@@ -43,7 +43,7 @@ public class RecordVpItemTagPool extends RecordVpItem {
         void onClickTagPoolContent(Calendar cal, int dataNum);
     }
 
-    public RecordVpItemTagPool(RecordData data, int dataNum, Calendar cal, RecordFragment fragment, onClickCardListener listener) {
+    public RecordVpItemTagPool(RecordData data, int dataNum, Calendar cal, Fragment fragment, onClickCardListener listener) {
         super(data, dataNum, cal, fragment);
         this.listener = listener;
     }
