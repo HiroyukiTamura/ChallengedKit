@@ -223,7 +223,7 @@ public class RecordUiOperator implements RecordVpItemTagPool.onClickCardListener
         RecordVpItemComment itemComment = (RecordVpItemComment) itemList.get(dataNum - 1);
         itemComment.updateComment();
 
-        fragment.adapter.syncDataMapAndFireBase(list, cal2date(cal, datePattern));
+        ((RecordFragment)fragment).adapter.syncDataMapAndFireBase(list, cal2date(cal, datePattern));
     }
 
     private void updateTag2Map(int dataNum, List<Integer> elevatedList){
@@ -245,7 +245,7 @@ public class RecordUiOperator implements RecordVpItemTagPool.onClickCardListener
 
     private void syncTimeDataMapAndFb(int dataNum, RecordVpItemTime itemTime){
         syncTimeDataMap(list, dataNum, itemTime);
-        fragment.adapter.syncDataMapAndFireBase(list, cal2date(cal, datePattern));
+        ((RecordFragment)fragment).adapter.syncDataMapAndFireBase(list, cal2date(cal, datePattern));
     }
 
     public static void syncTimeDataMap(List<RecordData> list, int dataNum, RecordVpItemTime itemTime){

@@ -47,6 +47,7 @@ import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickTimePickerDialog;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getTimeEveDataSetFromRecordData;
 import static com.cks.hiroyuki2.worksupprotlib.Util.initRecycler;
 import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.colorId;
+import android.support.v4.app.Fragment;
 
 /**
  * RecordVpItem兄弟！Timelineおじさん！
@@ -64,16 +65,12 @@ public class RecordVpItemTime extends RecordVpItem {
     @BindView(R.id.rv_container) LinearLayout container;
     @BindView(R.id.add_range) ImageView addRange;
 
-    public RecordVpItemTime(RecordData data, int dataNum, Calendar cal, RecordFragment fragment) {
+    public RecordVpItemTime(RecordData data, int dataNum, Calendar cal, Fragment fragment) {
         super(data, dataNum, cal, fragment);
     }
 
-    public RecordVpItemTime(RecordData data, int dataNum, EditTemplateFragment fragment){
+    public RecordVpItemTime(RecordData data, int dataNum, Fragment fragment){
         super(data, dataNum, Calendar.getInstance(), fragment);
-    }
-
-    public RecordVpItemTime(RecordData data, int dataNum, HelpFragment fragment) {
-        super(data, dataNum, cal, fragment);
     }
 
     /**
