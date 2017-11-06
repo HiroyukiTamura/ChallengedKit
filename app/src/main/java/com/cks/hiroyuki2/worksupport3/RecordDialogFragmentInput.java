@@ -18,7 +18,6 @@ import android.support.v7.app.AlertDialog;
 import android.text.TextWatcher;
 import android.util.Log;
 
-import com.cks.hiroyuki2.worksupport3.Adapters.RecordVPAdapter;
 import com.cks.hiroyuki2.worksupport3.Fragments.AddGroupFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment;
 import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
@@ -26,16 +25,17 @@ import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
 import com.cks.hiroyuki2.worksupprotlib.TemplateEditor;
 import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.cks.hiroyuki2.worksupprotlib.UtilDialog;
+import com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.TIME_EVENT;
-import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter.CALLBACK_RANGE_CLICK_VALUE;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PARAMS_VALUES;
 import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
 import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.editBuilder;
 import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.sendIntent;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.TIME_EVENT;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRangeRVAdapter.CALLBACK_RANGE_CLICK_VALUE;
 
 /**
  * Created by hiroyuki2 on 2017/09/18.

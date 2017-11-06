@@ -11,9 +11,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemTime;
 import com.cks.hiroyuki2.worksupprotlib.*;
 import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
+import com.example.hiroyuki3.worksupportlibw.AdditionalUtil;
+import com.example.hiroyuki3.worksupportlibw.Presenter.RecordUiOperator;
+import com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemTime;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -26,6 +28,8 @@ import java.util.List;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+
+import static com.example.hiroyuki3.worksupportlibw.AdditionalUtil.CODE_BLANK_FRAG;
 
 @EFragment(R.layout.fragment_blank)
 public class BlankFragment extends Fragment {
@@ -53,7 +57,7 @@ public class BlankFragment extends Fragment {
             return;
         }
 
-        RecordUiOperator operator = new RecordUiOperator(list, content, null, this);
+        RecordUiOperator operator = new RecordUiOperator(list, content, null, this, CODE_BLANK_FRAG);
         operator.initRecordData();
         RecordVpItemTime time = (RecordVpItemTime) operator.getItem(0);
 

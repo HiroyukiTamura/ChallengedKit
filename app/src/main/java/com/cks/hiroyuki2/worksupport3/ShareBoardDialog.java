@@ -27,8 +27,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cks.hiroyuki2.worksupport3.Adapters.ShareBoardRVAdapter;
 import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
+import com.example.hiroyuki3.worksupportlibw.Adapters.ShareBoardRVAdapter;
 
 import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;

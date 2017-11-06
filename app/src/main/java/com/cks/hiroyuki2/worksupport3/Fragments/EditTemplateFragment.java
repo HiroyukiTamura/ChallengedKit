@@ -23,7 +23,6 @@ import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupport3.DialogKicker;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.RecordDiaogFragmentTag;
-import com.cks.hiroyuki2.worksupport3.RecordRVAdapter;
 import com.cks.hiroyuki2.worksupprotlib.TemplateEditor;
 import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 
@@ -56,6 +55,7 @@ import com.cks.hiroyuki2.worksupprotlib.Util;
 import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
 import static com.cks.hiroyuki2.worksupprotlib.Util.INDEX;
 import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
+import com.example.hiroyuki3.worksupportlibw.Adapters.RecordRVAdapter;
 import com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter;
 import com.example.hiroyuki3.worksupportlibw.AdditionalUtil;
 import com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItem;

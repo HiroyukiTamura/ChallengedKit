@@ -34,9 +34,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cks.hiroyuki2.worksupport3.Adapters.GroupSettingRVAdapter;
-import com.cks.hiroyuki2.worksupport3.Adapters.RecordVPAdapter;
-import com.cks.hiroyuki2.worksupport3.Adapters.SocialGroupListRVAdapter;
 import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.RecordFragment;
@@ -48,6 +45,10 @@ import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.cks.hiroyuki2.worksupprotlib.UtilDialog;
 import com.cks.hiroyuki2.worksupprotlib.UtilSpec;
 import com.cks.hiroyuki2.worksupprotlib.RecordDataUtil;
+import com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter;
+import com.example.hiroyuki3.worksupportlibw.Adapters.RecordRVAdapter;
+import com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter;
+import com.example.hiroyuki3.worksupportlibw.Adapters.SocialGroupListRVAdapter;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 

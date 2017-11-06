@@ -23,11 +23,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.cks.hiroyuki2.worksupport3.Adapters.TemplateDialogRVAdapter;
 import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
 import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 import com.cks.hiroyuki2.worksupprotlib.TemplateEditor;
 import com.cks.hiroyuki2.worksupprotlib.Util;
+import com.example.hiroyuki3.worksupportlibw.Adapters.TemplateDialogRVAdapter;
 
 import java.util.LinkedList;
 import java.util.List;

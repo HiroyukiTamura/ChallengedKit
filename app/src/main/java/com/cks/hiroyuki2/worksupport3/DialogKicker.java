@@ -9,12 +9,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
-import com.cks.hiroyuki2.worksupport3.Adapters.RecordVPAdapter;
 import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment;
 import com.cks.hiroyuki2.worksupprotlib.SettingDialogFragment;
+import com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter;
 
 /**
  * RecordDialogFragmentを呼ぶのおじさん！シンプル！

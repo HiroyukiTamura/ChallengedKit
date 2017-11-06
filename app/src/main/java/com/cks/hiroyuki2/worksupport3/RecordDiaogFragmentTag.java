@@ -24,13 +24,13 @@ import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.cks.hiroyuki2.worksupport3.Adapters.RecordVPAdapter;
 import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
 import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEventRange;
 import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.cks.hiroyuki2.worksupprotlib.UtilDialog;
 import com.cks.hiroyuki2.worksupprotlib.UtilSpec;
+import com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -46,11 +46,6 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_ADD2;
-import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_CLICK2;
-import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.TIME_EVENT;
-import static com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemTime.CALLBACK_RANGE_COLOR;
-import static com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemTime.TIME_EVE_RANGE;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_KEY_COLOR;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
 import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
@@ -58,6 +53,11 @@ import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.editBuilder;
 import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.onClickCircle;
 import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.sendIntent;
 import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.setColorCircle;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_ADD2;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_CLICK2;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.TIME_EVENT;
+import static com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemTime.CALLBACK_RANGE_COLOR;
+import static com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemTime.TIME_EVE_RANGE;
 
 /**
  * Created by hiroyuki2 on 2017/09/22.
