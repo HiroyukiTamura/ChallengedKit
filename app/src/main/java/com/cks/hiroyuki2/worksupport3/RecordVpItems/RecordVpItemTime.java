@@ -62,6 +62,7 @@ public class RecordVpItemTime extends RecordVpItem {
     public static final int CALLBACK_RANGE_COLOR = 2048;
     public static String TIME_EVE_RANGE = "TIME_EVE_RANGE";
     private View view;
+    private IRecordVpItemTime listener;
     @BindView(R.id.time_event_rv) RecyclerView timeEventRv;
     @BindView(R.id.rv_container) LinearLayout container;
     @BindView(R.id.add_range) ImageView addRange;
@@ -72,6 +73,10 @@ public class RecordVpItemTime extends RecordVpItem {
 
     public RecordVpItemTime(RecordData data, int dataNum, Fragment fragment){
         super(data, dataNum, Calendar.getInstance(), fragment);
+    }
+
+    interface IRecordVpItemTime{
+        void onClickInfoBtn();
     }
 
     /**
@@ -153,6 +158,13 @@ public class RecordVpItemTime extends RecordVpItem {
 
         addRangeItem(range, rangePairList.size());
         addRangeToList(range);
+    }
+
+    @OnClick(R.id.info_btn)
+    void onClickInfoBtn(){
+        if(listener != null){
+
+        }
     }
 
     public void updateTime(@IntRange(from = 0) int dataNum, TimeEvent timeEvent) {
