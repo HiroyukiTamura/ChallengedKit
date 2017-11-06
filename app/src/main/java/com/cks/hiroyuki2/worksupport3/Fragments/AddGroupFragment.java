@@ -16,12 +16,13 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cks.hiroyuki2.worksupport3.Adapters.SocialListRVAdapter;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil;
 import com.cks.hiroyuki2.worksupprotlib.Util;
+import com.example.hiroyuki3.worksupportlibw.Adapters.SocialListRVAdapter;
+import com.example.hiroyuki3.worksupportlibw.AdditionalUtil;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.OnProgressListener;
@@ -54,6 +55,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.getExtension;
 import static com.cks.hiroyuki2.worksupprotlib.Util.kickIntentIcon;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
+import static com.example.hiroyuki3.worksupportlibw.AdditionalUtil.CODE_ADD_GROUP_FRAG;
 
 /**
  * {@link com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity}の子分！彼が扱うFragmentはこのFragmentだけ。
@@ -94,7 +96,7 @@ public class AddGroupFragment extends Fragment implements Callback {
     void afterViews(){
         storageUtil = new FirebaseStorageUtil(getContext(), null);
         rvUser.setLayoutManager(new LinearLayoutManager(getContext()));
-        userAdapter = new SocialListRVAdapter(userList, this);
+        userAdapter = new SocialListRVAdapter(userList, this, CODE_ADD_GROUP_FRAG);
         rvUser.setAdapter(userAdapter);
         name.setText(groupName);
     }

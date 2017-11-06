@@ -21,14 +21,15 @@ import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity;
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
-import com.cks.hiroyuki2.worksupport3.Adapters.SocialGroupListRVAdapter;
-import com.cks.hiroyuki2.worksupport3.Adapters.SocialListRVAdapter;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 import com.cks.hiroyuki2.worksupprotlib.RecordDataUtil;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.RecordDialogFragment;
+import com.example.hiroyuki3.worksupportlibw.Adapters.SocialGroupListRVAdapter;
+import com.example.hiroyuki3.worksupportlibw.Adapters.SocialListRVAdapter;
+import com.example.hiroyuki3.worksupportlibw.AdditionalUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -68,6 +69,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.setImgFromStorage;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
+import static com.example.hiroyuki3.worksupportlibw.AdditionalUtil.CODE_SOCIAL_FRAG;
 
 @EFragment(R.layout.fragment_social2)
 public class SocialFragment extends Fragment implements ValueEventListener {
@@ -323,7 +325,7 @@ public class SocialFragment extends Fragment implements ValueEventListener {
             userList.add(makeUserFromSnap(child));
         }
 
-        userAdapter = new SocialListRVAdapter(userList, this);
+        userAdapter = new SocialListRVAdapter(userList, this, CODE_SOCIAL_FRAG);
         rvUser.setAdapter(userAdapter);
 
         getRef("userData", me.getUserUid(), "group").addListenerForSingleValueEvent(new ValueEventListener() {

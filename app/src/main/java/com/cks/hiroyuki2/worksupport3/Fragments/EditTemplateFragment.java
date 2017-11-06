@@ -20,17 +20,10 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
-import com.cks.hiroyuki2.worksupport3.Adapters.RecordParamsRVAdapter;
-import com.cks.hiroyuki2.worksupport3.Adapters.RecordVPAdapter;
 import com.cks.hiroyuki2.worksupport3.DialogKicker;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.RecordDiaogFragmentTag;
 import com.cks.hiroyuki2.worksupport3.RecordRVAdapter;
-import com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItem;
-import com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemComment;
-import com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemParam;
-import com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemTime;
-import com.cks.hiroyuki2.worksupport3.RecordVpItems.TempItemTagPool;
 import com.cks.hiroyuki2.worksupprotlib.TemplateEditor;
 import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 
@@ -47,23 +40,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static com.cks.hiroyuki2.worksupport3.Adapters.RecordVPAdapter.DATA_NUM;
-import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_ADD2;
-import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_CLICK;
-import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_CLICK2;
-import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.DIALOG_TAG_ITEM_CLICK2;
-import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.RV_POS;
-import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter.TIME_EVENT;
-import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter.CALLBACK_RANGE_CLICK_TIME;
-import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter.CALLBACK_RANGE_CLICK_VALUE;
-import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter.POSITION;
-import static com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter.POS_IN_LIST;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickCircleAndInputDialog;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickWidgetDialog;
-import static com.cks.hiroyuki2.worksupport3.RecordUiOperator.syncTimeDataMap;
-import static com.cks.hiroyuki2.worksupport3.RecordUiOperator.updateCommentMap;
-import static com.cks.hiroyuki2.worksupport3.RecordVpItems.RecordVpItemTime.CALLBACK_RANGE_COLOR;
 import static com.cks.hiroyuki2.worksupport3.TempWidgetDialogFragment.APPLY_TEMP_IS_SUCCESS;
 import static com.cks.hiroyuki2.worksupport3.TempWidgetDialogFragment.CALLBACK_TEMPLATE_ADD;
 import static com.cks.hiroyuki2.worksupport3.TempWidgetDialogFragment.CALLBACK_TEMPLATE_EDIT;
@@ -77,7 +56,30 @@ import com.cks.hiroyuki2.worksupprotlib.Util;
 import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
 import static com.cks.hiroyuki2.worksupprotlib.Util.INDEX;
 import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
+import com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter;
+import com.example.hiroyuki3.worksupportlibw.AdditionalUtil;
+import com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItem;
+import com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemComment;
+import com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemParam;
+import com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemTime;
+import com.example.hiroyuki3.worksupportlibw.RecordVpItems.TempItemTagPool;
+
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter.DATA_NUM;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_ADD2;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_CLICK;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_CLICK2;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.DIALOG_TAG_ITEM_CLICK2;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.RV_POS;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.TIME_EVENT;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRangeRVAdapter.CALLBACK_RANGE_CLICK_TIME;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRangeRVAdapter.CALLBACK_RANGE_CLICK_VALUE;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRangeRVAdapter.POSITION;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRangeRVAdapter.POS_IN_LIST;
+import static com.example.hiroyuki3.worksupportlibw.AdditionalUtil.CODE_EDIT_FRAG;
+import static com.example.hiroyuki3.worksupportlibw.Presenter.RecordUiOperator.syncTimeDataMap;
+import static com.example.hiroyuki3.worksupportlibw.Presenter.RecordUiOperator.updateCommentMap;
+import static com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemTime.CALLBACK_RANGE_COLOR;
 
 @EFragment(R.layout.fragment_setting_fragmnet)
 public class EditTemplateFragment extends Fragment implements RecordVpItemComment.onClickCommentListener, RecordVpItemParam.OnClickParamsNameListener {
@@ -152,13 +154,13 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
         RecordVpItem vpItem;
         switch (data.dataType){
             case 1:
-                vpItem = new RecordVpItemTime(data, dataNum, this);
+                vpItem = new RecordVpItemTime(data, dataNum, this, CODE_EDIT_FRAG);
                 break;
             case 2:
-                vpItem = new TempItemTagPool(this, dataNum);
+                vpItem = new TempItemTagPool(this, list, dataNum);
                 break;
             case 3:
-                vpItem = new RecordVpItemParam(list.get(dataNum), dataNum, null, this);
+                vpItem = new RecordVpItemParam(list.get(dataNum), dataNum, null, this, CODE_EDIT_FRAG);
                 break;
             case 4:
                 vpItem = new RecordVpItemComment(list.get(dataNum), dataNum, null, this, this);
@@ -172,7 +174,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
     }
 
     void setTagsView(final int dataNum){
-        TempItemTagPool pool = new TempItemTagPool(this, dataNum);
+        TempItemTagPool pool = new TempItemTagPool(this, list, dataNum);
         uiList.add(pool);
         ll.addView(pool.buildView(), ll.getChildCount()-1);
     }
@@ -184,7 +186,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
     }
 
     private void setParamsView(final int dataNum){
-        RecordVpItemParam param = new RecordVpItemParam(list.get(dataNum), dataNum, null, this);
+        RecordVpItemParam param = new RecordVpItemParam(list.get(dataNum), dataNum, null, this, CODE_EDIT_FRAG);
         uiList.add(param);
         ll.addView(param.buildView(), ll.getChildCount()-1);
     }
@@ -252,7 +254,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
                     return;
                 }
 
-                int dataNum = bundle.getInt(RecordVPAdapter.DATA_NUM);
+                int dataNum = bundle.getInt(DATA_NUM);
                 TempItemTagPool tagPool = (TempItemTagPool) uiList.get(dataNum);
                 int tagNum = getList().get(dataNum).data.size();//新しくタグを追加するので、data.size()がtagNumとなる
                 tagPool.inputTag(val, tagNum);
@@ -270,7 +272,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
                 }
 
                 int tagNum = bundle.getInt(Integer.toString(R.id.data_num));
-                int dataNum = bundle.getInt(RecordVPAdapter.DATA_NUM);
+                int dataNum = bundle.getInt(DATA_NUM);
                 updateMap(dataNum, tagNum, val);
 
                 TempItemTagPool tagPool = (TempItemTagPool)uiList.get(dataNum);
@@ -281,7 +283,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
                 break;}
 
             case Util.CALLBACK_TEMPLATE_PARAMS_ITEM:{
-                int dataNum = bundle.getInt(RecordVPAdapter.DATA_NUM, 100);
+                int dataNum = bundle.getInt(DATA_NUM, 100);
                 int plotPos = bundle.getInt(INDEX, 100);
                 String[] newStr = bundle.getStringArray(PARAMS_VALUES);
                 String joinedNewStr = Util.joinArr(newStr, delimiter);
@@ -303,7 +305,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
                 break;}
 
             case Util.CALLBACK_TEMPLATE_PARAMS_SLIDER_MAX:{
-                int dataNum = bundle.getInt(RecordVPAdapter.DATA_NUM);
+                int dataNum = bundle.getInt(DATA_NUM);
                 int plotNum = bundle.getInt(Util.TEMPLATE_PARAMS_SLIDER_MAX);
                 String[] strings = bundle.getStringArray(PARAMS_VALUES);
                 String key = Integer.toString(plotNum);
@@ -318,7 +320,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
                     Toast.makeText(getContext(), R.string.error, Toast.LENGTH_LONG).show();
                 break;}
             case Util.CALLBACK_TEMPLATE_PARAMS_ADD:{
-                int dataNum = bundle.getInt(RecordVPAdapter.DATA_NUM);
+                int dataNum = bundle.getInt(DATA_NUM);
                 RecordVpItemParam itemParam = (RecordVpItemParam) uiList.get(dataNum);
                 itemParam.addItem(bundle);
                 break;}
@@ -473,7 +475,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
 
     private void updateDateName(Bundle bundle){
         String newName = bundle.getString(RecordVPAdapter.NAME, null);
-        int dataNum = bundle.getInt(RecordVPAdapter.DATA_NUM, 100);
+        int dataNum = bundle.getInt(DATA_NUM, 100);
         if (newName == null || dataNum == 100){
             onError(this, TAG+"newName == null || dataNum == 100", R.string.error);
             return;
@@ -493,7 +495,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
 
     private void updateComment(Bundle bundle){
         String newComment = bundle.getString(RecordVPAdapter.COMMENT);
-        int dataNum = bundle.getInt(RecordVPAdapter.DATA_NUM, 100);
+        int dataNum = bundle.getInt(DATA_NUM, 100);
         if (dataNum == 100){
             onError(this, TAG+"newName == null || dataNum == 100", R.string.error);
             return;

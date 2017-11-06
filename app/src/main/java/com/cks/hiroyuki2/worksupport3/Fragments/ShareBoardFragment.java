@@ -30,7 +30,6 @@ import android.view.animation.AnimationUtils;
 
 import com.cks.hiroyuki2.worksupport3.Activities.EditDocActivity;
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
-import com.cks.hiroyuki2.worksupport3.Adapters.ShareBoardRVAdapter;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.ShareBoardDialog;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
@@ -41,6 +40,7 @@ import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 import com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil;
 import com.cks.hiroyuki2.worksupprotlib.PreventableAnimator;
+import com.example.hiroyuki3.worksupportlibw.Adapters.ShareBoardRVAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;

@@ -12,12 +12,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
 import com.cks.hiroyuki2.worksupport3.Activities.SharedCalendarActivity;
-import com.cks.hiroyuki2.worksupport3.Adapters.SharedCalendarVPAdapter;
 import com.cks.hiroyuki2.worksupprotlib.Entity.CalendarOneEvent;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.RecordDataUtil;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupport3.R;
+import com.example.hiroyuki3.worksupportlibw.Adapters.SharedCalendarVPAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
@@ -76,7 +76,7 @@ public class SharedCalendarFragment extends Fragment implements ViewPager.OnPage
 
     @AfterViews
     void afterViews(){
-        adapter = new SharedCalendarVPAdapter(this, Calendar.getInstance());
+        adapter = new SharedCalendarVPAdapter(this, Calendar.getInstance(), ref);
         vp.setAdapter(adapter);
         vp.setCurrentItem(adapter.getCount()/2);
         vp.addOnPageChangeListener(this);

@@ -11,9 +11,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
 import com.cks.hiroyuki2.worksupport3.Activities.AddFriendActivity;
-import com.cks.hiroyuki2.worksupport3.Adapters.AddFriendVPAdapter;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.Util;
+import com.example.hiroyuki3.worksupportlibw.Adapters.AddFriendVPAdapter;
 import com.google.zxing.integration.android.IntentIntegrator;
 
 import org.androidannotations.annotations.AfterViews;
