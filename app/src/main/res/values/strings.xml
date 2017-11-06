@@ -4,17 +4,6 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <!--<string name="action_settings">Settings</string>-->
-    <!--<string name="doc">ドキュメント</string>-->
     <string name="title_activity_tutorial">TutorialActivity</string>
-    <!--<string name="about_set_val0">アプリをアンインストールした際にデータも削除する</string>-->
-    <!--<string name="about_set_val1">チュートリアルアイコンを表示する</string>-->
-    <!--<string name="launcher_icon">ランチャーアイコン</string>-->
-    <!--<string name="illustration">イラスト</string>-->
-    <!--<string name="about_launcher_credit">designed by Dimi Kazak from Flaticon</string>-->
-    <!--<string name="error_load_img">画像の読み込みに失敗しました</string>-->
     <string name="title_activity_help">HelpActivity</string>
-
-    <!--<string name="hello_blank_fragment">Hello blank fragment</string>-->
-    <!--<string name="title5">使い方</string>-->
 </resources>

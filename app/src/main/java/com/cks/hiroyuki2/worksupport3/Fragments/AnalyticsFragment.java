@@ -27,11 +27,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.Adapters.AnalyticsVPAdapter;
-import com.cks.hiroyuki2.worksupport3.AnalyticsVPUiOperator;
 import com.cks.hiroyuki2.worksupprotlib.Fab;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.Util;
 import com.cks.hiroyuki2.worksupprotlib.UtilSpec;
+import com.example.hiroyuki3.worksupportlibw.Presenter.AnalyticsVPUiOperator;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
@@ -61,7 +61,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.makeCircleAndTxt;
 import static com.cks.hiroyuki2.worksupprotlib.Util.time2String;
 
 @EFragment(R.layout.analytics_vp)
-public class AnalyticsFragment extends Fragment implements ValueEventListener, IValueFormatter, AnalyticsVPUiOperator.ScrollViewListener, ViewPager.OnPageChangeListener {
+public class AnalyticsFragment extends Fragment implements ValueEventListener, IValueFormatter, AnalyticsVPUiOperator.IAnalyticsVPUiOperator, ViewPager.OnPageChangeListener {
     private static final String TAG = "MANUAL_TAG: " + AnalyticsFragment.class.getSimpleName();
 
     @ViewById(R.id.vertical_vp) VerticalViewPager vp;
