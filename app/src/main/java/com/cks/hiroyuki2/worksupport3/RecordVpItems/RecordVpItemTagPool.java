@@ -30,7 +30,6 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.setNullableText;
 /**
  * Created by hiroyuki2 on 2017/09/17.
  */
-
 public class RecordVpItemTagPool extends RecordVpItem {
     private static final String TAG = "MANUAL_TAG: " + RecordVpItemTagPool.class.getSimpleName();
     private List<RecordVpItemTag> tagList = new ArrayList<>();
