@@ -4,9 +4,9 @@
   -->
 
 <resources>
-    <!--<color name="colorPrimary">#00897B</color>-->
-    <!--<color name="colorPrimaryDark">#00675b</color>-->
-    <!--<color name="colorAccent">#F79646</color>-->
+    <color name="colorPrimary">#00897B</color>
+    <color name="colorPrimaryDark">#00675b</color>
+    <color name="colorAccent">#F79646</color>
     <!--<color name="colorAccentDark">#882B00</color>-->
     <!--<color name="orange">#FF5722</color>-->
     <!--<color name="orange_dark">#ff9800</color>-->

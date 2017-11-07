@@ -5,59 +5,59 @@
 <resources>
 
     <!-- Base application theme. -->
-    <!--<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">-->
-        <!--&lt;!&ndash; Customize your theme here. &ndash;&gt;-->
-        <!--<item name="colorPrimary">@color/colorPrimary</item>-->
-        <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
-        <!--<item name="colorAccent">@color/colorAccent</item>-->
-        <!--<item name="preferenceTheme">@style/MyPreference</item>-->
-    <!--</style>-->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="preferenceTheme">@style/MyPreference</item>
+    </style>
 
-    <!--<style name="AppTheme.NoActionBar">-->
-        <!--<item name="windowActionBar">false</item>-->
-        <!--<item name="windowNoTitle">true</item>-->
-    <!--</style>-->
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 
-    <!--<style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />-->
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <!--<style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />-->
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <!--<array name="indicator_colors">-->
-        <!--<item>@android:color/white</item>-->
-        <!--<item>@android:color/white</item>-->
-        <!--<item>@android:color/white</item>-->
-        <!--<item>@android:color/white</item>-->
-        <!--<item>@android:color/white</item>-->
-        <!--<item>@android:color/white</item>-->
-        <!--<item>@android:color/white</item>-->
-    <!--</array>-->
+    <array name="indicator_colors">
+        <item>@android:color/white</item>
+        <item>@android:color/white</item>
+        <item>@android:color/white</item>
+        <item>@android:color/white</item>
+        <item>@android:color/white</item>
+        <item>@android:color/white</item>
+        <item>@android:color/white</item>
+    </array>
 
-    <!--&lt;!&ndash; style.xml &ndash;&gt;-->
-    <!--<style name="CustomDayTextAppearance" parent="TextAppearance.MaterialCalendarWidget.Date">-->
-        <!--&lt;!&ndash;<item name="android:textColor">@android:color/black</item>&ndash;&gt;-->
-        <!--<item name="android:textSize">@dimen/cal_txt_size</item>-->
-    <!--</style>-->
-
-    <!--<style name="CustomTextAppearance" parent="TextAppearance.MaterialCalendarWidget.Date">-->
-        <!--<item name="android:textColor">@color/mcv_text_date_light</item>-->
-    <!--</style>-->
-
-    <!--<style name="CustomWeekDaysAppearance" parent="TextAppearance.MaterialCalendarWidget.Date">-->
-        <!--&lt;!&ndash;<item name="android:textSize">@dimen/cal_txt_size</item>&ndash;&gt;-->
+    <!-- style.xml -->
+    <style name="CustomDayTextAppearance" parent="TextAppearance.MaterialCalendarWidget.Date">
         <!--<item name="android:textColor">@android:color/black</item>-->
-    <!--</style>-->
+        <item name="android:textSize">@dimen/cal_txt_size</item>
+    </style>
 
-    <!--<style name="SettingsTheme" parent="Theme.AppCompat.NoActionBar">-->
-        <!--<item name="preferenceTheme">@style/PreferenceThemeOverlay</item>-->
-    <!--</style>-->
+    <style name="CustomTextAppearance" parent="TextAppearance.MaterialCalendarWidget.Date">
+        <item name="android:textColor">@color/mcv_text_date_light</item>
+    </style>
 
-    <!--<style name="MyPreference" parent="PreferenceFixTheme.Light.DarkActionBar">-->
-        <!--<item name="preferenceCategory_marginBottom">0dp</item>-->
-    <!--</style>-->
+    <style name="CustomWeekDaysAppearance" parent="TextAppearance.MaterialCalendarWidget.Date">
+        <!--<item name="android:textSize">@dimen/cal_txt_size</item>-->
+        <item name="android:textColor">@android:color/black</item>
+    </style>
 
-    <!--<style name="PrimaryFlatButton" parent="Theme.AppCompat.Light">-->
-        <!--<item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless.Colored</item>-->
-        <!--<item name="colorControlHighlight">@color/colorAccent</item>-->
-        <!--<item name="colorAccent">@color/colorPrimary</item>-->
-    <!--</style>-->
+    <style name="SettingsTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+    </style>
+
+    <style name="MyPreference" parent="PreferenceFixTheme.Light.DarkActionBar">
+        <item name="preferenceCategory_marginBottom">0dp</item>
+    </style>
+
+    <style name="PrimaryFlatButton" parent="Theme.AppCompat.Light">
+        <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless.Colored</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
 </resources>
