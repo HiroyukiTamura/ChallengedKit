@@ -163,11 +163,9 @@ public class RecordVpItemTime extends RecordVpItem {
     @OnClick(R.id.info_btn)
     void onClickInfoBtn(){
         if(listener != null){
-
+            DialogKicker.kickDialogInOnClick(getFragment());
         }
     }
-
-    @OnClick(R)
 
     public void updateTime(@IntRange(from = 0) int dataNum, TimeEvent timeEvent) {
         adapter.update();
