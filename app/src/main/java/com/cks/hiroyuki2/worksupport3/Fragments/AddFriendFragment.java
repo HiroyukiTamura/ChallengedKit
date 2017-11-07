@@ -24,7 +24,7 @@ import org.androidannotations.annotations.ViewById;
  * {@link AddFriendActivity}のひとり子分。
  */
 @EFragment(R.layout.fragment_add_friend)
-public class AddFriendFragment extends Fragment {
+public class AddFriendFragment extends Fragment implements AddFriendVPAdapter.IAddFriendVPAdapter{
 
     private static final String TAG = "MANUAL_TAG: " + AddFriendFragment.class.getSimpleName();
     private AddFriendVPAdapter adapter;
@@ -54,5 +54,10 @@ public class AddFriendFragment extends Fragment {
         IntentIntegrator integrator = new IntentIntegrator(getActivity());
         integrator.setBeepEnabled(false);
         integrator.initiateScan();
+    }
+
+    @Override
+    public void onClickCameraButton() {
+        // TODO: 2017/11/07 整備
     }
 }

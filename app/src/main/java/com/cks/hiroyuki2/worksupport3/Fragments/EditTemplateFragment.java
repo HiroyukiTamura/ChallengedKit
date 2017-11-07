@@ -82,7 +82,8 @@ import static com.example.hiroyuki3.worksupportlibw.Presenter.RecordUiOperator.u
 import static com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemTime.CALLBACK_RANGE_COLOR;
 
 @EFragment(R.layout.fragment_setting_fragmnet)
-public class EditTemplateFragment extends Fragment implements RecordVpItemComment.onClickCommentListener, RecordVpItemParam.OnClickParamsNameListener {
+public class EditTemplateFragment extends Fragment implements RecordVpItemComment.onClickCommentListener, RecordVpItemParam.OnClickParamsNameListener,
+        RecordVpItemTime.IRecordVpItemTime, TempItemTagPool.ITempItemTagPool {
     private static final String TAG = "MANUAL_TAG: " + EditTemplateFragment.class.getSimpleName();
 
     private TreeMap<Integer, RecordRVAdapter> timeAdapterTree = new TreeMap<>();
@@ -602,4 +603,16 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
 
         return true;
     }
+
+    //region RecordVpItemTime.IRecordVpItemTime
+    @Override
+    public void onClickColorFl(Bundle bundle) {
+        // TODO: 2017/11/07 整備
+    }
+
+    @Override
+    public void onClickAddTimeEveBtn(TimeEvent timeEvent, int i) {
+        // TODO: 2017/11/07 整備
+    }
+    //endregion
 }

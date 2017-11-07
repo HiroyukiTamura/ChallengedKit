@@ -26,12 +26,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
 import com.cks.hiroyuki2.worksupprotlib.Fab;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.Util;
 import com.cks.hiroyuki2.worksupprotlib.UtilSpec;
 import com.example.hiroyuki3.worksupportlibw.Adapters.AnalyticsVPAdapter;
 import com.example.hiroyuki3.worksupportlibw.Presenter.AnalyticsVPUiOperator;
+import com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemTime;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
@@ -61,7 +63,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.makeCircleAndTxt;
 import static com.cks.hiroyuki2.worksupprotlib.Util.time2String;
 
 @EFragment(R.layout.analytics_vp)
-public class AnalyticsFragment extends Fragment implements ValueEventListener, IValueFormatter, AnalyticsVPUiOperator.IAnalyticsVPUiOperator, ViewPager.OnPageChangeListener {
+public class AnalyticsFragment extends Fragment implements ValueEventListener, IValueFormatter, ViewPager.OnPageChangeListener, AnalyticsVPUiOperator.IAnalyticsVPUiOperator {
     private static final String TAG = "MANUAL_TAG: " + AnalyticsFragment.class.getSimpleName();
 
     @ViewById(R.id.vertical_vp) VerticalViewPager vp;
@@ -93,6 +95,10 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
         if (context instanceof OnHamburgerClickListener) {
             mListener = (OnHamburgerClickListener) context;
         }
+    }
+
+    public interface OnHamburgerClickListener {
+        void onHamburgerClick();
     }
 
     @Override
@@ -142,10 +148,12 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
         }
     }
 
+    @Override
     public void onClickUpBtn() {
         vp.setCurrentItem(vp.getCurrentItem()-1);
     }
 
+    @Override
     public void onClickDownBtn() {
         vp.setCurrentItem(vp.getCurrentItem()+1);
     }
@@ -159,10 +167,6 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
         int hour = (int)entry.getX();
         int min = Math.round((entry.getX() - hour) * 60);
         return time2String(hour, min);
-    }
-
-    public interface OnHamburgerClickListener {
-        void onHamburgerClick();
     }
 
     @Override

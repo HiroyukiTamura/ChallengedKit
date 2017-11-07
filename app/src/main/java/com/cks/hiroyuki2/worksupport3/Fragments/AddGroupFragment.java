@@ -61,19 +61,22 @@ import static com.example.hiroyuki3.worksupportlibw.AdditionalUtil.CODE_ADD_GROU
  * {@link com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity}の子分！彼が扱うFragmentはこのFragmentだけ。
  */
 @EFragment(R.layout.fragment_add_group)
-public class AddGroupFragment extends Fragment implements Callback {
+public class AddGroupFragment extends Fragment implements Callback , SocialListRVAdapter.ISocialListRVAdapter{
+
     private static final String TAG = "MANUAL_TAG: " + AddGroupFragment.class.getSimpleName();
     public static final int REQ_CODE_ICON = 2498;
     public static final String DLG_TAG_MK_GROUP = "DLG_TAG_MK_GROUP";
     public static final int CALLBACK_DLG_MK_GROUP = 2499;
+
     @ViewById(R.id.icon) CircleImageView icon;
     @ViewById(R.id.name) TextView name;
     @ViewById(R.id.recycler) RecyclerView rvUser;
     @ViewById(R.id.def_icon_fl) FrameLayout defIconContainer;
-    public SocialListRVAdapter userAdapter;
-    public String dlIconUri = "null";
     @StringRes(R.string.new_group_name) public String groupName;
     @FragmentArg("userList") ArrayList<User> userList;//空でありうる
+
+    public SocialListRVAdapter userAdapter;
+    public String dlIconUri = "null";
     private IAddGroupFragment listener;
     private FirebaseStorageUtil storageUtil;
 
