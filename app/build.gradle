@@ -110,6 +110,7 @@ dependencies {
     compile 'org.apmem.tools:layouts:1.10@aar'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     compile 'com.github.andyxialm:SmoothCheckBox:47f69d4ce8'
+
     //    compile 'com.github.AndroidDeveloperLB:AutoFitTextView:4'
     //    compile 'com.heaven7.android.dragflowlayout:dragflowlayout:1.8.8'
     compile 'com.github.castorflex.verticalviewpager:library:19.0.1'
