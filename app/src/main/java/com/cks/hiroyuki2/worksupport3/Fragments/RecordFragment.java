@@ -309,6 +309,7 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
             case RecordVPAdapter.CALLBACK_TAG_ADD:
                 adapter.callbackFragment(data, requestCode);
                 break;
+
             case CALLBACK_ITEM_ADD:
                 kickCircleAndInputDialog(DIALOG_TAG_ITEM_ADD2, CALLBACK_ITEM_ADD2, bundle, this);
                 break;
