@@ -12,6 +12,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.DialogKicker;
@@ -28,6 +29,8 @@ import org.androidannotations.annotations.res.StringRes;
 
 @EFragment(R.layout.fragment_about2)
 public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAdapter{
+    private static final String TAG = "MANUAL_TAG: " + AboutFragment.class.getSimpleName();
+
     private AboutVPAdapter adapter;
     public static final String TAG_LAUNCHER_ICON = "TAG_LAUNCHER_ICON";
     public static final int CALLBACK_LAUNCHER_ICON = 198937;
@@ -64,11 +67,11 @@ public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAd
 
     @Override
     public void onCheckedChange0() {
-
+        Log.d(TAG, "onCheckedChange0() called");
     }
 
     @Override
     public void onCheckedChange1() {
-
+        Log.d(TAG, "onCheckedChange1() called");
     }
 }

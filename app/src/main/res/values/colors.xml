@@ -1,4 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimary">#00897B</color>
+    <color name="colorPrimaryDark">#00675b</color>
+    <color name="colorAccent">#F79646</color>
+    <color name="colorAccentDark">#882B00</color>
+    <color name="orange">#FF5722</color>
+    <color name="orange_dark">#ff9800</color>
+    <color name="green_light">#e7f3e5</color>
+    <color name="yellow">#FBD950</color>
+    <color name="back_color">#F6F7F7</color>
+    <color name="blue_gray">#B1C6CA</color>
+    <color name="blue_gray_light">#DDE4E5</color>
+    <color name="pink">#ff5c8d</color>
+    <color name="back_gray">#fbfbfb</color>
+    <color name="pink_pint">#Faaaaa</color>
+    <color name="dark_pnik_pint">#dc5da9</color>
+    <color name="blue_pint">#6f80e8</color>
+    <color name="yallow_pint">#ffbc66</color>
+    <color name="green_pint">#45dcb3</color>
+    <color name="gray_pint">#cccccc</color>
+    <color name="dark_gray_pint">#787b8c</color>
+    <color name="red_anton_dark">#ed3c39</color>
+    <color name="red_anton">#f16a67</color>
 
+    <color name="word_blue">#4F81BD</color>
+    <color name="word_blue_dark">#1F497D</color>
+    <color name="word_red">#C0504D</color>
+    <color name="word_yellow">#F79646</color>
+    <color name="word_green">#9BBB59</color>
+    <color name="word_purple">#8064A2</color>
+
+    <color name="transparent_back">#E6404040</color>
+
+    <color name="material_icon_active">#36000000</color>
+    <color name="material_icon_inactive">#1A000000</color>
+
+    <!--tutorial-->
+    <color name="bc_input">#e9e5d9</color>
+    <color name="text_input">#5d5b56</color>
+    <color name="bc_analytics">#9ebabe</color>
+    <color name="bc_meeting">#5996cd</color>
 </resources>
