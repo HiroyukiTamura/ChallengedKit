@@ -87,7 +87,6 @@ import com.google.gson.Gson;
 /**
  * AnalyticsVPAdapterのお助けやくおじさん！みんな協力して働くんだね！
  */
-
 public class AnalyticsVPUiOperator implements ValueEventListener, IValueFormatter, ViewTreeObserver.OnScrollChangedListener, OnChartValueSelectedListener, View.OnScrollChangeListener {
 
     private static final String TAG = "MANUAL_TAG: " + AnalyticsVPUiOperator.class.getSimpleName();
