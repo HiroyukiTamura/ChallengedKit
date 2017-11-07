@@ -53,7 +53,11 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.kickIntentIcon;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.setImgFromStorage;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickSettingDialog;
+import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 
+/**
+ * プロフィールクリックで発動するよ！
+ */
 @EFragment(R.layout.fragment_setting_fragment2)
 public class SettingFragment extends Fragment implements OnFailureListener, Callback {
 
@@ -91,7 +95,7 @@ public class SettingFragment extends Fragment implements OnFailureListener, Call
     void onAfterViews(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null){
-            Util.toastNullable(getContext(), R.string.error);
+            toastNullable(getContext(), R.string.error);
             return;
         }
 
@@ -138,7 +142,7 @@ public class SettingFragment extends Fragment implements OnFailureListener, Call
 
         FirebaseUser user = getUserMe();
         if (user == null){
-            Util.toastNullable(getContext(), R.string.error);
+            toastNullable(getContext(), R.string.error);
             return;
         }
 
@@ -147,7 +151,7 @@ public class SettingFragment extends Fragment implements OnFailureListener, Call
             case SettingDialogFragment.METHOD_REAUTH:
                 String email = user.getEmail();
                 if (email == null){
-                    Util.toastNullable(getContext(), R.string.error);
+                    toastNullable(getContext(), R.string.error);
                     return;
                 }
                 reAuthenticate(user, email, newParam);
@@ -161,7 +165,7 @@ public class SettingFragment extends Fragment implements OnFailureListener, Call
                     @Override
                     public void onSuccess(String param) {
                         //ここでUriはnullである
-                        Util.toastNullable(getContext(), R.string.success_name);
+                        toastNullable(getContext(), R.string.success_name);
                         nameTv.setText(param);
                     }
                 }.updateProfName();
@@ -181,7 +185,7 @@ public class SettingFragment extends Fragment implements OnFailureListener, Call
     //region picasso callback
     @Override
     public void onSuccess() {
-        Util.toastNullable(getContext(), R.string.update_success_msg);
+        toastNullable(getContext(), R.string.update_success_msg);
     }
 
     @Override
@@ -211,7 +215,7 @@ public class SettingFragment extends Fragment implements OnFailureListener, Call
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Util.toastNullable(getContext(), R.string.success_pw);
+                        toastNullable(getContext(), R.string.success_pw);
                     }
                 });
     }
@@ -223,7 +227,7 @@ public class SettingFragment extends Fragment implements OnFailureListener, Call
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         mailTv.setText(email);
-                        Util.toastNullable(getContext(), R.string.update_success_mail);
+                        toastNullable(getContext(), R.string.update_success_mail);
                     }
                 });
     }

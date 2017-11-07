@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +71,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
 import static com.cks.hiroyuki2.worksupprotlib.Util.setNullableText;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter.CALLBACK_REMOVE_MEMBER;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter.REMOVE_MEMBER;
 
 /**
  * このクラスは{@link com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity}と酷似しています。ヘッダ部分のロジックとレイアウトを合わせてFragmentとして切り出してもいいかもしれません。
@@ -289,12 +291,14 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
     //region GroupSettingRVAdapter.IGroupSettingRVAdapter
     @Override
     public void onClickRemoveMe() {
-        // TODO: 2017/11/07 整備
+        // TODO: 2017/11/07 デバッグこれから
+        onClickItemExit();
     }
 
     @Override
     public void onClickRemoveOthers(Bundle bundle) {
-        // TODO: 2017/11/07 整備
+        // TODO: 2017/11/07 デバッグこれから
+        kickDialogInOnClick(REMOVE_MEMBER, CALLBACK_REMOVE_MEMBER, bundle, this);
     }
     //endregion
 }

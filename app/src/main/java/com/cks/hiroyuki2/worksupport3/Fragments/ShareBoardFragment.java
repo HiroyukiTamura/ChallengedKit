@@ -101,9 +101,12 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.intentKicker;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.ShareBoardRVAdapter.ITEM_TYPE_DATA;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.ShareBoardRVAdapter.ITEM_TYPE_DOCUMENT;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.ShareBoardRVAdapter.ITEM_TYPE_UPLOADED;
 
 @EFragment(R.layout.fragment_share_board)
-public class ShareBoardFragment extends Fragment implements OnFailureListener, SwipeRefreshLayout.OnRefreshListener, ValueEventListener{
+public class ShareBoardFragment extends Fragment implements OnFailureListener, SwipeRefreshLayout.OnRefreshListener, ValueEventListener, ShareBoardRVAdapter.IShareBoardRVAdapter {
 
     //region statics
     private static final String TAG = "MANUAL_TAG: " + ShareBoardFragment.class.getSimpleName();
@@ -271,6 +274,7 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
         });
     }
 
+    @Override
     public void onClickExpandableView(int listPos){
         boolean isExpanded = rvAdapter.isExpand(listPos);
         if (isExpanded){
@@ -644,6 +648,7 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                 .startForResult(EditDocActivity.REQ_INTENT_CODE);
     }
 
+    @Override
     public void showEditDocActAsComment(/**これpositionじゃなくてcontentKey渡した方がいいんじゃないの？ほかのpositionでitemを特定している所も含めて*/int listPos, @NonNull String comment){
         com.cks.hiroyuki2.worksupport3.Activities.EditDocActivity_
                 .intent(this)
@@ -654,6 +659,7 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
     //endregion
 
     /** firebaseに上げているファイル名は、表示されているファイル名とは別物であることに注意してください。*/
+    @Override
     public void onClickItemUploaded(int listPos){
         final Content content = group.contentList.get(listPos);
         if (content.type.equals("application/pdf")){
@@ -868,10 +874,27 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
         });
     }
 
+    @Override
     public void kickViewerActivity(@NonNull String memberUid){
         com.cks.hiroyuki2.worksupport3.Activities.SharedDataViewActivity_.
                 intent(this)
                 .uid(memberUid)
                 .startForResult(INTENT_REQ_VIEW_ACTVITIY);
+    }
+
+    @Override
+    public void onClickVertAsset(int i, Bundle bundle) {
+        switch (i){
+            case ITEM_TYPE_DATA:{
+                    kickDialogInOnClick(DIALOG_TAG_DATA_VERT, DIALOG_CODE_DATA_VERT, bundle, this);
+                    break;}
+            case ITEM_TYPE_UPLOADED:{
+                    kickDialogInOnClick(DIALOG_TAG_ITEM_VERT, DIALOG_CODE_ITEM_VERT, bundle, this);
+                    break;}
+            case ITEM_TYPE_DOCUMENT:{
+                    kickDialogInOnClick(DIALOG_TAG_DOC_VERT, DIALOG_CODE_DOC_VERT, bundle, this);
+                    break;}
+        }
+
     }
 }

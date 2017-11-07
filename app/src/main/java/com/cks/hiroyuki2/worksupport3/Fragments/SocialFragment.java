@@ -55,6 +55,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.view.View.VISIBLE;
+import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupprotlib.Entity.Group.makeGroupFromSnap;
 import static com.cks.hiroyuki2.worksupprotlib.Entity.User.makeUserFromSnap;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
@@ -69,10 +70,16 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.setImgFromStorage;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.SocialGroupListRVAdapter.CALLBACK_GROUP_NON_ADDED;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.SocialGroupListRVAdapter.GROUP;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.SocialGroupListRVAdapter.TAG_GROUP_NON_ADDED;
 import static com.example.hiroyuki3.worksupportlibw.AdditionalUtil.CODE_SOCIAL_FRAG;
 
+/**
+ * SocialListRVAdapter.ISocialListRVAdapterはimplementしないでください。だって、SocialFragmentでグループ作成しないでしょ？
+ */
 @EFragment(R.layout.fragment_social2)
-public class SocialFragment extends Fragment implements ValueEventListener {
+public class SocialFragment extends Fragment implements ValueEventListener, SocialGroupListRVAdapter.ISocialGroupListRVAdapter {
 
     private static final String TAG = "MANUAL_TAG: " + SocialFragment.class.getSimpleName();
     private static final int REQ_CODE_CREATE_GROUP = 1632;
@@ -112,6 +119,7 @@ public class SocialFragment extends Fragment implements ValueEventListener {
     void onAfterViews(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null){
+            onError(this, "user == null", R.string.error);
             return;//エラー処理？？
         }
 
@@ -157,6 +165,9 @@ public class SocialFragment extends Fragment implements ValueEventListener {
         ((MainActivity)context).startActivityFromFragment(this, intent, REQ_CODE_CREATE_GROUP);
     }
 
+    /**
+     * SocialGroupListRVAdapter.ISocialGroupListRVAdapter 所属
+     */
     public void showBoard(@NonNull GroupInUserDataNode groupNode){
         if (mListener != null)
             mListener.onClickGroupItem(groupNode);
@@ -203,9 +214,9 @@ public class SocialFragment extends Fragment implements ValueEventListener {
         });
     }
 
-    @OnActivityResult(SocialGroupListRVAdapter.CALLBACK_GROUP_NON_ADDED)
+    @OnActivityResult(CALLBACK_GROUP_NON_ADDED)
     void onResultGroupNonAdd(Intent data, int resultCode,
-                             @OnActivityResult.Extra(SocialGroupListRVAdapter.GROUP) final GroupInUserDataNode groupNode,
+                             @OnActivityResult.Extra(GROUP) final GroupInUserDataNode groupNode,
                              @OnActivityResult.Extra(RecordDialogFragment.DIALOG_BUTTON) int button){
         if (resultCode == RESULT_OK) return;
 
@@ -361,5 +372,17 @@ public class SocialFragment extends Fragment implements ValueEventListener {
     public void onCancelled(DatabaseError databaseError) {
         logStackTrace(databaseError.toException());
         toastNullable(getContext(), R.string.error);
+    }
+
+    /**
+     * SocialGroupListRVAdapter.ISocialGroupListRVAdapter 所属
+     */
+    @Override
+    public void showDialog(GroupInUserDataNode groupInUserDataNode) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(GROUP, groupInUserDataNode);
+        bundle.putString("from", TAG_GROUP_NON_ADDED);
+        kickDialogInOnClick(TAG_GROUP_NON_ADDED, CALLBACK_GROUP_NON_ADDED, bundle, this);
+        // TODO: 2017/11/08 デバッグこれから
     }
 }
