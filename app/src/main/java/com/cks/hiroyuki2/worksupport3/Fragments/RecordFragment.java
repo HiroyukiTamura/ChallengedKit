@@ -21,12 +21,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
+import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.example.hiroyuki3.worksupportlibw.Adapters.RecordRVAdapter;
 import com.example.hiroyuki3.worksupportlibw.Adapters.RecordTabVPAdapter;
 import com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter;
+import com.example.hiroyuki3.worksupportlibw.Presenter.RecordUiOperator;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -39,6 +41,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static android.app.Activity.RESULT_OK;
@@ -61,7 +64,7 @@ import static com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemTi
 
 
 @EFragment(R.layout.record_vp_content)
-public class RecordFragment extends Fragment implements RecordTabVPAdapter.AdapterCallback, ViewPager.OnPageChangeListener {
+public class RecordFragment extends Fragment implements RecordTabVPAdapter.AdapterCallback, ViewPager.OnPageChangeListener, RecordVPAdapter.IRecordVPAdapter, RecordUiOperator.IRecordUiOperator {
     
     private static final String TAG = "MANUAL_TAG: " + RecordFragment.class.getSimpleName();
 
@@ -167,6 +170,7 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
 //        }
     }
 
+    @Override
     public void onPostUpdateData(){
         Log.d(TAG, "onPostUpdateData: fire");
         viewPager.setCurrentItem(adapter.findPosition(upDatingCal), false);
@@ -175,6 +179,7 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
         upDatingCal = null;
     }
 
+    @Override
     public void onPostInitData(){
         Log.d(TAG, "onPostInitData: fire");
         progressBar.setVisibility(View.GONE);
@@ -314,4 +319,21 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
                 break;
         }
     }
+
+    //region RecordUiOperator.IRecordUiOperator
+    @Override
+    public void onClickCommentEdit(Bundle bundle) {
+        // TODO: 2017/11/07 整備
+    }
+
+    @Override
+    public void updateAndSync(List<RecordData> list, String s) {
+        // TODO: 2017/11/07 整備
+    }
+
+    @Override
+    public void onClickTagPoolContent(Calendar calendar, int i) {
+        // TODO: 2017/11/07 整備
+    }
+    //endregion
 }

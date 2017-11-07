@@ -525,12 +525,15 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
         kickInputDialog(bundle, RecordVPAdapter.COMMENT, RecordVPAdapter.CALLBACK_COMMENT, this);
     }
 
+    //region TempItemTagPool.ITempItemTagPool
+    @Override
     public void onClickTagPoolName(int dataNum){
         Bundle bundle = DialogKicker.makeBundleInOnClick(null, RecordVPAdapter.TAGVIEW_NAME, dataNum);
         bundle.putString(RecordVPAdapter.NAME, list.get(dataNum).dataName);
         kickInputDialog(bundle, RecordVPAdapter.TAGVIEW_NAME, RecordVPAdapter.CALLBACK_TAGVIEW_NAME, this);
     }
 
+    @Override
     public void onClickTagPoolAdd(int dataNum){
         Bundle bundle = DialogKicker.makeBundleInOnClick(null, RecordVPAdapter.TAG_ITEM, dataNum);
         bundle.putSerializable(RecordDiaogFragmentTag.RECORD_DATA, getList().get(dataNum));
@@ -538,6 +541,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
         dialog.setTargetFragment(this, RecordVPAdapter.CALLBACK_TAG_ITEM);
         dialog.show(this.getActivity().getSupportFragmentManager(), RecordVPAdapter.TAG_ITEM);
     }
+    //endregion
 
     public void onClickTag(int tagNum, int dataNum, String value) {
         Bundle bundle = DialogKicker.makeBundleInOnClick(null, Util.TEMPLATE_TAG_EDIT, dataNum);
@@ -550,6 +554,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
         dialog.show(this.getActivity().getSupportFragmentManager(), Util.TEMPLATE_TAG_EDIT);
     }
 
+    //region RecordVpItemParam.OnClickParamsNameListener
     @Override
     public void onClickParamsName(int dataNum) {
         Bundle bundle = DialogKicker.makeBundleInOnClick(null, RecordVPAdapter.TAGVIEW_NAME, dataNum);
@@ -571,6 +576,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
         bundle.putStringArrayList(PARAMS_VALUES, strings);
         kickDialogInOnClick(Util.TEMPLATE_PARAMS_ADD, Util.CALLBACK_TEMPLATE_PARAMS_ADD, bundle, EditTemplateFragment.this);
     }
+    //endregion
 
     public void onClickRemoveTagBtn(int dataNum, int tagNum) {
         //todo これタグを削除する前に、「タグを削除しますか？」っていうDialogを挟むべきでは？

@@ -76,7 +76,7 @@ import static com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapt
  * それかCustomViewもいいですね。ある程度実装が固まってから、リファクタリングするかどうか検討しましょう。
  * layoutをincludeしているので、AndroidAnnotationがうまくいかない。
  */
-public class GroupSettingFragment extends Fragment implements Callback, OnFailureListener {
+public class GroupSettingFragment extends Fragment implements Callback, OnFailureListener, GroupSettingRVAdapter.IGroupSettingRVAdapter {
 
     private static final String TAG = "MANUAL_TAG: " + GroupSettingFragment.class.getSimpleName();
     public final static String GROUP = "group";
@@ -285,4 +285,16 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
         logStackTrace(e);
         toastNullable(getContext(), R.string.error);
     }
+
+    //region GroupSettingRVAdapter.IGroupSettingRVAdapter
+    @Override
+    public void onClickRemoveMe() {
+        // TODO: 2017/11/07 整備
+    }
+
+    @Override
+    public void onClickRemoveOthers(Bundle bundle) {
+        // TODO: 2017/11/07 整備
+    }
+    //endregion
 }
