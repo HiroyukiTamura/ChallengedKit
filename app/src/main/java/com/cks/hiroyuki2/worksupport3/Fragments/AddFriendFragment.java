@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 
 import com.cks.hiroyuki2.worksupport3.Activities.AddFriendActivity;
 import com.cks.hiroyuki2.worksupport3.R;
@@ -43,10 +44,6 @@ public class AddFriendFragment extends Fragment implements AddFriendVPAdapter.IA
         tab.setupWithViewPager(vp);
     }
 
-    public void checkPermission(){
-        Util.checkPermission(getActivity(), ((AddFriendActivity) getActivity()).getListener());
-    }
-
     public void onPermissionAdmitted(){
         if (getActivity() == null)
             return;
@@ -56,8 +53,9 @@ public class AddFriendFragment extends Fragment implements AddFriendVPAdapter.IA
         integrator.initiateScan();
     }
 
+    //ただこれだけだからさ、いちいちimplementするほどでもないんだけどさ。fragmentからこういう処理しないと気持ち悪いのよ。
     @Override
     public void onClickCameraButton() {
-        // TODO: 2017/11/07 整備
+        Util.checkPermission(getActivity(), ((AddFriendActivity) getActivity()).getListener());/*非同期じゃないから大丈夫*/
     }
 }

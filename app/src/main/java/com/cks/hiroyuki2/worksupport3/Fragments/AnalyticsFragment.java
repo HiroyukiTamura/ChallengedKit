@@ -85,7 +85,7 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
     @FragmentArg("isMine") boolean isMine;
     private View rootView;
     private Context context;
-    private MaterialSheetFab materialSheetFab;
+    private MaterialSheetFab materialSheetFab;//fabには特にリスナをセットしなくても自動的に動く
     private AnalyticsVPAdapter adapter;
 
     @Override
@@ -189,14 +189,9 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
         mListener.onHamburgerClick();
     }
 
-    @Click(R.id.fab)
-    void onClickFab(){
-
-    }
-
     @Override
     public void onScrollChanged(HorizontalScrollView horizontalScrollView, int x) {
-        if (x >= 0){
+        if (x > 0){
             fab.hide();
         } else {
             fab.show();
