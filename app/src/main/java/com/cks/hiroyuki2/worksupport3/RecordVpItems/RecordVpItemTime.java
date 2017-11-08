@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 import com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRVAdapter;
 import com.cks.hiroyuki2.worksupport3.Adapters.TimeEventRangeRVAdapter;
@@ -66,6 +67,7 @@ public class RecordVpItemTime extends RecordVpItem {
     @BindView(R.id.time_event_rv) RecyclerView timeEventRv;
     @BindView(R.id.rv_container) LinearLayout container;
     @BindView(R.id.add_range) ImageView addRange;
+    @BindView(R.id.info_btn) ImageButton infoBtn;
 
     public RecordVpItemTime(RecordData data, int dataNum, Calendar cal, Fragment fragment) {
         super(data, dataNum, cal, fragment);
@@ -125,6 +127,7 @@ public class RecordVpItemTime extends RecordVpItem {
     public View buildView() {
         view = getFragment().getLayoutInflater().inflate(R.layout.record_vp_item_timeline2, null);
         ButterKnife.bind(this, view);
+        infoBtn.setVisibility(View.INVISIBLE);
         dataSet = getTimeEveDataSetFromRecordData(getData());
         if (dataSet == null)
             return null;
@@ -158,13 +161,6 @@ public class RecordVpItemTime extends RecordVpItem {
 
         addRangeItem(range, rangePairList.size());
         addRangeToList(range);
-    }
-
-    @OnClick(R.id.info_btn)
-    void onClickInfoBtn(){
-        if(listener != null){
-            DialogKicker.kickDialogInOnClick(getFragment());
-        }
     }
 
     public void updateTime(@IntRange(from = 0) int dataNum, TimeEvent timeEvent) {
