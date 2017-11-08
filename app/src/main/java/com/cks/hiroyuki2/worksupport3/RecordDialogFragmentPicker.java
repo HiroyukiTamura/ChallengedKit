@@ -80,16 +80,16 @@ public class RecordDialogFragmentPicker extends DialogFragment implements Dialog
     @Override
     public void onClick(DialogInterface dialogInterface, int i) {
         if (i == Dialog.BUTTON_POSITIVE){
-            sendIntent();
+            sendIntent(timePicker);
         }
     }
 
     @Override
     public void onTimeSet(TimePicker timePicker, int i, int i1) {
-        sendIntent();
+        sendIntent(timePicker);
     }
 
-    private void sendIntent(){
+    private void sendIntent(TimePicker timePicker){
         Fragment target = getTargetFragment();
         if (target == null){
             onError(getContext(), TAG + "target == null", R.string.error);
