@@ -41,6 +41,7 @@ import java.util.TreeMap;
 
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickCircleAndInputDialog;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
+import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickTimePickerDialog;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickWidgetDialog;
 import static com.cks.hiroyuki2.worksupport3.TempWidgetDialogFragment.APPLY_TEMP_IS_SUCCESS;
 import static com.cks.hiroyuki2.worksupport3.TempWidgetDialogFragment.CALLBACK_TEMPLATE_ADD;
@@ -66,9 +67,11 @@ import com.example.hiroyuki3.worksupportlibw.RecordVpItems.TempItemTagPool;
 
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter.DATA_NUM;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_ADD;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_ADD2;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_CLICK;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_CLICK2;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.DIALOG_TAG_ITEM_ADD;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.DIALOG_TAG_ITEM_CLICK2;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.RV_POS;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.TIME_EVENT;
@@ -80,6 +83,7 @@ import static com.example.hiroyuki3.worksupportlibw.AdditionalUtil.CODE_EDIT_FRA
 import static com.example.hiroyuki3.worksupportlibw.Presenter.RecordUiOperator.syncTimeDataMap;
 import static com.example.hiroyuki3.worksupportlibw.Presenter.RecordUiOperator.updateCommentMap;
 import static com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemTime.CALLBACK_RANGE_COLOR;
+import static com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemTime.DIALOG_TAG_RANGE_COLOR;
 
 @EFragment(R.layout.fragment_setting_fragmnet)
 public class EditTemplateFragment extends Fragment implements RecordVpItemComment.onClickCommentListener, RecordVpItemParam.OnClickParamsNameListener,
@@ -155,13 +159,13 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
         RecordVpItem vpItem;
         switch (data.dataType){
             case 1:
-                vpItem = new RecordVpItemTime(data, dataNum, this, CODE_EDIT_FRAG);
+                vpItem = new RecordVpItemTime(data, dataNum, this, this, CODE_EDIT_FRAG);
                 break;
             case 2:
                 vpItem = new TempItemTagPool(this, list, dataNum);
                 break;
             case 3:
-                vpItem = new RecordVpItemParam(list.get(dataNum), dataNum, null, this, CODE_EDIT_FRAG);
+                vpItem = new RecordVpItemParam(list.get(dataNum), dataNum, null, this, this, CODE_EDIT_FRAG);
                 break;
             case 4:
                 vpItem = new RecordVpItemComment(list.get(dataNum), dataNum, null, this, this);
@@ -187,7 +191,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
     }
 
     private void setParamsView(final int dataNum){
-        RecordVpItemParam param = new RecordVpItemParam(list.get(dataNum), dataNum, null, this, CODE_EDIT_FRAG);
+        RecordVpItemParam param = new RecordVpItemParam(list.get(dataNum), dataNum, null, this, this, CODE_EDIT_FRAG);
         uiList.add(param);
         ll.addView(param.buildView(), ll.getChildCount()-1);
     }
@@ -576,6 +580,11 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
         bundle.putStringArrayList(PARAMS_VALUES, strings);
         kickDialogInOnClick(Util.TEMPLATE_PARAMS_ADD, Util.CALLBACK_TEMPLATE_PARAMS_ADD, bundle, EditTemplateFragment.this);
     }
+
+    @Override
+    public void syncFirebaseAndMap(int i, String s, RecordData recordData) {
+        //このコールバックはRecordFragment用なので、何もしない
+    }
     //endregion
 
     public void onClickRemoveTagBtn(int dataNum, int tagNum) {
@@ -613,12 +622,12 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
     //region RecordVpItemTime.IRecordVpItemTime
     @Override
     public void onClickColorFl(Bundle bundle) {
-        // TODO: 2017/11/07 整備
+        kickCircleAndInputDialog(DIALOG_TAG_RANGE_COLOR, CALLBACK_RANGE_COLOR, bundle, this);
     }
 
     @Override
-    public void onClickAddTimeEveBtn(TimeEvent timeEvent, int i) {
-        // TODO: 2017/11/07 整備
+    public void onClickAddTimeEveBtn(Bundle bundle) {
+        kickTimePickerDialog(DIALOG_TAG_ITEM_ADD, CALLBACK_ITEM_ADD, bundle, this);
     }
     //endregion
 }

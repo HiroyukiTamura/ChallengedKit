@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -21,7 +22,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
+import com.cks.hiroyuki2.worksupport3.DialogKicker;
 import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
+import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.Util;
@@ -46,20 +49,27 @@ import java.util.concurrent.TimeUnit;
 
 import static android.app.Activity.RESULT_OK;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickCircleAndInputDialog;
+import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
+import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
+import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickTimePickerDialog;
 import static com.cks.hiroyuki2.worksupprotlib.Util.date2Cal;
 import static com.cks.hiroyuki2.worksupprotlib.Util.datePattern;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 //import static com.cks.hiroyuki2.worksupprotlib.Util.KEY;
 import static com.cks.hiroyuki2.worksupprotlib.Util.INDEX;
 import static com.cks.hiroyuki2.worksupprotlib.Util.time2String;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter.DATA_NUM;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_ADD;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_ADD2;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_CLICK;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_CLICK2;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.DIALOG_TAG_ITEM_ADD;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.DIALOG_TAG_ITEM_ADD2;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.DIALOG_TAG_ITEM_CLICK2;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.TIME_EVENT;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRangeRVAdapter.CALLBACK_RANGE_CLICK_TIME;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRangeRVAdapter.CALLBACK_RANGE_CLICK_VALUE;
+import static com.example.hiroyuki3.worksupportlibw.Presenter.RecordUiOperator.makeBundleInOnClick;
 import static com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemTime.CALLBACK_RANGE_COLOR;
 
 
@@ -170,6 +180,7 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
 //        }
     }
 
+    //region RecordVPAdapter.IRecordVPAdapter
     @Override
     public void onPostUpdateData(){
         Log.d(TAG, "onPostUpdateData: fire");
@@ -193,6 +204,7 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
 
         viewPager.addOnPageChangeListener(this);
     }
+    //endregion
 
     @Override
     public void onPageSelected(int position) {
@@ -258,7 +270,7 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
 
     @PageSelected(R.id.tab)
     public void onTabVpSelected(){
-        Calendar opeCal = null;
+        Calendar opeCal;
         if (tabVPAdapter.currentItem != null){
             int tag = (int)tabVPAdapter.currentItem.getTag();
             try {
@@ -322,18 +334,27 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
 
     //region RecordUiOperator.IRecordUiOperator
     @Override
-    public void onClickCommentEdit(Bundle bundle) {
-        // TODO: 2017/11/07 整備
+    public void onClickCommentEdit(@NonNull Bundle bundle) {
+        kickInputDialog(bundle, RecordVPAdapter.COMMENT, RecordVPAdapter.CALLBACK_COMMENT, this);
     }
 
     @Override
     public void updateAndSync(List<RecordData> list, String s) {
-        // TODO: 2017/11/07 整備
+        adapter.syncDataMapAndFireBase(list, s);
     }
 
     @Override
     public void onClickTagPoolContent(Calendar calendar, int i) {
-        // TODO: 2017/11/07 整備
+        Bundle bundle = RecordUiOperator.makeBundleInOnClick(RecordVPAdapter.TAG_ADD, calendar, i);/*RecordUiOperatorのmakeBundleInOnClickであることに注意してください　同名メソッドがあります*/
+        kickDialogInOnClick(RecordVPAdapter.TAG_ADD, RecordVPAdapter.CALLBACK_TAG_ADD, bundle, this);
+    }
+
+    @Override
+    public void onClickAddTimeEveBtn(TimeEvent timeEvent, int dataNum) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(DATA_NUM, dataNum);
+        bundle.putSerializable(TIME_EVENT, timeEvent);
+        kickTimePickerDialog(DIALOG_TAG_ITEM_ADD, CALLBACK_ITEM_ADD, bundle, this);
     }
     //endregion
 }
