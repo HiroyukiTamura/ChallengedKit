@@ -350,10 +350,7 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
     }
 
     @Override
-    public void onClickAddTimeEveBtn(TimeEvent timeEvent, int dataNum) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(DATA_NUM, dataNum);
-        bundle.putSerializable(TIME_EVENT, timeEvent);
+    public void onClickAddTimeEveBtn(Bundle bundle) {
         kickTimePickerDialog(DIALOG_TAG_ITEM_ADD, CALLBACK_ITEM_ADD, bundle, this);
     }
     //endregion
