@@ -58,6 +58,8 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.INDEX;
 import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
 import com.example.hiroyuki3.worksupportlibw.Adapters.RecordRVAdapter;
 import com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter;
+import com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter;
+import com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRangeRVAdapter;
 import com.example.hiroyuki3.worksupportlibw.AdditionalUtil;
 import com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItem;
 import com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemComment;
@@ -72,11 +74,14 @@ import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_CLICK;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_CLICK2;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.DIALOG_TAG_ITEM_ADD;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.DIALOG_TAG_ITEM_CLICK;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.DIALOG_TAG_ITEM_CLICK2;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.RV_POS;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.TIME_EVENT;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRangeRVAdapter.CALLBACK_RANGE_CLICK_TIME;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRangeRVAdapter.CALLBACK_RANGE_CLICK_VALUE;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRangeRVAdapter.DIALOG_TAG_RANGE_CLICK_TIME;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRangeRVAdapter.DIALOG_TAG_RANGE_CLICK_VALUE;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRangeRVAdapter.POSITION;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRangeRVAdapter.POS_IN_LIST;
 import static com.example.hiroyuki3.worksupportlibw.AdditionalUtil.CODE_EDIT_FRAG;
@@ -87,7 +92,7 @@ import static com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemTi
 
 @EFragment(R.layout.fragment_setting_fragmnet)
 public class EditTemplateFragment extends Fragment implements RecordVpItemComment.onClickCommentListener, RecordVpItemParam.OnClickParamsNameListener,
-        RecordVpItemTime.IRecordVpItemTime, TempItemTagPool.ITempItemTagPool {
+        RecordVpItemTime.IRecordVpItemTime, TempItemTagPool.ITempItemTagPool, TimeEventRangeRVAdapter.ITimeEventRangeRVAdapter, TimeEventRVAdapter.ITimeEventRVAdapter {
     private static final String TAG = "MANUAL_TAG: " + EditTemplateFragment.class.getSimpleName();
 
     private TreeMap<Integer, RecordRVAdapter> timeAdapterTree = new TreeMap<>();
@@ -159,7 +164,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
         RecordVpItem vpItem;
         switch (data.dataType){
             case 1:
-                vpItem = new RecordVpItemTime(data, dataNum, this, this, CODE_EDIT_FRAG);
+                vpItem = new RecordVpItemTime(data, dataNum, this, this, this, this, CODE_EDIT_FRAG);
                 break;
             case 2:
                 vpItem = new TempItemTagPool(this, list, dataNum);
@@ -630,4 +635,19 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
         kickTimePickerDialog(DIALOG_TAG_ITEM_ADD, CALLBACK_ITEM_ADD, bundle, this);
     }
     //endregion
+
+    @Override
+    public void onClickValue(Bundle bundle) {
+        kickInputDialog(bundle, DIALOG_TAG_RANGE_CLICK_VALUE, CALLBACK_RANGE_CLICK_VALUE, this);
+    }
+
+    @Override
+    public void onClickTime(Bundle bundle) {
+        kickTimePickerDialog(DIALOG_TAG_RANGE_CLICK_TIME, CALLBACK_RANGE_CLICK_TIME, bundle, this);
+    }
+
+    @Override
+    public void onClickItem(Bundle bundle) {
+        kickTimePickerDialog(DIALOG_TAG_ITEM_CLICK, CALLBACK_ITEM_CLICK, bundle, this);
+    }
 }

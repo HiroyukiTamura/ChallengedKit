@@ -65,10 +65,13 @@ import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_CLICK2;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.DIALOG_TAG_ITEM_ADD;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.DIALOG_TAG_ITEM_ADD2;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.DIALOG_TAG_ITEM_CLICK;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.DIALOG_TAG_ITEM_CLICK2;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.TIME_EVENT;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRangeRVAdapter.CALLBACK_RANGE_CLICK_TIME;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRangeRVAdapter.CALLBACK_RANGE_CLICK_VALUE;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRangeRVAdapter.DIALOG_TAG_RANGE_CLICK_TIME;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRangeRVAdapter.DIALOG_TAG_RANGE_CLICK_VALUE;
 import static com.example.hiroyuki3.worksupportlibw.Presenter.RecordUiOperator.makeBundleInOnClick;
 import static com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemTime.CALLBACK_RANGE_COLOR;
 
@@ -354,4 +357,19 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
         kickTimePickerDialog(DIALOG_TAG_ITEM_ADD, CALLBACK_ITEM_ADD, bundle, this);
     }
     //endregion
+
+    @Override
+    public void onClickValue(Bundle bundle) {
+        kickInputDialog(bundle, DIALOG_TAG_RANGE_CLICK_VALUE, CALLBACK_RANGE_CLICK_VALUE, this);
+    }
+
+    @Override
+    public void onClickTime(Bundle bundle) {
+        kickTimePickerDialog(DIALOG_TAG_RANGE_CLICK_TIME, CALLBACK_RANGE_CLICK_TIME, bundle, this);
+    }
+
+    @Override
+    public void onClickItem(Bundle bundle) {
+        kickTimePickerDialog(DIALOG_TAG_ITEM_CLICK, CALLBACK_ITEM_CLICK, bundle, this);
+    }
 }
