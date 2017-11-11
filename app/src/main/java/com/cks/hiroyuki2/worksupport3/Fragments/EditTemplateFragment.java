@@ -49,7 +49,11 @@ import static com.cks.hiroyuki2.worksupport3.TempWidgetDialogFragment.CALLBACK_T
 import static com.cks.hiroyuki2.worksupport3.TempWidgetDialogFragment.TEMPLATE_ADD;
 import static com.cks.hiroyuki2.worksupport3.TempWidgetDialogFragment.TEMPLATE_EDIT;
 import static com.cks.hiroyuki2.worksupprotlib.TemplateEditor.applyTemplate;
+import static com.cks.hiroyuki2.worksupprotlib.Util.CALLBACK_TEMPLATE_PARAMS_ITEM;
+import static com.cks.hiroyuki2.worksupprotlib.Util.CALLBACK_TEMPLATE_PARAMS_SLIDER_MAX;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PARAMS_VALUES;
+import static com.cks.hiroyuki2.worksupprotlib.Util.TEMPLATE_PARAMS_ITEM;
+import static com.cks.hiroyuki2.worksupprotlib.Util.TEMPLATE_PARAMS_SLIDER_MAX;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toast;
 import com.cks.hiroyuki2.worksupprotlib.Util;
@@ -68,12 +72,14 @@ import com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemTime;
 import com.example.hiroyuki3.worksupportlibw.RecordVpItems.TempItemTagPool;
 
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter.CALLBACK_TAG_ITEM;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter.DATA_NUM;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_ADD;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_ADD2;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_CLICK;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.CALLBACK_ITEM_CLICK2;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.DIALOG_TAG_ITEM_ADD;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.DIALOG_TAG_ITEM_ADD2;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.DIALOG_TAG_ITEM_CLICK;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.DIALOG_TAG_ITEM_CLICK2;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.RV_POS;
@@ -291,7 +297,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
                 toast(getContext(), b, R.string.succeed_edit_tag, R.string.error);
                 break;}
 
-            case Util.CALLBACK_TEMPLATE_PARAMS_ITEM:{
+            case CALLBACK_TEMPLATE_PARAMS_ITEM:{
                 int dataNum = bundle.getInt(DATA_NUM, 100);
                 int plotPos = bundle.getInt(INDEX, 100);
                 String[] newStr = bundle.getStringArray(PARAMS_VALUES);
@@ -313,9 +319,9 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
 
                 break;}
 
-            case Util.CALLBACK_TEMPLATE_PARAMS_SLIDER_MAX:{
+            case CALLBACK_TEMPLATE_PARAMS_SLIDER_MAX:{
                 int dataNum = bundle.getInt(DATA_NUM);
-                int plotNum = bundle.getInt(Util.TEMPLATE_PARAMS_SLIDER_MAX);
+                int plotNum = bundle.getInt(TEMPLATE_PARAMS_SLIDER_MAX);
                 String[] strings = bundle.getStringArray(PARAMS_VALUES);
                 String key = Integer.toString(plotNum);
                 String value = Util.joinArr(strings, delimiter);
@@ -342,8 +348,13 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
             case CALLBACK_RANGE_CLICK_TIME:
             case CALLBACK_RANGE_CLICK_VALUE:
                 updateTimeRange(data, requestCode);
+                break;
+            case CALLBACK_ITEM_ADD:
+                kickCircleAndInputDialog(DIALOG_TAG_ITEM_ADD2, CALLBACK_ITEM_ADD2, bundle, this);
+                break;
             case CALLBACK_ITEM_ADD2:
                 addItem(data);
+                break;
             case CALLBACK_RANGE_COLOR:
                 updateComment(data);
                 break;
@@ -649,5 +660,15 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
     @Override
     public void onClickItem(Bundle bundle) {
         kickTimePickerDialog(DIALOG_TAG_ITEM_CLICK, CALLBACK_ITEM_CLICK, bundle, this);
+    }
+
+    @Override
+    public void onClickKey(Bundle bundle) {
+        kickInputDialog(bundle, TEMPLATE_PARAMS_ITEM, CALLBACK_TEMPLATE_PARAMS_ITEM, this);
+    }
+
+    @Override
+    public void onClickMax(Bundle bundle) {
+        kickDialogInOnClick(TEMPLATE_PARAMS_SLIDER_MAX, CALLBACK_TEMPLATE_PARAMS_SLIDER_MAX, bundle, this);
     }
 }
