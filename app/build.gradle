@@ -8,6 +8,7 @@ buildscript {
         jcenter()
         mavenCentral()
         google()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
 
     dependencies {
@@ -17,7 +18,7 @@ buildscript {
         // We recommend changing it to the latest version from our changelog:
         // https://docs.fabric.io/android/changelog.html#fabric-gradle-plugin
         classpath 'io.fabric.tools:gradle:1.+'
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.8.1'
+        classpath 'com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'
     }
 }
 
@@ -34,6 +35,7 @@ repositories {
         url "https://jitpack.io"
         credentials { username authToken }
     }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 android {
@@ -115,7 +117,6 @@ dependencies {
     compile 'com.github.castorflex.verticalviewpager:library:19.0.1'
     compile 'org.adw.library:discrete-seekbar:1.0.1'
     compile 'com.shawnlin:number-picker:2.4.4'
-    compile 'com.jakewharton:butterknife:8.8.1'
     compile 'com.github.SumiMakito:AwesomeQRCode:1.0.6'
     compile 'com.journeyapps:zxing-android-embedded:3.5.0'
     compile 'de.hdodenhof:circleimageview:2.2.0'
@@ -130,12 +131,13 @@ dependencies {
     compile 'com.github.deano2390:MaterialShowcaseView:1.2.0@aar'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'org.androidannotations:androidannotations:4.3.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.2'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.2'
     compile 'frankiesardo:icepick:3.2.0'
-    provided 'frankiesardo:icepick-processor:3.2.0'
+    annotationProcessor 'frankiesardo:icepick-processor:3.2.0'
+    compile 'com.jakewharton:butterknife:9.0.0-SNAPSHOT'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-SNAPSHOT'
     //    compile 'com.android.support:multidex:1.0.2'
 //    compile project(':worksupportlibrary')
 }
