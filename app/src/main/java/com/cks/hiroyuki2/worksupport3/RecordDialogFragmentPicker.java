@@ -34,6 +34,7 @@ import butterknife.ButterKnife;
 
 import static android.app.Activity.RESULT_OK;
 import static com.cks.hiroyuki2.worksupprotlib.Util.TIME_EVENT_RANGE;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getCalFromTimeEvent;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getMimeType;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.TimeEventRVAdapter.TIME_EVENT;
@@ -173,7 +174,6 @@ public class RecordDialogFragmentPicker extends DialogFragment implements Dialog
      * @return 負の数を返す。
      */
     private int compare(TimeEvent eve1, TimeEvent eve2){
-
         if (eve1.getOffset() != eve2.getOffset())
             return eve1.getOffset() - eve2.getOffset();
 

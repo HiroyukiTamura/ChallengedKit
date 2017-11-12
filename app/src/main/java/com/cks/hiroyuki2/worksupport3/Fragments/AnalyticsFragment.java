@@ -63,7 +63,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.makeCircleAndTxt;
 import static com.cks.hiroyuki2.worksupprotlib.Util.time2String;
 
 @EFragment(R.layout.analytics_vp)
-public class AnalyticsFragment extends Fragment implements ValueEventListener, IValueFormatter, ViewPager.OnPageChangeListener, AnalyticsVPUiOperator.IAnalyticsVPUiOperator {
+public class AnalyticsFragment extends Fragment implements IValueFormatter, ViewPager.OnPageChangeListener, AnalyticsVPUiOperator.IAnalyticsVPUiOperator {
     private static final String TAG = "MANUAL_TAG: " + AnalyticsFragment.class.getSimpleName();
 
     @ViewById(R.id.vertical_vp) VerticalViewPager vp;
@@ -167,21 +167,6 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
         int hour = (int)entry.getX();
         int min = Math.round((entry.getX() - hour) * 60);
         return time2String(hour, min);
-    }
-
-    @Override
-    public void onDataChange(DataSnapshot dataSnapshot) {
-        if (!dataSnapshot.exists()){
-            Log.d(TAG, "onDataChange: !dataSnapshot.exists()" + dataSnapshot.getRef().getKey());
-        } else {
-            List<HashMap<String, Object>> list = ( List<HashMap<String, Object>>) dataSnapshot.getValue();
-            Log.d(TAG, "onDataChange: ふにふに" + dataSnapshot.getRef().toString());
-        }
-    }
-
-    @Override
-    public void onCancelled(DatabaseError databaseError) {
-        Log.w(TAG, "onCancelled: " + databaseError.getMessage());
     }
 
     @Click(R.id.hamburger)

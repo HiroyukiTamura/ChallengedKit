@@ -34,6 +34,7 @@ import org.androidannotations.annotations.ViewById;
 import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -680,5 +681,10 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
         bundle.putInt(INDEX, pos);
         bundle.putInt(TEMPLATE_PARAMS_SLIDER_MAX, pos);
         kickDialogInOnClick(TEMPLATE_PARAMS_SLIDER_MAX, CALLBACK_TEMPLATE_PARAMS_SLIDER_MAX, bundle, this);
+    }
+
+    @Override
+    public void onRemoveItem(int dataNum, RecordVpItemTime recordVpItemTime) {
+        syncTimeDataMapAndLocal(dataNum, recordVpItemTime);
     }
 }
