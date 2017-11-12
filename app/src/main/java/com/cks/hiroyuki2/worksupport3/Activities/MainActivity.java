@@ -76,6 +76,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import icepick.Icepick;
+import icepick.State;
 import io.fabric.sdk.android.Fabric;
 
 import static android.view.View.INVISIBLE;
@@ -103,9 +104,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static final int REQ_CODE_ADD_USER = 1100;
     static final int REQ_OPEN_ICON_IMG = 1200;
     static final int REQ_CODE_GROUP_SETTING = 1300;
+    private static final int REQ_CODE_TUTORIAL = 1400;
     private ServiceConnector connector;
     private SharedPreferences pref;
     private LoginCheck check;
+    @State private boolean isFirstLaunch = false;
 //    private MultiplePermissionsListener listener;
 
     @ViewById(R.id.appbar) AppBarLayout appbar;
@@ -130,10 +133,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
-        initDefaultTemplate(this);
+//        initDefaultTemplate(this);
 
         pref = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        boolean isFirstLaunch = false;
         if(!AppLaunchChecker.hasStartedFromLauncher(this)){
             if (initDefaultTemplate(this)){
                 AppLaunchChecker.onActivityCreate(this);
@@ -156,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (isFirstLaunch){
             Intent intent = new Intent(this, TutorialActivity_.class);
-            startActivity(intent);
+            startActivityForResult(intent, REQ_CODE_TUTORIAL);
         }
     }
 
@@ -180,7 +182,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @AfterViews
     void onAfterViews(){
-        saveWindowWidth();
+//        saveWindowWidth();
+
+        if (isFirstLaunch)
+            return;
 
         setSupportActionBar(toolbar);
 //        toolbar = findViewById(R.id.toolbar);
@@ -525,6 +530,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             onError(this, "handleSignInResponse: unknown_sign_in_response", R.string.error);
         }
+    }
+
+    @OnActivityResult(REQ_CODE_TUTORIAL)
+    void onResultTutorial(){
+        isFirstLaunch = false;
+        onAfterViews();
     }
 
     public void editMyProf(){
