@@ -6,4 +6,5 @@
 
     <string name="title_activity_tutorial">TutorialActivity</string>
     <string name="title_activity_help">HelpActivity</string>
+    <string name="tp_range_msg">終了時刻が開始時刻より後になるようにしてください</string>
 </resources>
