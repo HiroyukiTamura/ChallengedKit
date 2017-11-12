@@ -31,7 +31,8 @@
                 <item
                     android:id="@+id/menu_help"
                     android:icon="@drawable/ic_info_black_24dp"
-                    android:title="@string/title5"/>
+                    android:title="@string/title5"
+                    android:visible="false"/>
             <!--</menu>-->
         <!--</item>-->
     </group>

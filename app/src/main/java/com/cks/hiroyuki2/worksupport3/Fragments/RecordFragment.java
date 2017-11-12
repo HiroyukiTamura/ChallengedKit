@@ -38,6 +38,7 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.PageSelected;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.res.ColorRes;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -52,8 +53,10 @@ import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickCircleAndInputDial
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickTimePickerDialog;
+import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
 import static com.cks.hiroyuki2.worksupprotlib.Util.date2Cal;
 import static com.cks.hiroyuki2.worksupprotlib.Util.datePattern;
+import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 //import static com.cks.hiroyuki2.worksupprotlib.Util.KEY;
 import static com.cks.hiroyuki2.worksupprotlib.Util.INDEX;
@@ -94,6 +97,7 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
     @ViewById(R.id.content) LinearLayout content;
     @ViewById(R.id.progress_bar) ProgressBar progressBar;
     @ViewById(R.id.progress_bar_inner) ProgressBar innerPb;
+    @ColorRes(R.color.pink) int holidayColor;
     private Calendar upDatingCal;//アップデート中に使用する。nullのとき、upDate中でないことを表す
 //    List<String> list;
 
@@ -216,9 +220,9 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
         if (upDatingCal != null)
             return;
 
+        Calendar oldCal = getSwipedCal(position);
+        adapter.onPageSelected(oldCal);
         Calendar cal = getSwipedCal(position);
-        adapter.onPageSelected(cal);
-        cal = getSwipedCal(position);
         int tag = (Integer) tabVPAdapter.currentItem.getTag();
 
         try {
@@ -228,8 +232,14 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
             circle.setVisibility(View.GONE);
             TextView tv = ((View)circle.getParent()).findViewById(R.id.tv);
             tv.setTextColor(Color.WHITE);
+            if (oldCal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
+                    || FirebaseConnection.getInstance().getHolidayArr().contains(cal2date(oldCal, datePattern))){
+                tv.setTextColor(holidayColor);
+            } else {
+                tv.setTextColor(Color.WHITE);
+            }
 
-            Calendar tagCal = date2Cal(Integer.toString(tag), Util.datePattern);
+            Calendar tagCal = date2Cal(Integer.toString(tag), datePattern);
             if (cal.compareTo(tagCal) < 0){
                 Log.d(TAG, "onPageSelected: 前週へGO");
                 viewPagerTab.setCurrentItem(viewPagerTab.getCurrentItem() -1, true);//前週へ

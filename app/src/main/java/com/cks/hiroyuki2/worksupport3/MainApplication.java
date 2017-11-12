@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.leakcanary.LeakCanary;
 
 import io.fabric.sdk.android.Fabric;
