@@ -69,6 +69,7 @@ import com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItem;
 import com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemComment;
 import com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemParam;
 import com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemTime;
+import com.example.hiroyuki3.worksupportlibw.RecordVpItems.TempItemTag;
 import com.example.hiroyuki3.worksupportlibw.RecordVpItems.TempItemTagPool;
 
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
@@ -98,7 +99,7 @@ import static com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemTi
 
 @EFragment(R.layout.fragment_setting_fragmnet)
 public class EditTemplateFragment extends Fragment implements RecordVpItemComment.onClickCommentListener, RecordVpItemParam.OnClickParamsNameListener,
-        RecordVpItemTime.IRecordVpItemTime, TempItemTagPool.ITempItemTagPool, TimeEventRangeRVAdapter.ITimeEventRangeRVAdapter, TimeEventRVAdapter.ITimeEventRVAdapter {
+        RecordVpItemTime.IRecordVpItemTime, TempItemTagPool.ITempItemTagPool, TimeEventRangeRVAdapter.ITimeEventRangeRVAdapter, TimeEventRVAdapter.ITimeEventRVAdapter, TempItemTag.ITempItemTag {
     private static final String TAG = "MANUAL_TAG: " + EditTemplateFragment.class.getSimpleName();
 
     private TreeMap<Integer, RecordRVAdapter> timeAdapterTree = new TreeMap<>();
@@ -563,6 +564,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
     }
     //endregion
 
+    @Override
     public void onClickTag(int tagNum, int dataNum, String value) {
         Bundle bundle = DialogKicker.makeBundleInOnClick(null, Util.TEMPLATE_TAG_EDIT, dataNum);
         bundle.putInt(Integer.toString(R.id.data_num), tagNum);
@@ -603,6 +605,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
     }
     //endregion
 
+    @Override
     public void onClickRemoveTagBtn(int dataNum, int tagNum) {
         //todo これタグを削除する前に、「タグを削除しますか？」っていうDialogを挟むべきでは？
         TempItemTagPool tagPool = (TempItemTagPool) uiList.get(dataNum);

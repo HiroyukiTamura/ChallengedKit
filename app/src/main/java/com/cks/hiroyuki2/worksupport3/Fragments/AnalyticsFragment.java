@@ -191,6 +191,9 @@ public class AnalyticsFragment extends Fragment implements ValueEventListener, I
 
     @Override
     public void onScrollChanged(HorizontalScrollView horizontalScrollView, int x) {
+        if (fab == null) //時々NPEで落ちる
+            return;
+
         if (x > 0){
             fab.hide();
         } else {

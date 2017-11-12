@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
-//        initDefaultTemplate(this);
+        initDefaultTemplate(this);
 
         pref = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         boolean isFirstLaunch = false;
