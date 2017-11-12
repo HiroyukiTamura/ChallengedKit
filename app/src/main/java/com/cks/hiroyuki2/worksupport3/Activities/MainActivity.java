@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ServiceConnector connector;
     private SharedPreferences pref;
     private LoginCheck check;
-    @State private boolean isFirstLaunch = false;
+    @State boolean isFirstLaunch = false;
 //    private MultiplePermissionsListener listener;
 
     @ViewById(R.id.appbar) AppBarLayout appbar;

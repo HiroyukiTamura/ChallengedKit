@@ -44,6 +44,7 @@ import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickCircleAndInputDial
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickTimePickerDialog;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickWidgetDialog;
+import static com.cks.hiroyuki2.worksupport3.DialogKicker.makeBundleInOnClick;
 import static com.cks.hiroyuki2.worksupport3.TempWidgetDialogFragment.APPLY_TEMP_IS_SUCCESS;
 import static com.cks.hiroyuki2.worksupport3.TempWidgetDialogFragment.CALLBACK_TEMPLATE_ADD;
 import static com.cks.hiroyuki2.worksupport3.TempWidgetDialogFragment.CALLBACK_TEMPLATE_EDIT;
@@ -55,6 +56,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.CALLBACK_TEMPLATE_PARAMS_SLI
 import static com.cks.hiroyuki2.worksupprotlib.Util.PARAMS_VALUES;
 import static com.cks.hiroyuki2.worksupprotlib.Util.TEMPLATE_PARAMS_ITEM;
 import static com.cks.hiroyuki2.worksupprotlib.Util.TEMPLATE_PARAMS_SLIDER_MAX;
+import static com.cks.hiroyuki2.worksupprotlib.Util.joinArr;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toast;
 import com.cks.hiroyuki2.worksupprotlib.Util;
@@ -300,12 +302,12 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
                 break;}
 
             case CALLBACK_TEMPLATE_PARAMS_ITEM:{
-                int dataNum = bundle.getInt(DATA_NUM, 100);
-                int plotPos = bundle.getInt(INDEX, 100);
+                int dataNum = bundle.getInt(DATA_NUM, Integer.MAX_VALUE);
+                int plotPos = bundle.getInt(INDEX, Integer.MAX_VALUE);
                 String[] newStr = bundle.getStringArray(PARAMS_VALUES);
-                String joinedNewStr = Util.joinArr(newStr, delimiter);
+                String joinedNewStr = joinArr(newStr, delimiter);
 
-                if (dataNum == 100 || plotPos == 100){
+                if (dataNum == Integer.MAX_VALUE || plotPos == Integer.MAX_VALUE){
                     onError(this, TAG+"dataNum == 100 || index == 100", R.string.error);
                     return;
                 }
@@ -326,7 +328,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
                 int plotNum = bundle.getInt(TEMPLATE_PARAMS_SLIDER_MAX);
                 String[] strings = bundle.getStringArray(PARAMS_VALUES);
                 String key = Integer.toString(plotNum);
-                String value = Util.joinArr(strings, delimiter);
+                String value = joinArr(strings, delimiter);
                 list.get(dataNum).data.put(key, value);
 
                 RecordVpItemParam itemParam = (RecordVpItemParam) uiList.get(dataNum);
@@ -534,14 +536,14 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
 
     @Override
     public void onClickCommentName(int dataNum) {
-        Bundle bundle = DialogKicker.makeBundleInOnClick(null, RecordVPAdapter.COMMENT_NAME, dataNum);
+        Bundle bundle = makeBundleInOnClick(null, RecordVPAdapter.COMMENT_NAME, dataNum);
         bundle.putString(RecordVPAdapter.NAME, list.get(dataNum).dataName);//Nullでありうる
         kickInputDialog(bundle, RecordVPAdapter.COMMENT_NAME, RecordVPAdapter.CALLBACK_COMMENT_NAME, this);
     }
 
     @Override
     public void onClickCommentEdit(int dataNum, String comment) {
-        Bundle bundle = DialogKicker.makeBundleInOnClick(null, RecordVPAdapter.COMMENT, dataNum);
+        Bundle bundle = makeBundleInOnClick(null, RecordVPAdapter.COMMENT, dataNum);
         bundle.putString(RecordVPAdapter.COMMENT, comment);
         bundle.putString(RecordVPAdapter.COMMENT_NAME, list.get(dataNum).dataName);//Nullでありうる
         kickInputDialog(bundle, RecordVPAdapter.COMMENT, RecordVPAdapter.CALLBACK_COMMENT, this);
@@ -550,14 +552,14 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
     //region TempItemTagPool.ITempItemTagPool
     @Override
     public void onClickTagPoolName(int dataNum){
-        Bundle bundle = DialogKicker.makeBundleInOnClick(null, RecordVPAdapter.TAGVIEW_NAME, dataNum);
+        Bundle bundle = makeBundleInOnClick(null, RecordVPAdapter.TAGVIEW_NAME, dataNum);
         bundle.putString(RecordVPAdapter.NAME, list.get(dataNum).dataName);
         kickInputDialog(bundle, RecordVPAdapter.TAGVIEW_NAME, RecordVPAdapter.CALLBACK_TAGVIEW_NAME, this);
     }
 
     @Override
     public void onClickTagPoolAdd(int dataNum){
-        Bundle bundle = DialogKicker.makeBundleInOnClick(null, RecordVPAdapter.TAG_ITEM, dataNum);
+        Bundle bundle = makeBundleInOnClick(null, RecordVPAdapter.TAG_ITEM, dataNum);
         bundle.putSerializable(RecordDiaogFragmentTag.RECORD_DATA, getList().get(dataNum));
         RecordDiaogFragmentTag dialog = RecordDiaogFragmentTag.newInstance(bundle);
         dialog.setTargetFragment(this, RecordVPAdapter.CALLBACK_TAG_ITEM);
@@ -567,7 +569,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
 
     @Override
     public void onClickTag(int tagNum, int dataNum, String value) {
-        Bundle bundle = DialogKicker.makeBundleInOnClick(null, Util.TEMPLATE_TAG_EDIT, dataNum);
+        Bundle bundle = makeBundleInOnClick(null, Util.TEMPLATE_TAG_EDIT, dataNum);
         bundle.putInt(Integer.toString(R.id.data_num), tagNum);
         bundle.putString(Integer.toString(R.id.data_txt), value);
         bundle.putSerializable(RecordDiaogFragmentTag.RECORD_DATA, getList().get(dataNum));
@@ -580,14 +582,14 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
     //region RecordVpItemParam.OnClickParamsNameListener
     @Override
     public void onClickParamsName(int dataNum) {
-        Bundle bundle = DialogKicker.makeBundleInOnClick(null, RecordVPAdapter.TAGVIEW_NAME, dataNum);
+        Bundle bundle = makeBundleInOnClick(null, RecordVPAdapter.TAGVIEW_NAME, dataNum);
         bundle.putString(RecordVPAdapter.NAME, list.get(dataNum).dataName);
         kickInputDialog(bundle, Util.TEMPLATE_PARAMS_NAME, Util.CALLBACK_TEMPLATE_PARAMS_NAME, this);
     }
 
     @Override
     public void onClickParamsAddBtn(int dataNum) {
-        Bundle bundle = DialogKicker.makeBundleInOnClick(null, Util.TEMPLATE_PARAMS_ADD, dataNum);
+        Bundle bundle = makeBundleInOnClick(null, Util.TEMPLATE_PARAMS_ADD, dataNum);
         bundle.putInt(Util.PARAM_ITEM_LEN, list.size());
         ArrayList<String> strings = new ArrayList<>();
         HashMap<String, Object> data = list.get(dataNum).data;
@@ -667,12 +669,16 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
     }
 
     @Override
-    public void onClickKey(Bundle bundle) {
+    public void onClickKey(Bundle bundle, int pos, int dataNum) {
+        bundle.putInt(INDEX, pos);
+        makeBundleInOnClick(bundle, TEMPLATE_PARAMS_ITEM, dataNum);
         kickInputDialog(bundle, TEMPLATE_PARAMS_ITEM, CALLBACK_TEMPLATE_PARAMS_ITEM, this);
     }
 
     @Override
-    public void onClickMax(Bundle bundle) {
+    public void onClickMax(Bundle bundle, int pos, int dataNum) {
+        bundle.putInt(INDEX, pos);
+        bundle.putInt(TEMPLATE_PARAMS_SLIDER_MAX, pos);
         kickDialogInOnClick(TEMPLATE_PARAMS_SLIDER_MAX, CALLBACK_TEMPLATE_PARAMS_SLIDER_MAX, bundle, this);
     }
 }
