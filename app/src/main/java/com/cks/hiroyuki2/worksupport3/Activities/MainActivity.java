@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Icepick.restoreInstanceState(this, savedInstanceState);
 
         Fabric.with(this, new Crashlytics());
+        logAnalytics(getClass().getSimpleName() + "起動", this);
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
@@ -153,8 +154,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         initNtfChannel();
         getSupportFragmentManager().addOnBackStackChangedListener(this);
-
-        logAnalytics(getClass().getSimpleName() + "起動", this);
 
         if (isFirstLaunch){
             Intent intent = new Intent(this, TutorialActivity_.class);

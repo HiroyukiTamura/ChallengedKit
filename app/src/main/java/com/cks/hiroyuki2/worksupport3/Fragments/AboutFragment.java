@@ -7,13 +7,22 @@ package com.cks.hiroyuki2.worksupport3.Fragments;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
+import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.example.hiroyuki3.worksupportlibw.Adapters.AboutVPAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
@@ -21,11 +30,20 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
+import java.util.HashMap;
+import java.util.List;
+
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.AboutDialogFragment.CALLBACK_LAUNCHER_ICON;
 import static com.cks.hiroyuki2.worksupport3.AboutDialogFragment.CALLCACK_IMG;
 import static com.cks.hiroyuki2.worksupport3.AboutDialogFragment.TAG_IMG;
 import static com.cks.hiroyuki2.worksupport3.AboutDialogFragment.TAG_LAUNCHER_ICON;
+import static com.cks.hiroyuki2.worksupprotlib.TemplateEditor.applyTemplate;
+import static com.cks.hiroyuki2.worksupprotlib.TemplateEditor.applyTemplateAsDefault;
+import static com.cks.hiroyuki2.worksupprotlib.TemplateEditor.initDefaultTemplate;
+import static com.cks.hiroyuki2.worksupprotlib.Util.DEFAULT;
+import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 
 @EFragment(R.layout.fragment_about2)
 public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAdapter{
@@ -75,6 +93,26 @@ public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAd
 
     @Override
     public void onClickResetData() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null){
+            onError(this, TAG+"user == null", R.string.error);
+            return;
+        }
 
+        boolean b = initDefaultTemplate(getContext());
+        if (!b){
+            onError(this, TAG+"applyTemplate returns false", R.string.error);
+            return;
+        }
+
+        String uid = user.getUid();
+        HashMap<String, Object> map = new HashMap<>();
+//        map.put(makeScheme("userData", uid, "registeredDate"), date);
+        map.put(makeScheme("userData", uid, "template"), DEFAULT);
+        map.put(makeScheme("userData", uid, "group", DEFAULT), DEFAULT);
+        map.put(makeScheme("friend", uid, DEFAULT, "name"), DEFAULT);
+        map.put(makeScheme("friend", uid, DEFAULT, "photoUrl"), DEFAULT);
+        map.put(makeScheme("userParam", uid), DEFAULT);
+        //todo 次回ここから
     }
 }
