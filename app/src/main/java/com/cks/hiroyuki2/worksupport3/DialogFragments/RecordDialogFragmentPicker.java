@@ -47,6 +47,7 @@ public class RecordDialogFragmentPicker extends DialogFragment implements Dialog
     private TimeEvent timeEvent;
     private TimeEventRange range;
     private int pos;
+    private Dialog dialog;
     @BindView(R.id.time_picker) TimePicker timePicker;
     @BindView(R.id.radio_group) RadioGroup radioGroup;
     @BindView(R.id.today) RadioButton radioToday;
@@ -65,6 +66,9 @@ public class RecordDialogFragmentPicker extends DialogFragment implements Dialog
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        if (dialog != null)
+            return dialog;
+
         if (getTargetRequestCode() == CALLBACK_RANGE_CLICK_TIME){
 
             range = (TimeEventRange) getArguments().getSerializable(TIME_EVENT_RANGE);
@@ -80,17 +84,22 @@ public class RecordDialogFragmentPicker extends DialogFragment implements Dialog
             } else if (timeEvent.getOffset() <0){
                 radioYesterday.toggle();
             }
-            AlertDialog dialog =  UtilDialog.editBuilder(builder, null, R.string.ok, R.string.cancel, view, this, null).create();
+            dialog =  UtilDialog.editBuilder(builder, null, R.string.ok, R.string.cancel, view, this, null).create();
             timePicker.setOnTimeChangedListener(this);
             radioGroup.setOnCheckedChangeListener(this);
-            return dialog;
 
         } else {
             timeEvent = (TimeEvent) getArguments().getSerializable(TIME_EVENT);
-            TimePickerDialog dialog =  new TimePickerDialog(getActivity(), this, timeEvent.getHour(), timeEvent.getMin(), true);
-            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, getContext().getString(R.string.cancel), this);
-            return dialog;
+            dialog =  new TimePickerDialog(getActivity(), this, timeEvent.getHour(), timeEvent.getMin(), true);
+            ((TimePickerDialog)dialog).setButton(DialogInterface.BUTTON_NEGATIVE, getContext().getString(R.string.cancel), this);
         }
+        return dialog;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dialog = null;
     }
 
     @Override

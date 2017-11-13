@@ -51,6 +51,7 @@ public class TempWidgetDialogFragment extends DialogFragment implements DialogIn
     private LayoutInflater inflater;
     private List<RecordData> list;
     private RecordData firstItem;
+    private Dialog dialog;
 
     public static TempWidgetDialogFragment newInstance(@Nullable Bundle bundle){
         TempWidgetDialogFragment frag =  new TempWidgetDialogFragment();
@@ -64,6 +65,9 @@ public class TempWidgetDialogFragment extends DialogFragment implements DialogIn
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        if (dialog != null)
+            return dialog;
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         switch (getTargetRequestCode()){
@@ -75,7 +79,13 @@ public class TempWidgetDialogFragment extends DialogFragment implements DialogIn
                 return createEditDialog(builder);
         }
 
-        return builder.create();
+        return dialog = builder.create();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dialog = null;
     }
 
     private AlertDialog.Builder createAddDialog(AlertDialog.Builder builder){

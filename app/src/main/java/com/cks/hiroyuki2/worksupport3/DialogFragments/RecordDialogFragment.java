@@ -90,6 +90,7 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
     private CheckBox checkBoxDisplay;
     private com.shawnlin.numberpicker.NumberPicker picker;
     private RadioGroup radio;
+    private Dialog dialog;
 
     public static RecordDialogFragment newInstance(Bundle bundle){
         Log.d(TAG, "newInstance: fire");
@@ -101,12 +102,16 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        if (dialog != null)
+            return dialog;
+
+        builder = new AlertDialog.Builder(getContext());
         bundle = getArguments();
-        if (bundle == null) return null;
+        if (bundle == null)
+            return dialog = builder.create();
 
         from = bundle.getString("from", "");
         Log.d(TAG, "onCreateDialog: " + from);
-        builder = new AlertDialog.Builder(getContext());
 
         switch (from){
             case DIALOG_TIME_VALUE:{
@@ -175,7 +180,7 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
                 AlertDialog dialog = editBuilder(builder, getString(R.string.add_item), R.string.ok, R.string.cancel, view, this, null).create();
                 List<String> params = bundle.getStringArrayList(Util.PARAMS_VALUES);
                 editText.addTextChangedListener(createTw(dialog, view, params));
-                return dialog;}
+                return this.dialog = dialog;}
 
             case SocialGroupListRVAdapter.TAG_GROUP_NON_ADDED:{
                 GroupInUserDataNode groupNode = (GroupInUserDataNode)getArguments().getSerializable(SocialGroupListRVAdapter.GROUP);
@@ -195,7 +200,13 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
                         .setMessage("「"+ user.getName() +"」さんをグループから退会させますか？");
                 break;}
         }
-        return builder.create();
+        return dialog = builder.create();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dialog = null;
     }
 
     private TextWatcher createTw(AlertDialog dialog, View rootView, List<String> multiList){

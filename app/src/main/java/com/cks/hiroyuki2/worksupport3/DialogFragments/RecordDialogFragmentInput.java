@@ -60,6 +60,9 @@ public class RecordDialogFragmentInput extends DialogFragment implements DialogI
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        if (dialog != null)
+            return dialog;
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
             switch (getTargetRequestCode()){
@@ -113,6 +116,12 @@ public class RecordDialogFragmentInput extends DialogFragment implements DialogI
                     break;}
             }
         return dialog;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dialog = null;
     }
 
     private void setInputLayout(String oldTxt){

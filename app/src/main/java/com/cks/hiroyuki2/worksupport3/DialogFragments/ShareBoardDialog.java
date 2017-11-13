@@ -59,6 +59,7 @@ public class ShareBoardDialog extends DialogFragment implements DialogInterface.
     public static final String CLICK_POSITION = "CLICK_POSITION";
     public static final String ADD_ITEM_DIALOG = "ADD_ITEM_DIALOG";
     private Bundle bundle;
+    private Dialog dialog;
 
     public static ShareBoardDialog newInstance(@Nullable Bundle bundle){
         Log.d(TAG, "newInstance: fire");
@@ -82,6 +83,9 @@ public class ShareBoardDialog extends DialogFragment implements DialogInterface.
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        if (dialog != null)
+            return dialog;
+
         if (getTargetRequestCode() == ShareBoardFragment.DIALOG_CODE){
             return makeAlert();
         } else if (getTargetRequestCode() == DIALOG_CODE_MY_DATA){
@@ -96,7 +100,13 @@ public class ShareBoardDialog extends DialogFragment implements DialogInterface.
             return makeVertAlert(R.array.vort_dialog_doc);
         }
 
-        return new AlertDialog.Builder(getContext()).create();
+        return dialog = new AlertDialog.Builder(getContext()).create();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dialog = null;
     }
 
     //region getTargetRequestCode() == ShareBoardFragment.FRAGMENT_TAG)系列

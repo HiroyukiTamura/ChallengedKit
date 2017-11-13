@@ -110,6 +110,8 @@ public class RecordDiaogFragmentTag extends DialogFragment implements DialogInte
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        if (dialog != null)
+            return dialog;
 
         builder = new AlertDialog.Builder(getContext());
         pref = getContext().getSharedPreferences(PREF_NAME, MODE_PRIVATE);
@@ -173,6 +175,12 @@ public class RecordDiaogFragmentTag extends DialogFragment implements DialogInte
         }
 
         return dialog;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dialog = null;
     }
 
     public TextWatcher createTw(@StringRes int restriction, @StringRes int hintDef, @IntegerRes int max, boolean rejectNullInput){

@@ -39,9 +39,9 @@ public class AboutDialogFragment extends DialogFragment implements View.OnClickL
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        if (licenseDialog != null) {
+        if (licenseDialog != null)
             return licenseDialog;
-        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         switch (getTargetRequestCode()){
             case CALLBACK_LAUNCHER_ICON:
