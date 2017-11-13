@@ -2,7 +2,7 @@
  * Copyright (c) $year. Hiroyuki Tamura All rights reserved.
  */
 
-package com.cks.hiroyuki2.worksupport3;
+package com.cks.hiroyuki2.worksupport3.DialogFragments;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -28,6 +28,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
+import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupport3.ShareBoardDialogAdapter;
 import com.example.hiroyuki3.worksupportlibw.Adapters.ShareBoardRVAdapter;
 
 import static android.content.DialogInterface.BUTTON_NEGATIVE;
@@ -39,7 +41,6 @@ import static com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment.DIALOG
 import static com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment.DIALOG_CODE_MY_DATA;
 import static com.cks.hiroyuki2.worksupprotlib.Util.nullableEqual;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
-import static com.cks.hiroyuki2.worksupprotlib.Util.nullableEqual;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 
 /**

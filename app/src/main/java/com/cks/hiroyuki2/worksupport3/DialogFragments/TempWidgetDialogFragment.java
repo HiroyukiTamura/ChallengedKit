@@ -2,7 +2,7 @@
  * Copyright (c) $year. Hiroyuki Tamura All rights reserved.
  */
 
-package com.cks.hiroyuki2.worksupport3;
+package com.cks.hiroyuki2.worksupport3.DialogFragments;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
+import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 import com.cks.hiroyuki2.worksupprotlib.TemplateEditor;
 import com.cks.hiroyuki2.worksupprotlib.Util;

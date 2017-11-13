@@ -1,8 +1,7 @@
-package com.cks.hiroyuki2.worksupport3;
+package com.cks.hiroyuki2.worksupport3.DialogFragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -14,11 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment;
+import com.cks.hiroyuki2.worksupport3.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-
-import java.io.File;
-import java.io.InputStream;
 
 /**
  * @see AboutFragment

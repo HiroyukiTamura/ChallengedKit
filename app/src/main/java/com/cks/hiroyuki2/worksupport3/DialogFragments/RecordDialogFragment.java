@@ -2,13 +2,12 @@
  * Copyright (c) $year. Hiroyuki Tamura All rights reserved.
  */
 
-package com.cks.hiroyuki2.worksupport3;
+package com.cks.hiroyuki2.worksupport3.DialogFragments;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -19,7 +18,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,9 +32,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.RecordFragment;
+import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
 import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
@@ -49,8 +47,6 @@ import com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter;
 import com.example.hiroyuki3.worksupportlibw.Adapters.RecordRVAdapter;
 import com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter;
 import com.example.hiroyuki3.worksupportlibw.Adapters.SocialGroupListRVAdapter;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import org.apmem.tools.layouts.FlowLayout;
 
@@ -60,7 +56,6 @@ import java.util.List;
 
 import cn.refactor.library.SmoothCheckBox;
 
-import static android.text.Html.FROM_HTML_MODE_COMPACT;
 import static com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment.GROUP;
 import static com.cks.hiroyuki2.worksupprotlib.Util.LIST_MAP_VALUE;
 import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
@@ -120,7 +115,7 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
                     string = string.substring(0, string.indexOf(delimiter));
                 }
                 View view = makeDialogContent(5, true, false, string);
-                editBuilder(builder, "イベント名", R.string.ok, R.string.cancel, view, this, null);
+                UtilDialog.editBuilder(builder, "イベント名", R.string.ok, R.string.cancel, view, this, null);
                 break;}
 
             case RecordRVAdapter.DIALOG_LONGTAP:{

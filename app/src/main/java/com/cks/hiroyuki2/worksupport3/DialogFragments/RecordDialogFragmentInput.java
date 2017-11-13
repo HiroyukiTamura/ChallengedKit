@@ -2,7 +2,7 @@
  * Copyright (c) $year. Hiroyuki Tamura All rights reserved.
  */
 
-package com.cks.hiroyuki2.worksupport3;
+package com.cks.hiroyuki2.worksupport3.DialogFragments;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -20,6 +20,7 @@ import android.util.Log;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.AddGroupFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment;
+import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
 import com.cks.hiroyuki2.worksupprotlib.TemplateEditor;
@@ -66,7 +67,7 @@ public class RecordDialogFragmentInput extends DialogFragment implements DialogI
                     String title = getArguments().getString(RecordVPAdapter.COMMENT_NAME, null);
                     String oldComment = getArguments().getString(RecordVPAdapter.COMMENT, "");
                     setInputLayout(oldComment);
-                    dialog = editBuilder(builder, title, R.string.ok, R.string.cancel, inputLayout, this, null).create();
+                    dialog = UtilDialog.editBuilder(builder, title, R.string.ok, R.string.cancel, inputLayout, this, null).create();
                     editText.addTextChangedListener(createTwMax(R.string.comment_max_restriction, 0, R.integer.comment_max_len, false));
                     break;}
                 case RecordVPAdapter.CALLBACK_COMMENT_NAME:

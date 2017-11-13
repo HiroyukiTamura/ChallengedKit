@@ -32,7 +32,7 @@ public class ShareBoardDialogAdapter extends BaseAdapter {
     @android.support.annotation.ColorRes int color0;
     @android.support.annotation.ColorRes int color1;
 
-    ShareBoardDialogAdapter(@NonNull Context context, int requestCode, @NonNull List<String> list){
+    public ShareBoardDialogAdapter(@NonNull Context context, int requestCode, @NonNull List<String> list){
         this.requestCode = requestCode;
         this.context = context;
         inflater = (LayoutInflater)context.getSystemService(LAYOUT_INFLATER_SERVICE);
