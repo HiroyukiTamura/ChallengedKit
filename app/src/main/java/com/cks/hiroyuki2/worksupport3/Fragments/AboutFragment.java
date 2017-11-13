@@ -7,6 +7,7 @@ package com.cks.hiroyuki2.worksupport3.Fragments;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -20,10 +21,19 @@ import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.ItemSelect;
+import org.androidannotations.annotations.PageScrollStateChanged;
+import org.androidannotations.annotations.PageSelected;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.HashMap;
+
+import butterknife.OnClick;
+import butterknife.OnItemSelected;
+import icepick.Icepick;
+import icepick.State;
 
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.DialogFragments.AboutDialogFragment.CALLBACK_LAUNCHER_ICON;
@@ -41,18 +51,32 @@ public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAd
     private static final String TOS_URL = "http://freqmodu874.hatenadiary.com/entry/2017/08/21/023601";
 
     private AboutVPAdapter adapter;
+    @State int currentPos;
     @ViewById(R.id.vp) ViewPager vp;
     @ViewById(R.id.tab) TabLayout tab;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     @AfterViews
     public void afterViews(){
         vp.setAdapter(new AboutVPAdapter(getContext(), this));
+        vp.setCurrentItem(currentPos, false);
         tab.setupWithViewPager(vp);
+    }
+
+    @PageSelected(R.id.vp)
+    void onItemSelect(){
+        currentPos = vp.getCurrentItem();
     }
 
     @Override
@@ -63,6 +87,12 @@ public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAd
                 .withActivityTitle(getString(R.string.license))
                 .withAboutAppName(getString(R.string.app_name))
                 .start(getContext());
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        adapter.unbind();
     }
 
     @Override

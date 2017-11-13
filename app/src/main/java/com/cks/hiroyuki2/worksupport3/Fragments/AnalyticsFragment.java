@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -46,6 +47,8 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
+import org.androidannotations.annotations.PageScrolled;
+import org.androidannotations.annotations.PageSelected;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.ColorRes;
 import org.androidannotations.annotations.res.DimensionPixelSizeRes;
@@ -56,11 +59,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import fr.castorflex.android.verticalviewpager.VerticalViewPager;
+import icepick.Icepick;
+import icepick.State;
 
 import static com.cks.hiroyuki2.worksupprotlib.Util.IS_DATA_MINE;
 import static com.cks.hiroyuki2.worksupprotlib.Util.UID;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeCircleAndTxt;
 import static com.cks.hiroyuki2.worksupprotlib.Util.time2String;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.AnalyticsVPAdapter.OFFSET;
 
 @EFragment(R.layout.analytics_vp)
 public class AnalyticsFragment extends Fragment implements IValueFormatter, ViewPager.OnPageChangeListener, AnalyticsVPUiOperator.IAnalyticsVPUiOperator {
@@ -87,6 +93,20 @@ public class AnalyticsFragment extends Fragment implements IValueFormatter, View
     private Context context;
     private MaterialSheetFab materialSheetFab;//fabには特にリスナをセットしなくても自動的に動く
     private AnalyticsVPAdapter adapter;
+    @State int currentPos = -1;
+    @State int scrollX = -1;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -108,6 +128,14 @@ public class AnalyticsFragment extends Fragment implements IValueFormatter, View
         context = null;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        for (AnalyticsVPUiOperator operator: adapter.getOperators().values()) {
+            operator.unbind();
+        }
+    }
+
     public View getRootView() {
         return rootView;
     }
@@ -123,8 +151,18 @@ public class AnalyticsFragment extends Fragment implements IValueFormatter, View
         showWeekOfDay();
         adapter = new AnalyticsVPAdapter(getContext(), this, uid);
         vp.setAdapter(adapter);
-        vp.setCurrentItem(AnalyticsVPAdapter.PAGE/2);
-        vp.setOffscreenPageLimit(2);
+        int pos = currentPos == -1 ?
+                AnalyticsVPAdapter.PAGE/2 : currentPos;
+        vp.setCurrentItem(pos);
+        vp.setOffscreenPageLimit(OFFSET);
+
+        vp.setOnPageChangeListener(null);//一応これしておく。stack over flowしてしまうかもしれないから。
+        if (scrollX != -1){
+            for (AnalyticsVPUiOperator operator: adapter.getOperators().values()) {
+                operator.scroll(operator.getHsv(), scrollX);
+            }
+        }
+
         vp.setOnPageChangeListener(this);
         materialSheetFab = new MaterialSheetFab<>(fab, sheetView, overlay, Color.WHITE, fabColor);
         editLegend(vp.getCurrentItem());
@@ -179,6 +217,10 @@ public class AnalyticsFragment extends Fragment implements IValueFormatter, View
         if (fab == null) //時々NPEで落ちる
             return;
 
+        if (x >= 0){
+            scrollX = x;
+        }
+
         if (x > 0){
             fab.hide();
         } else {
@@ -201,6 +243,7 @@ public class AnalyticsFragment extends Fragment implements IValueFormatter, View
 
     @Override
     public void onPageSelected(int position) {
+        currentPos = vp.getCurrentItem();
         fl.removeAllViews();
         editLegend(position);
     }
