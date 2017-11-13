@@ -2,6 +2,7 @@ package com.cks.hiroyuki2.worksupport3;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -16,6 +17,9 @@ import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.InputStream;
+
 /**
  * @see AboutFragment
  */
@@ -26,8 +30,7 @@ public class AboutDialogFragment extends DialogFragment implements View.OnClickL
     public static final int CALLBACK_LAUNCHER_ICON = 198937;
     public static final String TAG_IMG = "TAG_IMG";
     public static final int CALLCACK_IMG = 198938;
-    private static final String htmlPath = "file:///assets/license.html";
-
+    private static final String htmlPath = "file:///android_asset/license.html";
     private Dialog licenseDialog;
 
     public static AboutDialogFragment newInstance(Bundle bundle){
@@ -59,8 +62,7 @@ public class AboutDialogFragment extends DialogFragment implements View.OnClickL
         LinearLayout container = v.findViewById(R.id.container);
 
         for (int i = 0; i < container.getChildCount(); i++) {
-            int imgRes = 0;
-            String string = null;
+            int imgRes;
             TextView tv = container.getChildAt(i).findViewById(R.id.tv);
             switch (i){
                 case 0:
