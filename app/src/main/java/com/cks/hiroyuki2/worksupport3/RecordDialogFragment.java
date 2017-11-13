@@ -199,59 +199,8 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
                 editBuilder(builder, null, R.string.ok, R.string.cancel, null, this, null)
                         .setMessage("「"+ user.getName() +"」さんをグループから退会させますか？");
                 break;}
-            case AboutFragment.TAG_LAUNCHER_ICON:{
-                builder.setView(setAboutDialog());
-                break;}
         }
         return builder.create();
-    }
-
-    private View setAboutDialog(){
-        View v = getActivity().getLayoutInflater().inflate(R.layout.about_dialog, null);
-        LinearLayout container = v.findViewById(R.id.container);
-
-        for (int i = 0; i < container.getChildCount(); i++) {
-            int imgRes = 0;
-            String string = null;
-            TextView tv = container.getChildAt(i).findViewById(R.id.tv);
-            switch (i){
-                case 0:
-                    imgRes = R.drawable.mixer;
-                    tv.setText(R.string.about_launcher_credit);
-                    break;
-                case 1:
-                    imgRes = R.drawable.tutorial_input;
-                    tv.setText(Html.fromHtml(getString(R.string.about_input_credit)));
-                    break;
-                case 2:
-                    imgRes = R.drawable.tutorial_analytics;
-                    tv.setText(Html.fromHtml(getString(R.string.about_analytics_credit)));
-                    break;
-                case 3:
-                    imgRes = R.drawable.tutorial_meeting;
-                    tv.setText(Html.fromHtml(getString(R.string.about_meeting_credit)));
-                    break;
-                default://ここには来ないはず
-                    continue;
-            }
-
-            ImageView iv = container.getChildAt(i).findViewById(R.id.iv);
-            final TextView tvError = container.getChildAt(i).findViewById(R.id.error_tv);
-            Picasso.with(getContext())
-                    .load(imgRes)
-                    .into(iv, new Callback() {
-                        @Override
-                        public void onSuccess() {}
-
-                        @Override
-                        public void onError() {
-                            tvError.setVisibility(View.VISIBLE);
-                        }
-                    });
-        }
-
-        v.findViewById(R.id.ok).setOnClickListener(this);
-        return v;
     }
 
     private TextWatcher createTw(AlertDialog dialog, View rootView, List<String> multiList){
@@ -440,11 +389,6 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
     @Override
     public void onClick(View view) {
         Log.d(TAG, "onClick: fire");
-
-        if (from.equals(AboutFragment.TAG_LAUNCHER_ICON)){
-            dismiss();
-            return;
-        }
 
         if (!(/*from.equals(CalenderFragment.EDIT_TAG) || from.equals(RecordVPAdapter.HEADER_TAG_EDIT) ||*/ from.equals(Util.TEMPLATE_TAG_EDIT)))
             return;
@@ -675,12 +619,4 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
 
         return true;
     }
-
-//    private static boolean isInputNull(EditText editText){
-//        Editable editable = editText.getText();
-//        if (editable == null)
-//            return true;
-//        String s = editable.toString();
-//        return s.isEmpty();
-//    }
 }

@@ -27,6 +27,8 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringRes;
 
+import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
+
 @EFragment(R.layout.fragment_about2)
 public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAdapter{
     private static final String TAG = "MANUAL_TAG: " + AboutFragment.class.getSimpleName();
@@ -62,16 +64,21 @@ public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAd
     public void onClickLauncher() {
         Bundle bundle = new Bundle();
         bundle.putString("from", TAG_LAUNCHER_ICON);
-        DialogKicker.kickDialogInOnClick(TAG_LAUNCHER_ICON, CALLBACK_LAUNCHER_ICON, bundle, this);
+        kickDialogInOnClick(TAG_LAUNCHER_ICON, CALLBACK_LAUNCHER_ICON, bundle, this);
     }
 
     @Override
-    public void onCheckedChange0() {
-        Log.d(TAG, "onCheckedChange0() called");
+    public void onClickAppLicense() {
+
     }
 
     @Override
-    public void onCheckedChange1() {
-        Log.d(TAG, "onCheckedChange1() called");
+    public void onClickAppTos() {
+
+    }
+
+    @Override
+    public void onClickResetData() {
+
     }
 }

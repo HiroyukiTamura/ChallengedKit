@@ -1,22 +1,16 @@
 package com.cks.hiroyuki2.worksupport3.Activities;
 
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.FrameLayout;
 
-import com.cks.hiroyuki2.worksupport3.BlankFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.BlankFragment;
 import com.cks.hiroyuki2.worksupport3.BlankFragment_;
-import com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.HelpFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.HelpFragment_;
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupprotlib.Util;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
