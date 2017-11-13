@@ -231,9 +231,11 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
             circle.setTag(null);
             circle.setVisibility(View.GONE);
             TextView tv = ((View)circle.getParent()).findViewById(R.id.tv);
-            tv.setTextColor(Color.WHITE);
-            if (oldCal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
-                    || FirebaseConnection.getInstance().getHolidayArr().contains(cal2date(oldCal, datePattern))){
+//            tv.setTextColor(Color.WHITE);
+            List<String> holidayArr = FirebaseConnection.getInstance().getHolidayArr();
+            String str = cal2date(cal, datePattern);
+            if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
+                    || holidayArr.contains(str)){
                 tv.setTextColor(holidayColor);
             } else {
                 tv.setTextColor(Color.WHITE);
