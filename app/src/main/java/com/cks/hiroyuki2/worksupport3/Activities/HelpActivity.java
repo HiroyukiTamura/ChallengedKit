@@ -7,7 +7,7 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.BlankFragment;
-import com.cks.hiroyuki2.worksupport3.BlankFragment_;
+import com.cks.hiroyuki2.worksupport3.Fragments.BlankFragment_;
 import com.cks.hiroyuki2.worksupport3.Fragments.HelpFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.HelpFragment_;
 import com.cks.hiroyuki2.worksupport3.R;

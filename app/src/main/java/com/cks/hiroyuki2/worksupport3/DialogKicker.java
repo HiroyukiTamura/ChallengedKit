@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
@@ -29,6 +30,12 @@ public class DialogKicker {
 
     public static void kickDialogInOnClick(@NonNull String from, int callback, @NonNull Bundle bundle, @NonNull ShareBoardFragment fragment){
         ShareBoardDialog dialog = ShareBoardDialog.newInstance(bundle);
+        dialog.setTargetFragment(fragment, callback);
+        dialog.show(fragment.getActivity().getSupportFragmentManager(), from);
+    }
+
+    public static void kickDialogInOnClick(@NonNull String from, int callback, @NonNull Bundle bundle, @NonNull AboutFragment fragment){
+        AboutDialogFragment dialog = AboutDialogFragment.newInstance(bundle);
         dialog.setTargetFragment(fragment, callback);
         dialog.show(fragment.getActivity().getSupportFragmentManager(), from);
     }

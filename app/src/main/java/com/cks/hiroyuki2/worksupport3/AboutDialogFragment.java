@@ -1,4 +1,4 @@
-package com.cks.hiroyuki2.worksupport3.Fragments;
+package com.cks.hiroyuki2.worksupport3;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -6,14 +6,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.RecordDialogFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -23,8 +22,13 @@ import com.squareup.picasso.Picasso;
 
 public class AboutDialogFragment extends DialogFragment implements View.OnClickListener{
     private static final String TAG = "MANUAL_TAG: " + AboutDialogFragment.class.getSimpleName();
-    public static final int CODE_IMG = 1;
+    public static final String TAG_LAUNCHER_ICON = "TAG_LAUNCHER_ICON";
+    public static final int CALLBACK_LAUNCHER_ICON = 198937;
     public static final String TAG_IMG = "TAG_IMG";
+    public static final int CALLCACK_IMG = 198938;
+    private static final String htmlPath = "file:///assets/license.html";
+
+    private Dialog licenseDialog;
 
     public static AboutDialogFragment newInstance(Bundle bundle){
         AboutDialogFragment frag = new AboutDialogFragment();
@@ -35,13 +39,19 @@ public class AboutDialogFragment extends DialogFragment implements View.OnClickL
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        if (licenseDialog != null) {
+            return licenseDialog;
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         switch (getTargetRequestCode()){
-            case CODE_IMG:
+            case CALLBACK_LAUNCHER_ICON:
                 builder.setView(setAboutDialog());
                 break;
+            case CALLCACK_IMG:
+                builder.setView(setLicenseView());
+                break;
         }
-        return builder.create();
+        return licenseDialog = builder.create();
     }
 
     private View setAboutDialog(){
@@ -93,9 +103,21 @@ public class AboutDialogFragment extends DialogFragment implements View.OnClickL
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        licenseDialog = null;
+    }
+
+    private View setLicenseView(){
+        WebView webView = new WebView(getContext());
+        webView.loadUrl(htmlPath);
+        return webView;
+    }
+
+    @Override
     public void onClick(View view) {
         switch (getTargetRequestCode()){
-            case CODE_IMG:
+            case CALLBACK_LAUNCHER_ICON:
                 dismiss();
                 break;
         }
