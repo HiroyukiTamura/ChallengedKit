@@ -92,7 +92,8 @@ public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAd
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        adapter.unbind();
+        if (adapter != null)
+            adapter.unbind();
     }
 
     @Override
