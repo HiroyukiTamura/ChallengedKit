@@ -59,6 +59,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
 import static com.cks.hiroyuki2.worksupprotlib.Util.date2Cal;
 import static com.cks.hiroyuki2.worksupprotlib.Util.datePattern;
 import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getCopyOfCal;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 //import static com.cks.hiroyuki2.worksupprotlib.Util.KEY;
 import static com.cks.hiroyuki2.worksupprotlib.Util.INDEX;
@@ -101,6 +102,7 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
     @ViewById(R.id.progress_bar_inner) ProgressBar innerPb;
     @ColorRes(R.color.pink) int holidayColor;
     private Calendar upDatingCal;//アップデート中に使用する。nullのとき、upDate中でないことを表す
+    private int vpPrevPos;
 //    List<String> list;
 
     @FragmentArg int yearMed;
@@ -144,11 +146,11 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
 
     @Override
     public void postOnClick(Calendar cal) {
-        Log.d(TAG, "postOnClick() cal:" + Util.cal2date(cal, Util.datePattern));
+        Log.d(TAG, "postOnClick() cal:" + cal2date(cal, datePattern));
         String currentDateStr = Integer.toString((int)adapter.currentPage.getTag());
         Calendar currentCal;
         try {
-            currentCal = date2Cal(currentDateStr, Util.datePattern);
+            currentCal = date2Cal(currentDateStr, datePattern);
         } catch (ParseException e) {
             logStackTrace(e);
             return;
@@ -158,8 +160,7 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
             upDatingCal = cal;
             viewPager.setVisibility(GONE);
             innerPb.setVisibility(VISIBLE);
-            Calendar calTemp = Calendar.getInstance();
-            calTemp.setTime(cal.getTime());
+            Calendar calTemp = getCopyOfCal(cal);
             adapter.retrieveData(calTemp);
         } else {
             int posNew = viewPager.getCurrentItem() + diff;
@@ -211,6 +212,7 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
         viewPagerTab.setAdapter(tabVPAdapter);
         viewPagerTab.setCurrentItem(RecordTabVPAdapter.MED_NUM);
 
+        vpPrevPos = viewPager.getCurrentItem();
         viewPager.addOnPageChangeListener(this);
     }
     //endregion
@@ -235,8 +237,9 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
             TextView tv = ((View) circle.getParent()).findViewById(R.id.tv);
 //            tv.setTextColor(Color.WHITE);
             List<String> holidayArr = FirebaseConnection.getInstance().getHolidayArr();
-            String str = cal2date(cal, datePattern);
-            if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY || holidayArr.contains(str)){
+            Calendar oldCal = getSwipedCal(vpPrevPos);
+            String str = cal2date(oldCal, datePattern);
+            if (oldCal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY || holidayArr.contains(str)){
                 tv.setTextColor(holidayColor);
             } else {
                 tv.setTextColor(Color.WHITE);
@@ -276,6 +279,8 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
         } catch (ParseException e) {
             logStackTrace(e);
         }
+
+        vpPrevPos = position;
     }
 
     @Override
@@ -291,14 +296,14 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
             int tag = (int)tabVPAdapter.currentItem.getTag();
             try {
                 Calendar calC = Util.date2Cal(Integer.toString(tag), datePattern);
-                opeCal = Util.getCopyOfCal(calC);
+                opeCal = getCopyOfCal(calC);
             } catch (ParseException e) {
                 e.printStackTrace();
                 return;
             }
         } else {
 //            tabVPAdapter.currentItem == null、つまり初回動作時
-            opeCal = Util.getCopyOfCal(cal);
+            opeCal = getCopyOfCal(cal);
         }
 
         int monthBf = opeCal.get(Calendar.MONTH)+1;//monthは0始まりだから
