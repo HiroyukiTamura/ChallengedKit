@@ -52,6 +52,7 @@ import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SocialFragment;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.ServiceConnector;
+import com.cks.hiroyuki2.worksupport3.Util;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
@@ -81,6 +82,7 @@ import io.fabric.sdk.android.Fabric;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static com.cks.hiroyuki2.worksupport3.Util.getFragmentTag;
 import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 import static com.cks.hiroyuki2.worksupprotlib.LoginCheck.checkIsLogin;
 import static com.cks.hiroyuki2.worksupprotlib.TemplateEditor.initDefaultTemplate;
@@ -108,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ServiceConnector connector;
     private SharedPreferences pref;
     private LoginCheck check;
+    private boolean isSavedInstanceState = false;
     @State boolean isFirstLaunch = false;
 //    private MultiplePermissionsListener listener;
 
@@ -128,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Icepick.restoreInstanceState(this, savedInstanceState);
+        isSavedInstanceState = savedInstanceState != null;
 
         Fabric.with(this, new Crashlytics());
         logAnalytics(getClass().getSimpleName() + "起動", this);
@@ -387,8 +391,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (getSupportFragmentManager().getBackStackEntryCount() == 0){
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             RecordFragment fragment = getRecordFragmentInstance();
-            ft.add(R.id.fragment_container, fragment);
-            ft.addToBackStack(null);
+            String tag = Util.getFragmentTag(fragment);
+            ft.add(R.id.fragment_container, fragment, tag);
+            ft.addToBackStack(tag);
             ft.commit();
         } else {
             //onCreate()->saveinstance有
@@ -399,10 +404,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void changeContentFragment(Fragment fragment){
         changeToolbarTitle(fragment);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment_container, fragment);
-        String tag = fragment instanceof SocialFragment
-                ? SocialFragment.class.getSimpleName()
-                : null;
+        String tag = Util.getFragmentTag(fragment);
+        ft.replace(R.id.fragment_container, fragment, tag);
         ft.addToBackStack(tag);
 
         List<Fragment> list = getSupportFragmentManager().getFragments();
@@ -506,7 +509,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .builder().build());
             } else {
                 FirebaseConnection.getInstance().setFireBaseRefs(this);
-                setContentFragment();
+                if (!isSavedInstanceState)
+                    setContentFragment();
             }
 
         } else {
@@ -573,7 +577,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.i(TAG, "loginCheck: check.checkIsLogin()");
             check.writeLocalProf();
             FirebaseConnection.getInstance().setFireBaseRefs(this);
-            setContentFragment();
+            if (!isSavedInstanceState)
+                setContentFragment();
         } else {
             check.signIn(false);
         }

@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 import android.support.annotation.StringRes;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
@@ -22,6 +23,20 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.AddFriendFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.AddGroupFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.AnalyticsFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.BlankFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.HelpFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.OnAddedFriendFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.RecordFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.SharedCalendarFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.SocialFragment;
 import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
 import com.cks.hiroyuki2.worksupprotlib.MainActivity;
@@ -46,9 +61,8 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.NOTIFICATION_CHANNEL;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
- * Created by hiroyuki2 on 2017/10/30.
+ * 特段の理由がない限り、Util系のメソッドはlibに移管してください。
  */
-
 public class Util {
     @Retention(RetentionPolicy.SOURCE)
     @StringDef ({Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
@@ -56,7 +70,7 @@ public class Util {
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({CODE_WRITE_STORAGE, CODE_READ_STORAGE, CODE_CAMERA})
-    @interface codePermission{};
+    @interface codePermission{}
 
     public static final int CODE_WRITE_STORAGE = 0;
     public static final int CODE_READ_STORAGE = 1;
@@ -135,5 +149,38 @@ public class Util {
                 .withPermission(Manifest.permission.CAMERA)
                 .withListener(listener)
                 .check();
+    }
+
+    @Nullable
+    public static String getFragmentTag(Fragment fragment){
+        if (fragment instanceof AboutFragment)
+            return AboutFragment.class.getSimpleName();
+        else if (fragment instanceof AddFriendFragment)
+            return AddFriendFragment.class.getSimpleName();
+        else if (fragment instanceof AddGroupFragment)
+            return AddGroupFragment.class.getSimpleName();
+        else if (fragment instanceof AnalyticsFragment)
+            return AnalyticsFragment.class.getSimpleName();
+        else if (fragment instanceof BlankFragment)
+            return BlankFragment.class.getSimpleName();
+        else if (fragment instanceof EditTemplateFragment)
+            return EditTemplateFragment.class.getSimpleName();
+        else if (fragment instanceof GroupSettingFragment)
+            return GroupSettingFragment.class.getSimpleName();
+        else if (fragment instanceof HelpFragment)
+            return HelpFragment.class.getSimpleName();
+        else if (fragment instanceof OnAddedFriendFragment)
+            return OnAddedFriendFragment.class.getSimpleName();
+        else if (fragment instanceof RecordFragment)
+            return RecordFragment.class.getSimpleName();
+        else if (fragment instanceof SettingFragment)
+            return SettingFragment.class.getSimpleName();
+        else if (fragment instanceof ShareBoardFragment)
+            return ShareBoardFragment.class.getSimpleName();
+        else if (fragment instanceof SharedCalendarFragment)
+            return SharedCalendarFragment.class.getSimpleName();
+        else if (fragment instanceof SocialFragment)
+            return SocialFragment.class.getSimpleName();
+        return null;
     }
 }
