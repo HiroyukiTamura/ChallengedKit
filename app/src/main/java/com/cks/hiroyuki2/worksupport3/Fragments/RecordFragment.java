@@ -49,6 +49,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static android.app.Activity.RESULT_OK;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickCircleAndInputDialog;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
@@ -154,8 +156,8 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
         int diff = (int)TimeUnit.MILLISECONDS.toDays(cal.getTimeInMillis() - currentCal.getTimeInMillis());
         if (Math.abs(diff) > RecordVPAdapter.DATALIST_DEF_LENGTH/2){
             upDatingCal = cal;
-            viewPager.setVisibility(View.GONE);
-            innerPb.setVisibility(View.VISIBLE);
+            viewPager.setVisibility(GONE);
+            innerPb.setVisibility(VISIBLE);
             Calendar calTemp = Calendar.getInstance();
             calTemp.setTime(cal.getTime());
             adapter.retrieveData(calTemp);
@@ -163,8 +165,8 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
             int posNew = viewPager.getCurrentItem() + diff;
             if (0<posNew && posNew<adapter.getCount()){
                 viewPager.setCurrentItem(posNew, true);
-                innerPb.setVisibility(View.GONE);
-                viewPager.setVisibility(View.VISIBLE);
+                innerPb.setVisibility(GONE);
+                viewPager.setVisibility(VISIBLE);
             }
         }
 //        if (adapter.dataMap == null || adapter.dataMap.isEmpty())
@@ -192,16 +194,16 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
     public void onPostUpdateData(){
         Log.d(TAG, "onPostUpdateData: fire");
         viewPager.setCurrentItem(adapter.findPosition(upDatingCal), false);
-        innerPb.setVisibility(View.GONE);
-        viewPager.setVisibility(View.VISIBLE);
+        innerPb.setVisibility(GONE);
+        viewPager.setVisibility(VISIBLE);
         upDatingCal = null;
     }
 
     @Override
     public void onPostInitData(){
         Log.d(TAG, "onPostInitData: fire");
-        progressBar.setVisibility(View.GONE);
-        content.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(GONE);
+        content.setVisibility(VISIBLE);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(RecordVPAdapter.MED_NUM);
 //        viewPagerTab.setOffscreenPageLimit();
@@ -220,22 +222,21 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
         if (upDatingCal != null)
             return;
 
-        Calendar oldCal = getSwipedCal(position);
-        adapter.onPageSelected(oldCal);
         Calendar cal = getSwipedCal(position);
+        adapter.onPageSelected(cal);
+        cal = getSwipedCal(position);
         int tag = (Integer) tabVPAdapter.currentItem.getTag();
 
         try {
             LinearLayout ll = tabVPAdapter.currentItem.findViewById(R.id.date_container);
             View circle = ll.findViewWithTag(RecordTabVPAdapter.TAG_VISIBLE);
             circle.setTag(null);
-            circle.setVisibility(View.GONE);
-            TextView tv = ((View)circle.getParent()).findViewById(R.id.tv);
+            circle.setVisibility(GONE);
+            TextView tv = ((View) circle.getParent()).findViewById(R.id.tv);
 //            tv.setTextColor(Color.WHITE);
             List<String> holidayArr = FirebaseConnection.getInstance().getHolidayArr();
             String str = cal2date(cal, datePattern);
-            if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
-                    || holidayArr.contains(str)){
+            if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY || holidayArr.contains(str)){
                 tv.setTextColor(holidayColor);
             } else {
                 tv.setTextColor(Color.WHITE);
@@ -259,7 +260,7 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
 
             //まず,遷移先のviewを取得する.
             int def = (int) TimeUnit.MILLISECONDS.toDays(cal.getTimeInMillis() - tagCal.getTimeInMillis());
-            int date = Integer.parseInt(Util.cal2date(tagCal, Util.datePattern));
+            int date = Integer.parseInt(cal2date(tagCal, datePattern));
             Log.d(TAG, "onPageSelected: date " + date);
             if (viewPagerTab.findViewWithTag(date) == null){
                 Log.w(TAG, "onPageSelected: viewはまだcreateされていない");
@@ -269,7 +270,7 @@ public class RecordFragment extends Fragment implements RecordTabVPAdapter.Adapt
             FrameLayout newFm = (FrameLayout) ll.getChildAt(def);
             View newCircle = newFm.findViewById(R.id.iv);
             newCircle.setTag(RecordTabVPAdapter.TAG_VISIBLE);
-            newCircle.setVisibility(View.VISIBLE);
+            newCircle.setVisibility(VISIBLE);
             ((TextView)newFm.findViewById(R.id.tv)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
 
         } catch (ParseException e) {
