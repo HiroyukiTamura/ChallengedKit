@@ -14,6 +14,7 @@ import com.cks.hiroyuki2.worksupport3.DialogFragments.RecordDialogFragment;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.RecordDialogFragmentInput;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.RecordDialogFragmentPicker;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.RecordDiaogFragmentTag;
+import com.cks.hiroyuki2.worksupport3.DialogFragments.SettingDialogFragment;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.TempWidgetDialogFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment;
@@ -21,7 +22,6 @@ import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment;
-import com.cks.hiroyuki2.worksupprotlib.SettingDialogFragment;
 import com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter;
 
 /**

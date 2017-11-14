@@ -22,9 +22,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
+import com.cks.hiroyuki2.worksupport3.DialogFragments.SettingDialogFragment;
 import com.cks.hiroyuki2.worksupport3.DialogKicker;
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupprotlib.SettingDialogFragment;
 import com.cks.hiroyuki2.worksupprotlib.SettingFbCommunicator;
 import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.google.android.gms.tasks.OnCompleteListener;
