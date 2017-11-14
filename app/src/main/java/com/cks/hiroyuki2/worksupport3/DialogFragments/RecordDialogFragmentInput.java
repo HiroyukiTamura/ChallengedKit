@@ -31,6 +31,7 @@ import com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.cks.hiroyuki2.worksupport3.Util.OLD_GRP_NAME;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PARAMS_VALUES;
 import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
 import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.editBuilder;
@@ -98,7 +99,8 @@ public class RecordDialogFragmentInput extends DialogFragment implements DialogI
                     break;}
                 case GroupSettingFragment.CALLBACK_SET_TAG_MK_GROUP:
                 case AddGroupFragment.CALLBACK_DLG_MK_GROUP:{
-                    setInputLayout(getContext().getString(R.string.new_group_name));
+                    String oldName = getArguments().getString(OLD_GRP_NAME, getContext().getString(R.string.new_group_name));
+                    setInputLayout(oldName);
                     editText.setHint(null);
                     editText.setSingleLine();
                     dialog = editBuilder(builder, R.string.group_dialog, R.string.ok, R.string.cancel, inputLayout, this, null)

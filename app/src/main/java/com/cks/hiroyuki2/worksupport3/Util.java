@@ -75,6 +75,7 @@ public class Util {
     public static final int CODE_WRITE_STORAGE = 0;
     public static final int CODE_READ_STORAGE = 1;
     public static final int CODE_CAMERA = 2;
+    public static final String OLD_GRP_NAME = "OLD_GRP_NAME";
 
     public static void showUploadingNtf(UploadTask.TaskSnapshot taskSnapshot, String fileName, int id){
         String text = getApplicationContext().getString(R.string.msg_start_upload);

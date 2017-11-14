@@ -45,6 +45,7 @@ import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
 import static com.cks.hiroyuki2.worksupport3.DialogFragments.RecordDialogFragmentInput.INPUT;
+import static com.cks.hiroyuki2.worksupport3.Util.OLD_GRP_NAME;
 import static com.cks.hiroyuki2.worksupport3.Util.showCompleteNtf;
 import static com.cks.hiroyuki2.worksupport3.Util.showUploadingNtf;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.LIMIT_SIZE_PROF;
@@ -98,6 +99,7 @@ public class AddGroupFragment extends Fragment implements Callback , SocialListR
     void afterViews(){
         storageUtil = new FirebaseStorageUtil(getContext(), null);
         rvUser.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvUser.setNestedScrollingEnabled(false);
         userAdapter = new SocialListRVAdapter(userList, this, CODE_ADD_GROUP_FRAG);
         rvUser.setAdapter(userAdapter);
         name.setText(groupName);
@@ -123,7 +125,9 @@ public class AddGroupFragment extends Fragment implements Callback , SocialListR
 
     @Click({R.id.edit_name, R.id.name})
     void onClickEditBtn(){
-        kickInputDialog(new Bundle(), DLG_TAG_MK_GROUP, CALLBACK_DLG_MK_GROUP, this);
+        Bundle bundle = new Bundle();
+        bundle.putString(OLD_GRP_NAME, groupName);
+        kickInputDialog(bundle, DLG_TAG_MK_GROUP, CALLBACK_DLG_MK_GROUP, this);
     }
 
     @OnActivityResult(REQ_CODE_ICON)

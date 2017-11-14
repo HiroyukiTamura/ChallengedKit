@@ -31,7 +31,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.getFabLp;
 
 /**
- * Created by hiroyuki2 on 2017/10/20.
+ * ここで取り扱われるfragmentは{@link AddGroupFragment}のみ。
  */
 @EActivity(R.layout.activity_add_group)
 public class AddGroupActivity extends AppCompatActivity implements AddGroupFragment.IAddGroupFragment{
