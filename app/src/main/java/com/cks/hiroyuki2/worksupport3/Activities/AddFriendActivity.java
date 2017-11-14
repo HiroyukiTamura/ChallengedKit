@@ -7,6 +7,7 @@ package com.cks.hiroyuki2.worksupport3.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.cks.hiroyuki2.worksupport3.Fragments.AddFriendFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.OnAddedFriendFragment;
 import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.karumi.dexter.PermissionToken;
@@ -36,7 +38,10 @@ import com.karumi.dexter.listener.single.SnackbarOnDeniedPermissionListener;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
+
+import java.util.ArrayList;
 
 import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
@@ -50,6 +55,7 @@ public class AddFriendActivity extends AppCompatActivity implements PermissionLi
     private boolean isSavedInstanceState = false;
     @ViewById(R.id.toolbar) Toolbar toolbar;
     @ViewById(R.id.coordinator) CoordinatorLayout cl;
+    @Extra("userList") ArrayList<User> userList;//空でありうる
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,6 +114,7 @@ public class AddFriendActivity extends AppCompatActivity implements PermissionLi
                         .userUid(strings[0])
                         .name(strings[1])
                         .photoUrl(strings[2])
+                        .isNewUser(checkisNewUser(strings[0]))
                         .build();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, frag, tag)
@@ -138,5 +145,13 @@ public class AddFriendActivity extends AppCompatActivity implements PermissionLi
     public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
         //dailogだすのか？
         Log.d(TAG, "onPermissionRationaleShouldBeShown: fire");
+    }
+
+    private boolean checkisNewUser(@NonNull String userUid){
+        for (User user: userList)
+            if (user.getUserUid().equals(userUid))
+                return false;
+
+        return true;
     }
 }

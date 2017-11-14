@@ -128,8 +128,8 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
         Picasso.with(getContext())/*もともとはデフォルトの画像が挿入されていて、もし画像取得ができれば、デフォルトのImageView手前にあるImageViewに描画し、デフォルトのImageViewを隠す。*/
                 .load(group.photoUrl)
                 .into(icon, this);
-        rv.setNestedScrollingEnabled(false);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
+        rv.setNestedScrollingEnabled(false);
         adapter = new GroupSettingRVAdapter(this, group.userList, getUserMe());
         rv.setAdapter(adapter);
         return rootView;

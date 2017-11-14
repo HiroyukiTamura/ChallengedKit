@@ -143,8 +143,10 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
 
     @Click(R.id.add_user)
     void showAddFriendActivity(){
-        Intent intent = new Intent(context, com.cks.hiroyuki2.worksupport3.Activities.AddFriendActivity_.class);//要パッケージ名指定。importするとコンパイル通らず @see https://goo.gl/ru1n1x
-        startActivity(intent);
+        com.cks.hiroyuki2.worksupport3.Activities.AddFriendActivity_
+                .intent(getContext())
+                .userList((ArrayList<User>) userList)
+                .start();
     }
 
 //    void showGroupBtn(){
@@ -158,14 +160,15 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
 
     @Click(R.id.add_group)
     void onClickAddGroup(){
-//        ((SocialListRVAdapter)rvUser.getAdapter()).setChooseItemMode();
         if (userList.isEmpty()){
             Toast.makeText(getContext(), R.string.non_user_err, Toast.LENGTH_LONG).show();
             return;
         }
-        Intent intent = new Intent(getActivity(), com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity_.class);//要パッケージ名指定。importするとコンパイル通らず @see https://goo.gl/ru1n1x
-        intent.putParcelableArrayListExtra("userList", (ArrayList<? extends Parcelable>) userList);
-        ((MainActivity)context).startActivityFromFragment(this, intent, REQ_CODE_CREATE_GROUP);
+
+        com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity_
+                .intent(this)
+                .userList((ArrayList<User>) userList)
+                .startForResult(REQ_CODE_CREATE_GROUP);
     }
 
     /**
