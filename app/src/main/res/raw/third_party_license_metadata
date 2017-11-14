@@ -62,7 +62,7 @@
 3189:50 jcodemodel
 3241:46 butterknife-annotations
 3289:46 javapoet
-129505:37 annotations
+129457:37 annotations
 3431:53 beta
 3486:53 crashlytics-core
 3541:24 answers
@@ -88,36 +88,35 @@
 4702:46 common
 4750:46 support-annotations
 4798:41 junit
-4841:46 multidex
-4889:680 STL
-5571:1558 RE2
-7131:731 UTF
-7864:11358 CCTZ
-19224:1732 Protobuf Nano
-20958:1481 darts_clone
-22441:1602 JSR 305
-24045:2500 zlib
-26547:19442 ICU4C
-45991:11358 safeparcel
-57351:3182 PCRE
-60535:243 tz database
-60780:1484 DynamicAnnotations
-62266:11357 Error Prone
-73625:11358 Volley
-84985:11358 java
-96345:10141 customtabsclient
-106488:22655 Checker Framework
-129145:92 disklrucache
-129239:34 arcanimator
-129275:46 leakcanary-analyzer
-129323:41 scout
-129366:41 quoin
-129409:46 core.cache
-129457:46 clojure
-129544:67 bolts-android
-129613:46 leakcanary-watcher
-129661:46 haha
-129709:46 jsr305
-129757:67 bolts-applinks
-129826:67 bolts-tasks
-129895:46 leakcanary-android-no-op
+4841:680 STL
+5523:1558 RE2
+7083:731 UTF
+7816:11358 CCTZ
+19176:1732 Protobuf Nano
+20910:1481 darts_clone
+22393:1602 JSR 305
+23997:2500 zlib
+26499:19442 ICU4C
+45943:11358 safeparcel
+57303:3182 PCRE
+60487:243 tz database
+60732:1484 DynamicAnnotations
+62218:11357 Error Prone
+73577:11358 Volley
+84937:11358 java
+96297:10141 customtabsclient
+106440:22655 Checker Framework
+129097:92 disklrucache
+129191:34 arcanimator
+129227:46 leakcanary-analyzer
+129275:41 scout
+129318:41 quoin
+129361:46 core.cache
+129409:46 clojure
+129496:67 bolts-android
+129565:46 leakcanary-watcher
+129613:46 haha
+129661:46 jsr305
+129709:67 bolts-applinks
+129778:67 bolts-tasks
+129847:46 leakcanary-android-no-op

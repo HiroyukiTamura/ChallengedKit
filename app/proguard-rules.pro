@@ -149,12 +149,6 @@
 # Marshmallow removed Notification.setLatestEventInfo()
 -dontwarn android.app.Notification
 
-##################  AboutLibraries ################
--keep class .R
--keep class **.R$* {
-    <fields>;
-}
-
--keepclasseswithmembers class **.R$* {
-    public static final int define_*;
-}
+################## リリースビルド通らないので自前で追加 ##########
+-dontwarn java.lang.management.**
+-dontwarn android.test.**
