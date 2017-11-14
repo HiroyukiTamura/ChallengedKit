@@ -25,6 +25,7 @@ import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.SettingDialogFragment;
 import com.cks.hiroyuki2.worksupport3.DialogKicker;
 import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupprotlib.LoginCheck;
 import com.cks.hiroyuki2.worksupprotlib.SettingFbCommunicator;
 import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -131,7 +132,12 @@ public class SettingFragment extends Fragment implements OnFailureListener, Call
         new SettingFbCommunicator(this, data, SCHEME_PHOTO_URL) {
             @Override
             public void onSuccess(String uri) {
-                Picasso.with(getContext()).load(uri).into(iconIv, SettingFragment.this);
+                Picasso.with(getContext())
+                        .load(uri)
+                        .into(iconIv, SettingFragment.this);
+
+                if (mainActivity != null)
+                    mainActivity.getLoginCheck().writeLocalProf();
             }
         }.uploadIcon();
     }
@@ -167,6 +173,8 @@ public class SettingFragment extends Fragment implements OnFailureListener, Call
                         //ここでUriはnullである
                         toastNullable(getContext(), R.string.success_name);
                         nameTv.setText(param);
+                        if (mainActivity != null)
+                            mainActivity.getLoginCheck().writeLocalProf();
                     }
                 }.updateProfName();
                 break;

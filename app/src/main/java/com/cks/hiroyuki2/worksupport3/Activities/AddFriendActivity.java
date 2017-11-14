@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -22,8 +23,14 @@ import com.cks.hiroyuki2.worksupport3.Fragments.OnAddedFriendFragment;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.SnackbarOnAnyDeniedMultiplePermissionsListener;
+import com.karumi.dexter.listener.single.BasePermissionListener;
+import com.karumi.dexter.listener.single.CompositePermissionListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.karumi.dexter.listener.single.SnackbarOnDeniedPermissionListener;
 
@@ -36,34 +43,19 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 
 @EActivity(R.layout.activity_add_fridend_acitivity)
-public class AddFriendActivity extends AppCompatActivity implements View.OnClickListener{
+public class AddFriendActivity extends AppCompatActivity implements PermissionListener{
     
     private static final String TAG = "MANUAL_TAG: " + AddFriendActivity.class.getSimpleName();
     private PermissionListener listener;
+    private boolean isSavedInstanceState = false;
     @ViewById(R.id.toolbar) Toolbar toolbar;
     @ViewById(R.id.coordinator) CoordinatorLayout cl;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-
-        listener = SnackbarOnDeniedPermissionListener.Builder
-                .with(cl, R.string.permission_rational)
-                .withButton(R.string.permission_snb_btn, this)
-                .withCallback(new Snackbar.Callback(){
-                    @Override
-                    public void onShown(Snackbar sb) {
-                        super.onShown(sb);
-                        // do nothing
-                    }
-
-                    @Override
-                    public void onDismissed(Snackbar transientBottomBar, int event) {
-                        super.onDismissed(transientBottomBar, event);
-
-                    }
-                })
-                .build();
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null)
+            isSavedInstanceState = true;
     }
 
     @AfterViews
@@ -75,18 +67,27 @@ public class AddFriendActivity extends AppCompatActivity implements View.OnClick
         initAdMob(this);
         logAnalytics(TAG + "起動", this);
 
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0){
-            getSupportFragmentManager().popBackStack();
-        } else {
+        listener = new CompositePermissionListener(
+                this,
+
+                SnackbarOnDeniedPermissionListener.Builder
+                        .with(cl, R.string.permission_rational)
+                        .withOpenSettingsButton(R.string.permission_snb_btn)
+                        .build()
+        );
+
+        if (!isSavedInstanceState){
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             AddFriendFragment frag = com.cks.hiroyuki2.worksupport3.Fragments.AddFriendFragment_
                     .builder().build();
-            fragmentTransaction.add(R.id.fragment_container, frag).commit();
+            fragmentTransaction.replace(R.id.fragment_container, frag, AddFriendFragment.class.getSimpleName()).commit();
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result != null) {
             String contents = result.getContents();
@@ -101,18 +102,18 @@ public class AddFriendActivity extends AppCompatActivity implements View.OnClick
                     return;
                 }
 
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                String tag = OnAddedFriendFragment.class.getSimpleName();
                 OnAddedFriendFragment frag = com.cks.hiroyuki2.worksupport3.Fragments.OnAddedFriendFragment_
                         .builder()
-                        .name(strings[0])
-                        .photoUrl(strings[1])
-                        .userUid(strings[2])
+                        .userUid(strings[0])
+                        .name(strings[1])
+                        .photoUrl(strings[2])
                         .build();
-                fragmentTransaction.replace(R.id.fragment_container, frag);
-                fragmentTransaction.commitAllowingStateLoss();//todo これでいいのか検討すること @see https://goo.gl/jOz17J
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, frag, tag)
+                        .addToBackStack(tag)
+                        .commitAllowingStateLoss();//todo これでいいのか検討すること @see https://goo.gl/jOz17J
             }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -121,10 +122,21 @@ public class AddFriendActivity extends AppCompatActivity implements View.OnClick
     }
 
     @Override
-    public void onClick(View view) {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (fragment instanceof AddFriendFragment){
-            ((AddFriendFragment) fragment).onPermissionAdmitted();
-        }
+    public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+        Log.d(TAG, "onPermissionDenied: fire");
+       //do nothing
+    }
+
+    @Override
+    public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setBeepEnabled(false);
+        integrator.initiateScan();
+    }
+
+    @Override
+    public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
+        //dailogだすのか？
+        Log.d(TAG, "onPermissionRationaleShouldBeShown: fire");
     }
 }

@@ -50,9 +50,8 @@ public class OnAddedFriendFragment extends Fragment {
         FirebaseUser user = Util.getUserMe();
         if (user == null){
             onError(this, "FirebaseAuth.getInstance().getCurrentUser() == null", R.string.error);
-            if (getActivity() != null){
+            if (getActivity() != null)
                 getActivity().finish();
-            }
             return;
         }
 
@@ -66,5 +65,8 @@ public class OnAddedFriendFragment extends Fragment {
         }
         hashMap.put("/"+ userUid + "/" + user.getUid() + "/photoUrl", myPhotoUrl);
         getRef("friend").updateChildren(hashMap);
+
+        if (getActivity() != null)
+            getActivity().finish();
     }
 }
