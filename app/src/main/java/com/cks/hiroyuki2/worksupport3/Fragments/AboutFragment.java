@@ -15,10 +15,9 @@ import android.support.v4.view.ViewPager;
 
 import com.cks.hiroyuki2.worksupport3.R;
 import com.example.hiroyuki3.worksupportlibw.Adapters.AboutVPAdapter;
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.mikepenz.aboutlibraries.Libs;
-import com.mikepenz.aboutlibraries.LibsBuilder;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -81,12 +80,10 @@ public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAd
 
     @Override
     public void onClickLibItem() {
-        new LibsBuilder()
-                .withLibraries("android-drag-FlowLayout", "autofittextview", "material_calendarview")
-                .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
-                .withActivityTitle(getString(R.string.license))
-                .withAboutAppName(getString(R.string.app_name))
-                .start(getContext());
+        Intent intent = new Intent(getActivity(), OssLicensesMenuActivity.class);
+        String title = getString(R.string.license);
+        intent.putExtra("title", title);
+        startActivity(intent);
     }
 
     @Override

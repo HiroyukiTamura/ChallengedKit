@@ -81,9 +81,6 @@ dependencies {
         transitive = true
     }
     compile('com.twitter.sdk.android:twitter-core:3.1.1@aar') { transitive = true }
-    compile('com.mikepenz:aboutlibraries:6.0.0@aar') {
-        transitive = true
-    }
     compile 'org.androidannotations:androidannotations-api:4.4.0'
     compile 'com.android.support:design:27.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.1.0-beta3'
