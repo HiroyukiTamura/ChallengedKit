@@ -44,7 +44,7 @@ public class SharedCalendarActivity extends AppCompatActivity {
     private static final String TAG = "MANUAL_TAG: " + SharedCalendarActivity.class.getSimpleName();
     @ViewById(R.id.fab) FloatingActionButton fab;
     @ViewById(R.id.toolbar) Toolbar toolbar;
-    @ViewById(R.id.frame_container) FrameLayout fm;
+    @ViewById(R.id.fragment_container) FrameLayout fm;
     @ViewById(R.id.title) TextView toolTitle;
     @ViewById(R.id.mcv_prev) ImageButton mcvPrev;
     @ViewById(R.id.mcv_forward) ImageButton mcvFrw;

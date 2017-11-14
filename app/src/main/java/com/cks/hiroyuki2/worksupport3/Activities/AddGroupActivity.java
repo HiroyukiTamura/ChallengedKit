@@ -44,7 +44,7 @@ public class AddGroupActivity extends AppCompatActivity implements AddGroupFragm
 
     @ViewById(R.id.toolbar) Toolbar toolbar;
     @ViewById(R.id.fab) FloatingActionButton fab;
-    @ViewById(R.id.frame_container) FrameLayout fl;
+    @ViewById(R.id.fragment_container) FrameLayout fl;
     @Extra("userList") ArrayList<User> userList;//空でありうる
     private AddGroupFragment fragment;
 
