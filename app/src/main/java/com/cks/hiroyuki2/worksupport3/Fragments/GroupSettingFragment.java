@@ -129,7 +129,6 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
                 .load(group.photoUrl)
                 .into(icon, this);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
-        rv.setNestedScrollingEnabled(false);
         adapter = new GroupSettingRVAdapter(this, group.userList, getUserMe());
         rv.setAdapter(adapter);
         return rootView;

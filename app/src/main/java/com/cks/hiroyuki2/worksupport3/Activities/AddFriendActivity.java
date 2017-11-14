@@ -23,6 +23,7 @@ import com.cks.hiroyuki2.worksupport3.Fragments.AddFriendFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.OnAddedFriendFragment;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
+import com.crashlytics.android.Crashlytics;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.karumi.dexter.PermissionToken;
@@ -42,6 +43,8 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
+
+import io.fabric.sdk.android.Fabric;
 
 import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
@@ -71,7 +74,8 @@ public class AddFriendActivity extends AppCompatActivity implements PermissionLi
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         initAdMob(this);
-        logAnalytics(TAG + "起動", this);
+        Fabric.with(this, new Crashlytics());
+        logAnalytics(this.getClass().getSimpleName() + "起動", this);
 
         listener = new CompositePermissionListener(
                 this,
