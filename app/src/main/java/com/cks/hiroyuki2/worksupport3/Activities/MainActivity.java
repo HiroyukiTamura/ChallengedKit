@@ -90,6 +90,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.NOTIFICATION_CHANNEL;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_KEY_WIDTH;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
 import static com.cks.hiroyuki2.worksupprotlib.Util.RC_SIGN_IN;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getToolBarHeight;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
@@ -122,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @ViewById(R.id.fragment_container_ll) LinearLayout container_outer;
     @ViewById(R.id.toolbar_shadow) View toolbarShadow;
     @ViewById(R.id.fragment_container) FrameLayout fragContainer;
-    @DimensionPixelSizeRes(R.dimen.toolbar_height) int toolbarHeight;
+    private int toolbarHeight;
     @Extra String groupKey;
     @org.androidannotations.annotations.res.StringRes(R.string.ntf_channel) String channelName;
     @org.androidannotations.annotations.res.StringRes(R.string.ntf_channel_description) String channelDsc;
@@ -191,16 +192,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return;
 
         setSupportActionBar(toolbar);
-//        toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+        toolbarHeight = getToolBarHeight(this);
+
+        if(!getSupportFragmentManager().getFragments().isEmpty())
+            initToolBar(getSupportFragmentManager().getFragments().get(0));
+
+        initAdMob(this);
 
 //        FirebaseConnection.getInstance().setmAuth(this);
 //        FirebaseConnection.getInstance().setmAuthListener();
 //        FirebaseConnection.getInstance().setChildListener();
 //        FirebaseConnection.getInstance().setUserId(this);
 //        FirebaseConnection.getInstance().setFireBaseRefs();
-
-        initAdMob(this);
 
         //fabを設定
         fab.setLayoutParams(getFabLp(this));

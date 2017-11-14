@@ -64,6 +64,7 @@ import icepick.State;
 
 import static com.cks.hiroyuki2.worksupprotlib.Util.IS_DATA_MINE;
 import static com.cks.hiroyuki2.worksupprotlib.Util.UID;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getToolBarHeight;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeCircleAndTxt;
 import static com.cks.hiroyuki2.worksupprotlib.Util.time2String;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.AnalyticsVPAdapter.OFFSET;
@@ -149,7 +150,7 @@ public class AnalyticsFragment extends Fragment implements IValueFormatter, View
         }
 
         showWeekOfDay();
-        adapter = new AnalyticsVPAdapter(getContext(), this, uid);
+        adapter = new AnalyticsVPAdapter(getContext(), this, uid, getToolBarHeight(getContext()));
         vp.setAdapter(adapter);
         int pos = currentPos == -1 ?
                 AnalyticsVPAdapter.PAGE/2 : currentPos;
@@ -256,6 +257,9 @@ public class AnalyticsFragment extends Fragment implements IValueFormatter, View
 
     private void editLegend(int position){
         AnalyticsVPUiOperator operator = adapter.getOperators().get(position);
+        if (operator == null)//時々NPEで落ちる
+            return;
+
         List<Pair<Integer, String>> rangeLegendList = operator.getLegendListForRange();
         List<Pair<Integer, String>> timeEveLegendList = operator.getLegendListForTimeEve();
         innerEditLegend(rangeLegendList);

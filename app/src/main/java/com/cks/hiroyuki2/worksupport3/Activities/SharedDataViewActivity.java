@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.AnalyticsFragment;
@@ -36,7 +37,10 @@ public class SharedDataViewActivity extends AppCompatActivity implements Analyti
         logAnalytics(TAG + "起動", this);
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        AnalyticsFragment frag = com.cks.hiroyuki2.worksupport3.Fragments.AnalyticsFragment_.builder().uid(uid).isMine(false).build();
+        AnalyticsFragment frag = com.cks.hiroyuki2.worksupport3.Fragments.AnalyticsFragment_.builder()
+                .uid(uid)
+                .isMine(false)
+                .build();
         fragmentTransaction.add(R.id.fragment_container, frag).commit();
     }
 
