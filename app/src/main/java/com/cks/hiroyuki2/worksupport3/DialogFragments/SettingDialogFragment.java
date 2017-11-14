@@ -81,6 +81,7 @@ public class SettingDialogFragment extends DialogFragment implements AlertDialog
                 break;
             case METHOD_UPDATE_EMAIL:
                 dialog = makeDialog(com.cks.hiroyuki2.worksupportlib.R.string.input_mail, 0);
+                edit.addTextChangedListener(makeTwNonNullNonRest());
                 break;
         }
 
@@ -96,18 +97,27 @@ public class SettingDialogFragment extends DialogFragment implements AlertDialog
         dialog = null;
     }
 
+    private TextWatcher makeTwNonNullNonRest(){
+        UtilDialog util = new UtilDialog(dialog);
+        util.initView(rootView);
+        util.setHintDef(null);
+        return util.createTwNonNull();
+    }
+
     @Contract(" -> !null")
     private TextWatcher makePwTextWatcher(){
         UtilDialog util = new UtilDialog(dialog);
         util.initView(rootView);
+        util.setHintDef(null);
         util.setRestriction(com.cks.hiroyuki2.worksupportlib.R.string.pw_restriction);
-        return util.createTwMin(com.cks.hiroyuki2.worksupportlib.R.integer.firebase_min_pw_len);
+        return util.createTwMin(com.cks.hiroyuki2.worksupportlib.R.integer.firebase_min_pw_len, true);
     }
 
     @Contract(" -> !null")
     private TextWatcher makeNameTextWatcher(){
         UtilDialog util = new UtilDialog(dialog);
         util.initView(rootView);
+        util.setHintDef(null);
         util.setRestriction(com.cks.hiroyuki2.worksupportlib.R.string.name_restriction);
         return util.createTwMax(com.cks.hiroyuki2.worksupportlib.R.integer.firebase_account_max, true);
     }
@@ -185,9 +195,9 @@ public class SettingDialogFragment extends DialogFragment implements AlertDialog
                 .setPositiveButton(com.cks.hiroyuki2.worksupportlib.R.string.ok, this)
                 .setNegativeButton(com.cks.hiroyuki2.worksupportlib.R.string.cancel, null);
 
-        if (titleId == com.cks.hiroyuki2.worksupportlib.R.string.input_name || titleId ==  com.cks.hiroyuki2.worksupportlib.R.string.input_currentPw || titleId ==  com.cks.hiroyuki2.worksupportlib.R.string.input_newPw){
-            builder.setMessage(messageId);
-        }
+//        if (titleId == com.cks.hiroyuki2.worksupportlib.R.string.input_name || titleId ==  com.cks.hiroyuki2.worksupportlib.R.string.input_currentPw || titleId ==  com.cks.hiroyuki2.worksupportlib.R.string.input_newPw){
+//            builder.setMessage(messageId);
+//        }
 
         return builder.create();
     }
@@ -206,66 +216,4 @@ public class SettingDialogFragment extends DialogFragment implements AlertDialog
         intent.putExtra(Util.INTENT_KEY_NEW_PARAM, newParam);
         getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
     }
-
-//    //region FireBaseパスワード問い合わせ系 onClick配属
-//    //////////////////////////////FireBaseパスワード問い合わせ系 onClick配属 ここから///////////////////////////
-//    /**
-//     * 再認証をおこなうおっさん！
-//     * @param user currentUserがnullかどうかは、事前にチェックを行ってください。
-//     */
-//    private void reAuthenticate(@NonNull FirebaseUser user, @NonNull final String email, @NonNull String pw){
-//        AuthCredential credential = EmailAuthProvider.getCredential(email, pw);
-//        user.reauthenticate(credential)
-//                .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        Log.d(TAG, "User re-authenticated.");
-//                        callActivityResult(task, email);
-//                    }
-//                });
-//    }
-//
-//    /**
-//     * パスワードを再設定するおっさん
-//     * @param user currentUserがnullかどうかは、事前にチェックを行ってください。
-//     */
-//    private void updatePassWord(@NonNull FirebaseUser user, @NonNull final String pw){
-//        user.updatePassword(pw)
-//                .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        callActivityResult(task, pw);
-//                    }
-//                });
-//    }
-//
-//    /**
-//     * アカウント名を再設定するおっさん
-//     * @param user currentUserがnullかどうかは、事前にチェックを行ってください。
-//     */
-//    private void updateName(@NonNull FirebaseUser user, @NonNull final String name){
-//        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-//                .setDisplayName(name)
-//                .build();
-//
-//        user.updateProfile(profileUpdates)
-//                .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        callActivityResult(task, name);
-//                    }
-//                });
-//    }
-//
-//    private void upDateEmail(@NonNull FirebaseUser user, @NonNull final String email){
-//        user.updateEmail(email)
-//                .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        callActivityResult(task, email);
-//                    }
-//                });
-//    }
-//    //////////////////////////////FireBaseパスワード問い合わせ系 onClick配属 ここまで///////////////////////////
-//    //endregion
 }
