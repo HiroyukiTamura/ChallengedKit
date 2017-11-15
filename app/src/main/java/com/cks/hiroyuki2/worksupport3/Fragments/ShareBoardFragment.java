@@ -339,11 +339,6 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                     return;
                 }
 
-                if (groupC == null){
-                    onError(ShareBoardFragment.this, TAG+"group == null", R.string.error);
-                    return;
-                }
-
                 toastNullable(getContext(), R.string.success_swipe);
                 group = groupC;
                 storageUtil = new FirebaseStorageUtil(getContext(), group);
@@ -358,35 +353,6 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
             }
         });
     }
-//    /**
-//     * R.id.compo0などの値は@OnActivityResult()の引数に代入できないため、以下のような実装になっています。
-//     */
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (resultCode != RESULT_OK) return;
-//
-//        switch (requestCode){
-//            case R.id.compo0:{
-//                Bundle bundle = new Bundle();
-//                bundle.putString("groupName", group.groupName);
-//                kickDialogInOnClick(DIALOG_TAG_MY_DATA, DIALOG_CODE_MY_DATA, bundle, this);
-//                break;}
-//            case R.id.compo1:{
-//
-//                break;}
-//            case R.id.compo2:{
-//                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-//                intent.addCategory(Intent.CATEGORY_OPENABLE);
-//                intent.setType("*/*");
-//                String[] mimeTypes = {"image/*", "text/plain", "text/html", "text/css", "application/pdf"};
-//                intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-//                startActivityForResult(intent, REQ_CODE_UPLOAD_MYFILE);
-//                break;}
-//            case R.id.compo3:
-//                showEditDocAct();
-//                break;
-//        }
-//    }
 
     @OnActivityResult(ShareBoardFragment.DIALOG_CODE)
     void onResultAddItem(int resultCode, @OnActivityResult.Extra(ShareBoardDialog.DIALOG_WITCH_CLICKED) int pos){
