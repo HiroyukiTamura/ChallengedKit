@@ -47,7 +47,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 @EFragment(R.layout.fragment_about2)
 public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAdapter{
     private static final String TAG = "MANUAL_TAG: " + AboutFragment.class.getSimpleName();
-    private static final String TOS_URL = "http://freqmodu874.hatenadiary.com/entry/2017/08/21/023601";
+    private static final String TOS_URL = "https://github.com/HiroyukTamura/ChalengedKit/wiki/%E5%85%8D%E8%B2%AC%E4%BA%8B%E9%A0%85%E3%83%BB%E3%83%97%E3%83%A9%E3%82%A4%E3%83%90%E3%82%B7%E3%83%BC%E3%83%9D%E3%83%AA%E3%82%B7%E3%83%BC";
 
     private AboutVPAdapter adapter;
     @State int currentPos;

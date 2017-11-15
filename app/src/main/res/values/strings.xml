@@ -1,11 +1,19 @@
 <resources>
-    <string name="app_name">WorkSupport3</string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="action_settings">Settings</string>
     <string name="title_activity_tutorial">TutorialActivity</string>
     <string name="title_activity_help">HelpActivity</string>
-    <string name="tp_range_msg">終了時刻が開始時刻より後になるようにしてください</string>
-    <string name="non_user_err">参加できるユーザがいません</string>
+
+    <!--ログインまわり-->
+    <string name="facebook_app_id">123697191641575</string>
+    <string name="fb_login_protocol_scheme">fb123697191641575</string>
+    <string name="twitter_consumer_key" translatable="false">6mW7nUPpONPFFU0aQJ657xrRT</string>
+    <string name="twitter_consumer_secret" translatable="false">f7AEIoKPy3coc80l9wyJe6AED9cQXUtq1sOEyYUjaeirkW64lY</string>
+
+    <!--広告まわり-->
+    <string name="banner_ad_unit_id_test">ca-app-pub-3940256099942544/6300978111</string>
+
+    <string name="firebase_client_id">490115270967-gcfpdtcgq1odrmc9lcl0imckqskkgn36.apps.googleusercontent.com</string>
 </resources>

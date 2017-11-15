@@ -17,6 +17,8 @@ import com.cks.hiroyuki2.worksupport3.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import static android.view.View.VISIBLE;
+
 /**
  * @see AboutFragment
  */
@@ -92,7 +94,8 @@ public class AboutDialogFragment extends DialogFragment implements View.OnClickL
 
                         @Override
                         public void onError() {
-                            tvError.setVisibility(View.VISIBLE);
+                            if(tvError != null)
+                                tvError.setVisibility(VISIBLE);
                         }
                     });
         }
