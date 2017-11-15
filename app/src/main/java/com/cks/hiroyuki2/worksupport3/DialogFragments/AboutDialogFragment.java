@@ -3,6 +3,7 @@ package com.cks.hiroyuki2.worksupport3.DialogFragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.text.Html;
@@ -61,11 +62,11 @@ public class AboutDialogFragment extends DialogFragment implements View.OnClickL
         LinearLayout container = v.findViewById(R.id.container);
 
         for (int i = 0; i < container.getChildCount(); i++) {
-            int imgRes;
+            @DrawableRes int imgRes;
             TextView tv = container.getChildAt(i).findViewById(R.id.tv);
             switch (i){
                 case 0:
-                    imgRes = R.drawable.ic_launcher_foreground;
+                    imgRes = R.mipmap.ic_launcher;
                     tv.setText(R.string.about_launcher_credit);
                     break;
                 case 1:
