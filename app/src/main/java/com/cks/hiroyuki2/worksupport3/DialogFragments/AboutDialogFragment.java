@@ -66,7 +66,7 @@ public class AboutDialogFragment extends DialogFragment implements View.OnClickL
             TextView tv = container.getChildAt(i).findViewById(R.id.tv);
             switch (i){
                 case 0:
-                    imgRes = R.mipmap.ic_launcher;
+                    imgRes = R.drawable.ic_001_pencil;
                     tv.setText(R.string.about_launcher_credit);
                     break;
                 case 1:

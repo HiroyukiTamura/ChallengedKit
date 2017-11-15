@@ -41,7 +41,7 @@ public class TutorialActivity extends AppIntro {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        currentFrag = firstFrag = makeSlide(title0, desc0, R.drawable.mixer, cb0);
+        currentFrag = firstFrag = makeSlide(title0, desc0, R.drawable.ic_001_pencil, cb0);
         addSlide(firstFrag);
         addSlide(makeSlide(title1, desc1, R.drawable.tutorial_input, cb1, txtColor));
         addSlide(makeSlide(title2, desc2, R.drawable.tutorial_analytics, cb2));
