@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment;
 import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupport3.Util;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -66,7 +67,7 @@ public class AboutDialogFragment extends DialogFragment implements View.OnClickL
             TextView tv = container.getChildAt(i).findViewById(R.id.tv);
             switch (i){
                 case 0:
-                    imgRes = R.drawable.ic_001_pencil;
+                    imgRes = R.drawable.ic_001_pencil;// TODO: 2017/11/16 これちゃんと表示されるか、後ほど確かめてください あと、本体のリソース削除してください
                     tv.setText(R.string.about_launcher_credit);
                     break;
                 case 1:

@@ -56,6 +56,7 @@ public class AddFriendActivity extends AppCompatActivity implements PermissionLi
     private static final String TAG = "MANUAL_TAG: " + AddFriendActivity.class.getSimpleName();
     private PermissionListener listener;
     private boolean isSavedInstanceState = false;
+    public final static int REQ_CODE = 1800;
     @ViewById(R.id.toolbar) Toolbar toolbar;
     @ViewById(R.id.coordinator) CoordinatorLayout cl;
     @Extra("userList") ArrayList<User> userList;//空でありうる

@@ -20,6 +20,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cks.hiroyuki2.worksupport3.Activities.AddFriendActivity;
 import com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity;
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
@@ -27,6 +28,7 @@ import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.RecordDialogFragment;
+import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.example.hiroyuki3.worksupportlibw.Adapters.SocialGroupListRVAdapter;
 import com.example.hiroyuki3.worksupportlibw.Adapters.SocialListRVAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,6 +51,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.DialogInterface.BUTTON_NEGATIVE;
@@ -144,9 +147,9 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
     @Click(R.id.add_user)
     void showAddFriendActivity(){
         com.cks.hiroyuki2.worksupport3.Activities.AddFriendActivity_
-                .intent(getContext())
+                .intent(this)
                 .userList((ArrayList<User>) userList)
-                .start();
+                .startForResult(AddFriendActivity.REQ_CODE);
     }
 
 //    void showGroupBtn(){
@@ -182,6 +185,47 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
     public void updateFriend(@NonNull List<User> newUserList, List<String> newUids){
         if (userAdapter != null)
             userAdapter.updateAllItem(newUserList, newUids);
+    }
+
+    @OnActivityResult(REQ_CODE_CREATE_GROUP)
+    void onResultAddFriend(final Intent data, int resultCode,
+                           @OnActivityResult.Extra final String name,
+                           @OnActivityResult.Extra final String userUid,
+                           @OnActivityResult.Extra final String photoUrl){
+        if (resultCode != RESULT_OK)
+            return;
+
+        FirebaseUser user = Util.getUserMe();
+        if (user == null){
+            onError(this, "FirebaseAuth.getInstance().getCurrentUser() == null", R.string.error);
+            if (getActivity() != null){
+                getActivity().setResult(RESULT_CANCELED);
+                getActivity().finish();
+            }
+            return;
+        }
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("/"+ user.getUid() +"/"+ userUid +"/name", name);
+        hashMap.put("/"+ user.getUid() +"/"+ userUid +"/photoUrl", photoUrl);
+        hashMap.put("/"+ userUid + "/" + user.getUid() + "/name", user.getDisplayName());
+        String myPhotoUrl = "null";
+        if (user.getPhotoUrl() != null){
+            myPhotoUrl = user.getPhotoUrl().toString();
+        }
+        hashMap.put("/"+ userUid + "/" + user.getUid() + "/photoUrl", myPhotoUrl);
+        getRef("friend").updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null)
+                    onError(SocialFragment.this, TAG+databaseError.getDetails(), R.string.error);
+                else {
+                    User newUser = new User(userUid, name, photoUrl);
+                    userList.add(newUser);
+                    userAdapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     @OnActivityResult(REQ_CODE_CREATE_GROUP)
