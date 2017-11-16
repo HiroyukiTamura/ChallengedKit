@@ -685,10 +685,9 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                 if (databaseError != null)
                     onError(ShareBoardFragment.this, TAG + databaseError.getMessage(), R.string.error);
                 else {
-                    int actualPos = listPos+1;
                     toastNullable(getContext(), R.string.msg_delete_item);
                     group.contentList.remove(listPos);
-                    rvAdapter.notifyItemRemoved(actualPos);
+                    rvAdapter.notifyDataSetChanged();
                     if (!isDoc)
                         onSuccessRemoveData(content);
                 }
