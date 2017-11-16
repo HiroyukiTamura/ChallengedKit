@@ -39,7 +39,7 @@ public class AddGroupActivity extends AppCompatActivity implements AddGroupFragm
     private static final String TAG = "MANUAL_TAG: " + AddGroupActivity.class.getSimpleName();
     public static final String INTENT_BUNDLE_GROUP_NAME = "groupName";
     public static final String INTENT_BUNDLE_GROUP_PHOTO_URL = "INTENT_BUNDLE_GROUP_PHOTO_URL";
-    static final int DLG_TAG_MK_GROUP_CODE = 85751;
+//    static final int DLG_TAG_MK_GROUP_CODE = 85751;
     static final String KEY_PARCELABLE = "KEY_PARCELABLE";
 
     @ViewById(R.id.toolbar) Toolbar toolbar;

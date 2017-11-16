@@ -440,6 +440,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fab.hide();
         } else if (attachedFrag instanceof SocialFragment){
             innerInitToolBar(true, R.string.item3, true);
+            fab.hide();
         } else if (attachedFrag instanceof AnalyticsFragment) {
             innerInitToolBar(false, 0, false);
             fab.hide();

@@ -216,20 +216,7 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
             myPhotoUrl = user.getPhotoUrl().toString();
         }
         hashMap.put("/"+ userUid + "/" + user.getUid() + "/photoUrl", myPhotoUrl);
-        getRef("friend").updateChildren(hashMap, /*new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null)
-                    onError(SocialFragment.this, TAG+databaseError.getDetails(), R.string.error);
-                else {
-                    User newUser = new User(userUid, name, photoUrl);
-                    userList.add(newUser);
-                    List<String> l = new ArrayList<>();
-                    l.add(userUid);
-                    userAdapter.updateAllItem(userList, l);
-                }
-            }
-        }*/ null);
+        getRef("friend").updateChildren(hashMap);
     }
 
     @OnActivityResult(REQ_CODE_CREATE_GROUP)
@@ -327,7 +314,7 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
         }
     }
 
-    static HashMap<String, Object> makeMap(@NonNull String myUid, @NonNull String key, @NonNull String groupName, @NonNull List<User> userList, @Nullable String photoUrl){
+    private static HashMap<String, Object> makeMap(@NonNull String myUid, @NonNull String key, @NonNull String groupName, @NonNull List<User> userList, @Nullable String photoUrl){
         String photoUrlC = photoUrl;
         if (photoUrl == null)
             photoUrlC = "null";

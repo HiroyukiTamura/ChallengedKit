@@ -359,11 +359,6 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
         if (resultCode != RESULT_OK) return;
         switch (pos){
             case 0:
-                Bundle bundle = new Bundle();
-                bundle.putString("groupName", group.groupName);
-                kickDialogInOnClick(DIALOG_TAG_MY_DATA, DIALOG_CODE_MY_DATA, bundle, this);
-                break;
-            case 1:
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("*/*");
@@ -371,8 +366,13 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                 intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
                 startActivityForResult(intent, REQ_CODE_UPLOAD_MYFILE);
                 break;
-            case 2:
+            case 1:
                 showEditDocAct();
+                break;
+            case 2:
+                Bundle bundle = new Bundle();
+                bundle.putString("groupName", group.groupName);
+                kickDialogInOnClick(DIALOG_TAG_MY_DATA, DIALOG_CODE_MY_DATA, bundle, this);
                 break;
             default:
                 onError(this, TAG+"ShareBoardFragment.DIALOG_CODE", R.string.error);
@@ -714,11 +714,13 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
          *      →push().getKey()→contentを作成→プロフィール画像をuploadFile
          *          →Databaseにcontentを書き込み
          *              →listに書き込み・UI更新*/
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("group/" + group.groupKey + "/contents");
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("group/" + group.groupKey);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()){
+                    /*ここで、contentsノードに対してではなく、group.groupKeyに対してnullチェックをしていることに注意してください。
+                    * contentsノードは存在しなくてもOKなのです！*/
                     onError(ShareBoardFragment.this, TAG+"!dataSnapshot.exists()", R.string.error);
                     return;
                 }
