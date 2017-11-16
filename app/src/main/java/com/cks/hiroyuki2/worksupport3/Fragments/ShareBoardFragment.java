@@ -366,6 +366,8 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                 storageUtil = new FirebaseStorageUtil(getContext(), group);
                 srl.setRefreshing(false);
                 onAfterViews();
+
+                addDocComment(null);
             }
 
             @Override
@@ -943,6 +945,9 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
 //        rvAdapter.notifyItemRangeInserted(group.contentList.size()-1, 1);//これデバッグすること
     }
 
+    /**
+     * トランザクションで値を上書きします。ノードの存在をチェックしなくても、落ちません。
+     */
     private void addDocComment(final Intent data){
         final int listPos = data.getIntExtra(EditDocActivity.INTENT_KEY_POS, Integer.MAX_VALUE);
         if (listPos == Integer.MAX_VALUE){
@@ -952,7 +957,8 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
 
         final Content content = group.contentList.get(listPos);
         final DocumentEle docEle = (DocumentEle) data.getSerializableExtra(EditDocActivity.INTENT_KEY_DOC);
-        DatabaseReference ref = getRef(makeScheme("group", group.groupKey, "contents", content.contentKey, "comment"));
+
+        DatabaseReference ref = getRef(makeScheme("group", group.groupKey, "contents", "おかしなあたい"/*content.contentKey*/, "comment"));
         ref.runTransaction(new Transaction.Handler() {
             private String newVal;
 
