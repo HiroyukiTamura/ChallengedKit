@@ -84,13 +84,13 @@ public class EditDocActivity extends AppCompatActivity implements TextWatcher /*
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Icepick.saveInstanceState(this, savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Icepick.restoreInstanceState(this, outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     @Override

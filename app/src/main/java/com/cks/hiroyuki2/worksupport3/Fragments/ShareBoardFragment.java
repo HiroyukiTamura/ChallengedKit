@@ -4,6 +4,7 @@
 
 package com.cks.hiroyuki2.worksupport3.Fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -27,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Activities.EditDocActivity;
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
@@ -66,12 +68,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Random;
 
+import icepick.Icepick;
+import icepick.State;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -122,6 +130,7 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
     public final static int DIALOG_CODE_DOC_VERT = 1146;
     public final static String DIALOG_TAG_DATA_VERT = "DIALOG_TAG_DOC_DATA_VERT";
     public final static int DIALOG_CODE_DATA_VERT = 1147;
+    private static final int WRITE_REQUEST_CODE = 43;
 
     public static final int REQ_CODE_UPLOAD_MYFILE = 1300;
     public static final String URL_SHORTEN_API = "https://www.googleapis.com/urlshortener/v1/url"
@@ -144,6 +153,7 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
     private Transition expandCollapse;
     private FirebaseStorageUtil storageUtil;
     private Context context;
+    @State int listPosForDL;
 
     @ViewById(R.id.srl) SwipeRefreshLayout srl;
     @ViewById(R.id.grid) RecyclerView rv;
@@ -151,7 +161,14 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
         storageUtil = new FirebaseStorageUtil(getContext(), group);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     @Override
@@ -529,36 +546,126 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
     //endregion
 
     //region onChoose3rdItem系列
-
     private void onChoose3rdItem(final int listPos){
-        File file = storageUtil.createLocalFile(listPos, FirebaseStorageUtil.CODE_CHASHE_FILE);
-        if (file == null){
-            toastNullable(getContext(), R.string.error);
+        listPosForDL = listPos;
+
+        String fileName = group.contentList.get(listPos).contentName;
+        String mimeType = group.contentList.get(listPos).type;
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+
+        // Filter to only show results that can be "opened", such as
+        // a file (as opposed to a list of contacts or timezones).
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        // Create a file with the requested MIME type.
+        intent.setType(mimeType);
+        intent.putExtra(Intent.EXTRA_TITLE, fileName);
+        startActivityForResult(intent, WRITE_REQUEST_CODE);
+
+//        File file = storageUtil.createLocalFile(listPos, FirebaseStorageUtil.CODE_CHASHE_FILE);
+//        if (file == null){
+//            toastNullable(getContext(), R.string.error);
+//            return;
+//        }
+//
+//        final int ntfId = (int)System.currentTimeMillis();
+//        final String fileName = group.contentList.get(listPos).contentName;
+//
+//        storageUtil.downloadFile(listPos, file, new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+//                    @Override
+//                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//                        toastNullable(getContext(), R.string.msgDlSuccess);
+//                        showCompleteNtf(fileName, ntfId, R.string.msgDlSuccess);
+//                    }
+//                },
+//                storageUtil
+//                , new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+//                    @Override
+//                    public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//                        showDownloadingNtf(taskSnapshot, fileName, ntfId);
+//                    }
+//                }, new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        onFailureOparation(e, fileName, ntfId, R.string.msg_failed_download);
+//                    }
+//                });
+    }
+
+    /**
+     * 一旦キャッシュファイルを作成しているのは、new File(uri.getPath())ではどういうわけかDL時に例外がスローされるから。
+     */
+    @OnActivityResult(WRITE_REQUEST_CODE)
+    void onResultWriteReq(Intent intent, int resultCode){
+        if (resultCode != Activity.RESULT_OK)
             return;
-        }
+        Uri uri = intent.getData();
+        if (uri == null)
+            return;
+
+        setPermissionInvariant(uri);//パーミッション永続化は不必要化もしれないけど・・・
+
+        String tempFileName = String.valueOf(new Random().nextInt());
+        File file = new File(getContext().getCacheDir(), tempFileName);
 
         final int ntfId = (int)System.currentTimeMillis();
-        final String fileName = group.contentList.get(listPos).contentName;
+        final String fileName = group.contentList.get(listPosForDL).contentName;
 
-        storageUtil.downloadFile(listPos, file, new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+        storageUtil.downloadFile(listPosForDL, file, new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                         toastNullable(getContext(), R.string.msgDlSuccess);
                         showCompleteNtf(fileName, ntfId, R.string.msgDlSuccess);
                     }
                 },
-                storageUtil
-                , new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                storageUtil,
+                new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
                         showDownloadingNtf(taskSnapshot, fileName, ntfId);
                     }
-                }, new OnFailureListener() {
+                },
+                new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         onFailureOparation(e, fileName, ntfId, R.string.msg_failed_download);
                     }
                 });
+
+        try(OutputStream outputStream = getContext().getContentResolver().openOutputStream(uri)) {
+            FileInputStream fis = new FileInputStream(file);
+
+            // byte型の配列を宣言
+            byte[] buf = new byte[256];
+            int len;
+
+            // ファイルの終わりまで読み込む
+            while((len = fis.read(buf)) != -1){
+                outputStream.write(buf);
+            }
+
+            //ファイルに内容を書き込む
+            outputStream.flush();
+
+            //ファイルの終了処理
+            outputStream.close();
+            fis.close();
+        } catch(Exception e){
+            logStackTrace(e);
+            toastNullable(getContext(), R.string.error);
+        } finally {
+            file.delete();
+        }
+    }
+
+    /**
+     * safで、パーミッションの永続化をするためのメソッド。
+     */
+    private void setPermissionInvariant(@NonNull Uri uri){
+        Intent intent = new Intent();
+        final int takeFlags = intent.getFlags()
+                & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        getContext().getContentResolver().takePersistableUriPermission(uri, takeFlags);
     }
     //endregion
 
@@ -662,25 +769,25 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
         }, this);
     }
 
-    void dlAndShowPdf(final int listPos){
-        final File file = storageUtil.createLocalFile(listPos, FirebaseStorageUtil.CODE_CHASHE_FILE);
-        if (file == null){
-            toastNullable(getContext(), R.string.error);
-            return;
-        }
-
-        final int ntfId = (int) System.currentTimeMillis();
-        final Content content = group.contentList.get(listPos);
-
-        storageUtil.downloadFile(listPos, file, new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                //todo ここうまくいかないんですけど！
-                Uri uri = Uri.fromFile(file);
-                intentKicker(getContext(), content.contentName, uri, Intent.ACTION_VIEW, content.type);
-            }
-        }, storageUtil, storageUtil, this);
-    }
+//    void dlAndShowPdf(final int listPos){
+//        final File file = storageUtil.createLocalFile(listPos, FirebaseStorageUtil.CODE_CHASHE_FILE);
+//        if (file == null){
+//            toastNullable(getContext(), R.string.error);
+//            return;
+//        }
+//
+//        final int ntfId = (int) System.currentTimeMillis();
+//        final Content content = group.contentList.get(listPos);
+//
+//        storageUtil.downloadFile(listPos, file, new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+//            @Override
+//            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//                //todo ここうまくいかないんですけど！
+//                Uri uri = Uri.fromFile(file);
+//                intentKicker(getContext(), content.contentName, uri, Intent.ACTION_VIEW, content.type);
+//            }
+//        }, storageUtil, storageUtil, this);
+//    }
 
     /**このアプリを使っている以上、自分のデータのノードはあるだろうから、ここではノードの存在チェックは行わない*/
     private void shareMyRecord(){
