@@ -23,7 +23,9 @@ import com.cks.hiroyuki2.worksupport3.Fragments.AddFriendFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.OnAddedFriendFragment;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
+import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.karumi.dexter.PermissionToken;
@@ -43,12 +45,15 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import io.fabric.sdk.android.Fabric;
 
 import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
 import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 
 @EActivity(R.layout.activity_add_fridend_acitivity)
 public class AddFriendActivity extends AppCompatActivity implements PermissionListener{
@@ -141,19 +146,9 @@ public class AddFriendActivity extends AppCompatActivity implements PermissionLi
 
     @Override
     public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-          /*-----------------テスト用に改変---------------*/
-
-            Intent intent = new Intent()
-                    .putExtra("name", "サブアカウント")
-                    .putExtra("photoUrl", "null")
-                    .putExtra("userUid", "q1Ov1EZ8DYQ4yS2tpaBHe5VmuYx2");
-            setResult(RESULT_OK, intent);
-            finish();
-
-//        IntentIntegrator integrator = new IntentIntegrator(getActivity());
-//        integrator.setBeepEnabled(false);
-//        integrator.initiateScan();
-         /*-----------------テスト用に改変---------------*/
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setBeepEnabled(false);
+        integrator.initiateScan();
     }
 
     @Override

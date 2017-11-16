@@ -98,7 +98,7 @@ public class ServiceConnector extends BroadcastReceiver implements ServiceConnec
     }
 
     public void startService(){
-        Intent i = new Intent(context, com.cks.hiroyuki2.worksupport3.BackService.class);
+        Intent i = new Intent(context, com.cks.hiroyuki2.worksupport3.BackService_.class);
         context.startService(i);
         context.bindService(i, this, Service.BIND_AUTO_CREATE);
     }

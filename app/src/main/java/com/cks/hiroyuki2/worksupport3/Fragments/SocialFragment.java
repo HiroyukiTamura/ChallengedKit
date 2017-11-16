@@ -215,7 +215,7 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
             myPhotoUrl = user.getPhotoUrl().toString();
         }
         hashMap.put("/"+ userUid + "/" + user.getUid() + "/photoUrl", myPhotoUrl);
-        getRef("friend").updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+        getRef("friend").updateChildren(hashMap, /*new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null)
@@ -228,7 +228,7 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
                     userAdapter.updateAllItem(userList, l);
                 }
             }
-        });
+        }*/ null);
     }
 
     @OnActivityResult(REQ_CODE_CREATE_GROUP)

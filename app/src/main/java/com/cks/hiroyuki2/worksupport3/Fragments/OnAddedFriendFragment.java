@@ -65,34 +65,22 @@ public class OnAddedFriendFragment extends Fragment {
         if (!isNewUser)
             return;
 
-        if (getActivity() != null){
-            getActivity().setResult(RESULT_CANCELED);
-            getActivity().getIntent()
-                    .putExtra("name", name)
-                    .putExtra("photoUrl", photoUrl)
-                    .putExtra("userUid", userUid);
-            getActivity().finish();
+        final FirebaseUser user = Util.getUserMe();
+        if (user == null){
+            onError(this, "FirebaseAuth.getInstance().getCurrentUser() == null", R.string.error);
+            return;
         }
 
-//        FirebaseUser user = Util.getUserMe();
-//        if (user == null){
-//            onError(this, "FirebaseAuth.getInstance().getCurrentUser() == null", R.string.error);
-//            if (getActivity() != null){
-//                getActivity().setResult(RESULT_CANCELED);
-//                getActivity().finish();
-//            }
-//            return;
-//        }
-//
-//        HashMap<String, Object> hashMap = new HashMap<>();
-//        hashMap.put("/"+ user.getUid() +"/"+ userUid +"/name", name);
-//        hashMap.put("/"+ user.getUid() +"/"+ userUid +"/photoUrl", photoUrl);
-//        hashMap.put("/"+ userUid + "/" + user.getUid() + "/name", user.getDisplayName());
-//        String myPhotoUrl = "null";
-//        if (user.getPhotoUrl() != null){
-//            myPhotoUrl = user.getPhotoUrl().toString();
-//        }
-//        hashMap.put("/"+ userUid + "/" + user.getUid() + "/photoUrl", myPhotoUrl);
-//        getRef("friend").updateChildren(hashMap);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("/"+ user.getUid() +"/"+ userUid +"/name", name);
+        hashMap.put("/"+ user.getUid() +"/"+ userUid +"/photoUrl", photoUrl);
+        hashMap.put("/"+ userUid + "/" + user.getUid() + "/name", user.getDisplayName());
+        String myPhotoUrl = "null";
+        if (user.getPhotoUrl() != null){
+            myPhotoUrl = user.getPhotoUrl().toString();
+        }
+        hashMap.put("/"+ userUid + "/" + user.getUid() + "/photoUrl", myPhotoUrl);
+        getRef("friend").updateChildren(hashMap);
+        /*え？リスナーをセットしないの？と君は言うだろう。だが、friend分枝はサービス側で監視しているんだ。friend分枝が書き込まれたら、サービス側でリスナが走って、UIに更新してくれるんだ。*/
     }
 }

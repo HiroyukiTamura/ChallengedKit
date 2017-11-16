@@ -53,7 +53,7 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
     static final String INTENT_KEY_1 = "INTENT_KEY_1";
     static final String INTENT_KEY_2 = "INTENT_KEY_2";
     private String uid;
-    private static final String urlStart = "https://worksupport3.firebaseio.com";
+    private static final String urlStart = "https://wordsupport3.firebaseio.com";/*まさかのwor"D"support*/
     private List<String> groupKeys = new ArrayList<>();
     private Messenger mServiceMessenger;
     static int CREATE_GROUP = 1;
@@ -235,7 +235,8 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
         String url = dataSnapshot.getRef().toString();
-        Log.d(TAG, "onDataChange() called with: dataSnapshot = [" + url +"]");
+        Log.d(TAG, "onDataChange() called with: dataSnapshot = [" + url +"]" + "比べる人" + urlStart +"/friend/"+ uid);
+        String s = urlStart +"/friend/"+ uid;
         if (url.equals(urlStart +"/friend/"+ uid)){
             String content = null;
             JSONArray ja = new JSONArray();
@@ -263,7 +264,6 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
                 content = ja.toString();
             }
 
-            //新規追加や削除をみつけたら更新、そうでなければローカルに書き込むだけ。
             /*一連のPrefまわりって、全部Gsonに書き換えたらFirebaseからの読み出しとか楽そうだよなあ。Firebaseの乗り換え時に色々変えよう。*/
             JSONArray oldJa = readFriendPref(getApplicationContext());
             for (int i = 0; i < oldJa.length(); i++) {
@@ -277,11 +277,6 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
             }
 
             writeFriendPref(getApplicationContext(), content);
-
-            if (newUidList.size() == 0){
-                //メンバーは変わっていないor削除されただけ
-                return;
-            }
 
             Intent intent = new Intent("MY_ACTION");
             intent.putExtra(SEND_CODE, SEND_CODE_FRIEND_CHANGED);
