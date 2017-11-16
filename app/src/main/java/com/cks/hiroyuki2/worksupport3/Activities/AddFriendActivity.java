@@ -141,9 +141,19 @@ public class AddFriendActivity extends AppCompatActivity implements PermissionLi
 
     @Override
     public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-        IntentIntegrator integrator = new IntentIntegrator(this);
-        integrator.setBeepEnabled(false);
-        integrator.initiateScan();
+          /*-----------------テスト用に改変---------------*/
+
+            Intent intent = new Intent()
+                    .putExtra("name", "サブアカウント")
+                    .putExtra("photoUrl", "null")
+                    .putExtra("userUid", "q1Ov1EZ8DYQ4yS2tpaBHe5VmuYx2");
+            setResult(RESULT_OK, intent);
+            finish();
+
+//        IntentIntegrator integrator = new IntentIntegrator(getActivity());
+//        integrator.setBeepEnabled(false);
+//        integrator.initiateScan();
+         /*-----------------テスト用に改変---------------*/
     }
 
     @Override

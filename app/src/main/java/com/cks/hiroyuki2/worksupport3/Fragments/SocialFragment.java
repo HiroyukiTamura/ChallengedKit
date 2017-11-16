@@ -57,6 +57,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.view.View.VISIBLE;
+import static android.view.View.inflate;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupprotlib.Entity.Group.makeGroupFromSnap;
 import static com.cks.hiroyuki2.worksupprotlib.Entity.User.makeUserFromSnap;
@@ -187,15 +188,15 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
             userAdapter.updateAllItem(newUserList, newUids);
     }
 
-    @OnActivityResult(REQ_CODE_CREATE_GROUP)
+    @OnActivityResult(AddFriendActivity.REQ_CODE)
     void onResultAddFriend(final Intent data, int resultCode,
                            @OnActivityResult.Extra final String name,
-                           @OnActivityResult.Extra final String userUid,
-                           @OnActivityResult.Extra final String photoUrl){
+                           @OnActivityResult.Extra final String photoUrl,
+                           @OnActivityResult.Extra final String userUid){
         if (resultCode != RESULT_OK)
             return;
 
-        FirebaseUser user = Util.getUserMe();
+        final FirebaseUser user = Util.getUserMe();
         if (user == null){
             onError(this, "FirebaseAuth.getInstance().getCurrentUser() == null", R.string.error);
             if (getActivity() != null){
@@ -222,7 +223,9 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
                 else {
                     User newUser = new User(userUid, name, photoUrl);
                     userList.add(newUser);
-                    userAdapter.notifyDataSetChanged();
+                    List<String> l = new ArrayList<>();
+                    l.add(userUid);
+                    userAdapter.updateAllItem(userList, l);
                 }
             }
         });

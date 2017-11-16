@@ -23,6 +23,8 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
+import static android.app.Activity.RESULT_CANCELED;
+
 /**
  * {@link AddFriendActivity}のひとり子分。
  */
@@ -45,15 +47,6 @@ public class AddFriendFragment extends Fragment implements AddFriendVPAdapter.IA
         vp.setAdapter(adapter);
         tab.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0));
         tab.setupWithViewPager(vp);
-    }
-
-    public void onPermissionAdmitted(){
-        if (getActivity() == null)
-            return;
-
-        IntentIntegrator integrator = new IntentIntegrator(getActivity());
-        integrator.setBeepEnabled(false);
-        integrator.initiateScan();
     }
 
     //ただこれだけだからさ、いちいちimplementするほどでもないんだけどさ。fragmentからこういう処理しないと気持ち悪いのよ。
