@@ -366,8 +366,6 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                 storageUtil = new FirebaseStorageUtil(getContext(), group);
                 srl.setRefreshing(false);
                 onAfterViews();
-
-                addDocComment(null);
             }
 
             @Override

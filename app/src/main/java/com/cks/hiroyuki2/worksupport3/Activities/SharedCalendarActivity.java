@@ -4,6 +4,9 @@
 
 package com.cks.hiroyuki2.worksupport3.Activities;
 
+import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -27,21 +30,28 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.Calendar;
 
+import icepick.Icepick;
+import icepick.State;
+
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.cks.hiroyuki2.worksupprotlib.Util.DATE_PATTERN_DOT_YM;
 import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
+import static com.cks.hiroyuki2.worksupprotlib.Util.setNullableText;
 import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.getFabLp;
 import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 
 /**
  * SharedCalendar系列の長。ひとり子分は{@link SharedCalendarFragment}
+ * icepickがうまく働かない・・・
  */
 @EActivity(R.layout.activity_shared_calendar)
 public class SharedCalendarActivity extends AppCompatActivity {
     
     private static final String TAG = "MANUAL_TAG: " + SharedCalendarActivity.class.getSimpleName();
+    private boolean isSavedInstance;
+    String toolTitleStr;
     @ViewById(R.id.fab) FloatingActionButton fab;
     @ViewById(R.id.toolbar) Toolbar toolbar;
     @ViewById(R.id.fragment_container) FrameLayout fm;
@@ -50,6 +60,24 @@ public class SharedCalendarActivity extends AppCompatActivity {
     @ViewById(R.id.mcv_forward) ImageButton mcvFrw;
     @ViewById(R.id.tool_back) ImageButton backBtn;
     @Extra Group group;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        Icepick.restoreInstanceState(this, savedInstanceState);
+        if (savedInstanceState != null){
+            isSavedInstance = true;
+            savedInstanceState.getString("toolTitleStr", toolTitleStr);
+        }
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("toolTitleStr", toolTitleStr);
+//        Icepick.saveInstanceState(this, outState);
+    }
 
     @AfterViews
     void afterViews() {
@@ -61,6 +89,11 @@ public class SharedCalendarActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        if (isSavedInstance){
+            setNullableText(toolTitle, toolTitleStr);
+            return;
+        }
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         SharedCalendarFragment fragment = com.cks.hiroyuki2.worksupport3.Fragments.SharedCalendarFragment_.builder()
@@ -116,7 +149,9 @@ public class SharedCalendarActivity extends AppCompatActivity {
     }
 
     public void changeToolbarTitle(Calendar cal){
-        String title = cal2date(cal, DATE_PATTERN_DOT_YM);
-        toolTitle.setText(title);
+        toolTitleStr = cal2date(cal, DATE_PATTERN_DOT_YM);
+        if (toolTitle != null){
+            toolTitle.setText(toolTitleStr);
+        }
     }
 }
