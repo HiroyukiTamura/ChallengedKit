@@ -194,6 +194,7 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
         if (jo != null)
             try {
                 group = getOneGroupFromJson(jo, groupNode.groupKey);
+                storageUtil = new FirebaseStorageUtil(getContext(), group);
                 if (group != null){
                     if (group.contentList == null)
                         group.contentList = new ArrayList<>();
@@ -633,7 +634,8 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
             intent.setType("application/pdf");
             if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
                 //pdfをダウンロードしちゃう。
-                dlAndShowPdf(listPos);
+//                dlAndShowPdf(listPos);
+                showUrlPdf(listPos);
                 return;
             }
         }
@@ -642,6 +644,20 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
             @Override
             public void onSuccess(Uri uri) {
                 intentKicker(getContext(), content.contentName, uri, Intent.ACTION_VIEW, content.type);
+            }
+        }, this);
+    }
+
+    /**
+     * pdfをブラウザから開く！ダウンロードの必要なし！
+     */
+    private void showUrlPdf(int listPos){
+        storageUtil.getStorageUrl(listPos, new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.parse( "http://docs.google.com/viewer?url=" + uri), "text/html");
+                startActivity(intent);
             }
         }, this);
     }
@@ -711,7 +727,7 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
         }
 
         /*まず、nodeが存在していることを確認
-         *      →push().getKey()→contentを作成→プロフィール画像をuploadFile
+         *      →push().getKey()→contentを作成→画像をuploadFile
          *          →Databaseにcontentを書き込み
          *              →listに書き込み・UI更新*/
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("group/" + group.groupKey);
@@ -728,7 +744,7 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                 toastNullable(getContext(), R.string.msg_start_upload);
                 final String contentsKey = ref.push().getKey();
                 final int ntfId = (int) System.currentTimeMillis();//NotificationのIdは現在時刻から生成する。
-                uploadFile(contentsKey, uri, new OnFailureListener() {
+                uploadFile("shareFile/"+ group.groupKey +"/"+ contentsKey, uri, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         onFailureOparation(e, fileName, ntfId, R.string.msg_failed_upload);

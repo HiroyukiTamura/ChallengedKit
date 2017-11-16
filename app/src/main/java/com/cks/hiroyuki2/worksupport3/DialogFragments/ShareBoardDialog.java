@@ -118,22 +118,22 @@ public class ShareBoardDialog extends DialogFragment implements DialogInterface.
         return builder.create();
     }
 
-    void setAlertContent(){
-        content = inflater.inflate(R.layout.board_dialog_add_item2, null);
-        content.findViewById(R.id.btn).setOnClickListener(this);
-        setDialogCompo(R.id.compo0, R.string.dialog_compo0, R.drawable.firebase_auth_120dp);
-        setDialogCompo(R.id.compo1, R.string.dialog_compo1, R.drawable.firebase_auth_120dp);
-        setDialogCompo(R.id.compo2, R.string.dialog_compo2, R.drawable.firebase_auth_120dp);
-        setDialogCompo(R.id.compo3, R.string.dialog_compo3, R.drawable.firebase_auth_120dp);
-    }
+//    void setAlertContent(){
+//        content = inflater.inflate(R.layout.board_dialog_add_item2, null);
+//        content.findViewById(R.id.btn).setOnClickListener(this);
+//        setDialogCompo(R.id.compo0, R.string.dialog_compo0, R.drawable.firebase_auth_120dp);
+//        setDialogCompo(R.id.compo1, R.string.dialog_compo1, R.drawable.firebase_auth_120dp);
+//        setDialogCompo(R.id.compo2, R.string.dialog_compo2, R.drawable.firebase_auth_120dp);
+//        setDialogCompo(R.id.compo3, R.string.dialog_compo3, R.drawable.firebase_auth_120dp);
+//    }
 
-    void setDialogCompo(@IdRes int compo, @StringRes int title, @DrawableRes int icon){
-        LinearLayout ll = content.findViewById(compo);
-        ll.setTag(compo);//layoutのidをタグ付けする
-        ll.setOnClickListener(this);
-        ((TextView) (ll.findViewById(R.id.title))).setText(title);
-        ((ImageView) (ll.findViewById(R.id.icon))).setImageResource(icon);
-    }
+//    void setDialogCompo(@IdRes int compo, @StringRes int title, @DrawableRes int icon){
+//        LinearLayout ll = content.findViewById(compo);
+//        ll.setTag(compo);//layoutのidをタグ付けする
+//        ll.setOnClickListener(this);
+//        ((TextView) (ll.findViewById(R.id.title))).setText(title);
+//        ((ImageView) (ll.findViewById(R.id.icon))).setImageResource(icon);
+//    }
     //endregion
 
 
@@ -151,7 +151,6 @@ public class ShareBoardDialog extends DialogFragment implements DialogInterface.
     private AlertDialog makeVertAlert(@ArrayRes int arrRes){
         return new AlertDialog.Builder(getContext())
                 .setItems(arrRes, this)
-                .setTitle("操作を選択")
                 .create();
     }
 
@@ -175,10 +174,9 @@ public class ShareBoardDialog extends DialogFragment implements DialogInterface.
             sendIntent(getTargetRequestCode(), null);
 
         } else if (getTargetRequestCode() ==  DIALOG_CODE_ITEM_VERT || getTargetRequestCode() == DIALOG_CODE_DOC_VERT || getTargetRequestCode() == DIALOG_CODE_DATA_VERT){
-            int actualPos = getArguments().getInt(ShareBoardRVAdapter.BUNDLE_KEY_POSITION, 10000);
-            if (actualPos == 10000){
-                onError(getContext(), TAG + "  position == 10000", R.string.error);
-                dismiss();
+            int actualPos = getArguments().getInt(ShareBoardRVAdapter.BUNDLE_KEY_POSITION, Integer.MAX_VALUE);
+            if (actualPos == Integer.MAX_VALUE){
+                onError(getContext(), TAG + "  Integer.MAX_VALUE", R.string.error);
             } else {
                 Intent intent = new Intent();
                 bundle.putInt(DIALOG_WITCH_CLICKED, i);
@@ -186,6 +184,7 @@ public class ShareBoardDialog extends DialogFragment implements DialogInterface.
                 intent.putExtras(bundle);
                 sendIntent(getTargetRequestCode(), intent);
             }
+            dismiss();
 
         } else if (getTargetRequestCode() == DIALOG_CODE_EDIT_COMMENT){
             switch (i){
@@ -223,10 +222,10 @@ public class ShareBoardDialog extends DialogFragment implements DialogInterface.
     @Override
     public void onClick(View view) {
         if (getTargetRequestCode() == ShareBoardFragment.DIALOG_CODE){
-            if (view.getId() == R.id.btn){
-                getDialog().dismiss();
-                return;
-            }
+//            if (view.getId() == R.id.btn){
+//                getDialog().dismiss();
+//                return;
+//            }
 
             int tag = (int)view.getTag();
             sendIntent(tag, null);
