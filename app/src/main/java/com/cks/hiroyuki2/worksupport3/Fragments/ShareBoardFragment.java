@@ -36,6 +36,7 @@ import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Document;
+import com.cks.hiroyuki2.worksupprotlib.Entity.DocumentEle;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
@@ -50,6 +51,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
@@ -107,6 +110,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.getMimeType;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
 import static com.cks.hiroyuki2.worksupprotlib.Util.intentKicker;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
+import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.ShareBoardRVAdapter.ITEM_TYPE_DATA;
@@ -898,11 +902,11 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
         final String docStr = data.getStringExtra(EditDocActivity.INTENT_KEY_DOC);
         Gson gson = new Gson();
         final Document doc = gson.fromJson(docStr, Document.class);
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("group/" + group.groupKey);
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String contentsKey = ref.push().getKey();
+//        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("group/" + group.groupKey);
+//        ref.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+                String contentsKey = getRef("keyPusher").push().getKey();
                 String ymd = cal2date(Calendar.getInstance(), datePattern);
                 final User me = new User(FirebaseAuth.getInstance().getCurrentUser());
                 final Content content = new Content(contentsKey, doc.title, ymd, me.getUserUid(), me.getUserUid(), "document", docStr);
@@ -923,13 +927,13 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                     }
                 };
                 writerInner.update(CODE_UPDATE_CHILDREN);
-            }
+//            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                onError(ShareBoardFragment.this, TAG+databaseError.getDetails(), R.string.error);
-            }
-        });
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                onError(ShareBoardFragment.this, TAG+databaseError.getDetails(), R.string.error);
+//            }
+//        });
     }
 
     private void addContent(@NonNull Content content){
@@ -939,7 +943,7 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
 //        rvAdapter.notifyItemRangeInserted(group.contentList.size()-1, 1);//これデバッグすること
     }
 
-    private void addDocComment(Intent data){
+    private void addDocComment(final Intent data){
         final int listPos = data.getIntExtra(EditDocActivity.INTENT_KEY_POS, Integer.MAX_VALUE);
         if (listPos == Integer.MAX_VALUE){
             onError(this, "pos == Integer.MAX_VALUE", R.string.error);
@@ -947,22 +951,34 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
         }
 
         final Content content = group.contentList.get(listPos);
-        Document doc = (Document) data.getSerializableExtra(EditDocActivity.INTENT_KEY_DOC);
-        final String newComment = new Gson().toJson(doc);
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("group/"+group.groupKey+"/contents/"+content.contentKey+"/comment");
+        final DocumentEle docEle = (DocumentEle) data.getSerializableExtra(EditDocActivity.INTENT_KEY_DOC);
+        DatabaseReference ref = getRef(makeScheme("group", group.groupKey, "contents", content.contentKey, "comment"));
+        ref.runTransaction(new Transaction.Handler() {
+            private String newVal;
 
-        ref.setValue(content.comment, new DatabaseReference.CompletionListener() {
             @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError == null){
-                    content.comment = newComment;
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if (mutableData == null)
+                    return Transaction.abort();
+                String value = (String) mutableData.getValue();
+                Document doc = new Gson().fromJson(value, Document.class);
+                doc.eleList.add(docEle);
+                newVal = new Gson().toJson(doc);
+                mutableData.setValue(newVal);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                if (databaseError != null)
+                    onError(ShareBoardFragment.this, databaseError.toString(), R.string.error);
+                else {
+                    content.comment = newVal;
                     int actualPos = listPos+1;
                     rvAdapter.notifyItemChanged(actualPos);
-                } else {
-                    onError(ShareBoardFragment.this, TAG + databaseReference.toString() + databaseError.getMessage(), R.string.error);
                 }
             }
-        });
+        }, false);
     }
 
     @Override

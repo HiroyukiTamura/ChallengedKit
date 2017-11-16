@@ -217,9 +217,9 @@ public class EditDocActivity extends AppCompatActivity implements TextWatcher /*
         if (pos != -1 && group != null){
             User user = new User(FirebaseAuth.getInstance().getCurrentUser());
             DocumentEle ele = new DocumentEle(user, editContent.getText().toString());
-            doc.eleList.add(ele);
+//            doc.eleList.add(ele);
             Intent data = new Intent();
-            data.putExtra(INTENT_KEY_DOC, doc);
+            data.putExtra(INTENT_KEY_DOC, ele);
             data.putExtra(INTENT_KEY_POS, pos);
             setResult(RESULT_OK, data);
             finish();
