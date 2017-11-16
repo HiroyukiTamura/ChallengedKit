@@ -4,6 +4,8 @@
 
 package com.cks.hiroyuki2.worksupport3.Activities;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -27,14 +29,25 @@ public class SharedDataViewActivity extends AppCompatActivity implements Analyti
 
     private static final String TAG = "MANUAL_TAG: " + SharedDataViewActivity.class.getSimpleName();
     public static final String INTENT_KEY_UID = "INTENT_KEY_UID";
+    private boolean isSavedInstsancse = false;
 
     @ViewById(R.id.fragment_container) FrameLayout fm;
     @Extra(INTENT_KEY_UID) String uid;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null)
+            isSavedInstsancse = true;
+    }
 
     @AfterViews
     void afterViews(){
         initAdMob(this);
         logAnalytics(TAG + "起動", this);
+
+        if (isSavedInstsancse)
+            return;
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         AnalyticsFragment frag = com.cks.hiroyuki2.worksupport3.Fragments.AnalyticsFragment_.builder()
