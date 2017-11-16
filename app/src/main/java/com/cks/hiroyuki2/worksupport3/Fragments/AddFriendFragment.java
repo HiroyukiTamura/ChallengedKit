@@ -17,13 +17,18 @@ import com.cks.hiroyuki2.worksupport3.Activities.AddFriendActivity;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.Util;
 import com.example.hiroyuki3.worksupportlibw.Adapters.AddFriendVPAdapter;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.zxing.integration.android.IntentIntegrator;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
+import java.util.HashMap;
+
 import static android.app.Activity.RESULT_CANCELED;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 
 /**
  * {@link AddFriendActivity}のひとり子分。
@@ -52,6 +57,28 @@ public class AddFriendFragment extends Fragment implements AddFriendVPAdapter.IA
     //ただこれだけだからさ、いちいちimplementするほどでもないんだけどさ。fragmentからこういう処理しないと気持ち悪いのよ。
     @Override
     public void onClickCameraButton() {
+        // TODO: 2017/11/16 テスト解除時コードを戻すこと
+        final FirebaseUser user = com.cks.hiroyuki2.worksupprotlib.Util.getUserMe();
+        if (user == null){
+            onError(this, "FirebaseAuth.getInstance().getCurrentUser() == null", R.string.error);
+            return;
+        }
+        String userUid = "q1Ov1EZ8DYQ4yS2tpaBHe5VmuYx2";
+        String name = "hiroyukiSubTest";
+        String photoUrl = "null";
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("/"+ user.getUid() +"/"+ userUid +"/name", name);
+        hashMap.put("/"+ user.getUid() +"/"+ userUid +"/photoUrl", photoUrl);
+        hashMap.put("/"+ userUid + "/" + user.getUid() + "/name", user.getDisplayName());
+        String myPhotoUrl = "null";
+        if (user.getPhotoUrl() != null){
+            myPhotoUrl = user.getPhotoUrl().toString();
+        }
+        hashMap.put("/"+ userUid + "/" + user.getUid() + "/photoUrl", myPhotoUrl);
+        getRef("friend").updateChildren(hashMap);
+
+        /*
         Util.checkPermission(getActivity(), ((AddFriendActivity) getActivity()).getListener());/*非同期じゃないから大丈夫*/
     }
 }

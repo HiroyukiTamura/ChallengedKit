@@ -186,6 +186,7 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
     public void updateFriend(@NonNull List<User> newUserList, List<String> newUids){
         if (userAdapter != null)
             userAdapter.updateAllItem(newUserList, newUids);
+        userList = newUserList;
     }
 
     @OnActivityResult(AddFriendActivity.REQ_CODE)

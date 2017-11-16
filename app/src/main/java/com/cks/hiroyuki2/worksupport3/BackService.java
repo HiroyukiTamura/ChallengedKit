@@ -236,7 +236,6 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
     public void onDataChange(DataSnapshot dataSnapshot) {
         String url = dataSnapshot.getRef().toString();
         Log.d(TAG, "onDataChange() called with: dataSnapshot = [" + url +"]" + "比べる人" + urlStart +"/friend/"+ uid);
-        String s = urlStart +"/friend/"+ uid;
         if (url.equals(urlStart +"/friend/"+ uid)){
             String content = null;
             JSONArray ja = new JSONArray();
