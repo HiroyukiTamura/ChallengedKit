@@ -5,6 +5,7 @@
 package com.cks.hiroyuki2.worksupport3;
 
 import android.content.Context;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -29,8 +30,8 @@ public class ShareBoardDialogAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
     private List<String> list;
-    @android.support.annotation.ColorRes int color0;
-    @android.support.annotation.ColorRes int color1;
+    @ColorInt private int color0;
+    @ColorInt private int color1;
 
     public ShareBoardDialogAdapter(@NonNull Context context, int requestCode, @NonNull List<String> list){
         this.requestCode = requestCode;
@@ -68,20 +69,19 @@ public class ShareBoardDialogAdapter extends BaseAdapter {
         tv.setText(list.get(i));
 
         ImageView iv = view.findViewById(R.id.iv);
-        int res;
         switch (requestCode){
             case ShareBoardFragment.DIALOG_CODE:
                 switch (i){
                     case 0:
-                        iv.setImageResource(R.drawable.ic_mode_edit_white_36dp);
+                        iv.setImageResource(R.drawable.ic_cloud_upload_white_24dp);
                         iv.setColorFilter(color0);
                         break;
                     case 1:
-                        iv.setImageResource(R.drawable.ic_folder_white_48dp);
-                        iv.setColorFilter(color1);
+                        iv.setImageResource(R.drawable.doc);
                         break;
                     case 2:
-                        iv.setImageResource(R.drawable.doc);
+                        iv.setImageResource(R.drawable.ic_sync_white_24dp);
+                        iv.setColorFilter(color1);
                         break;
                 }
                 break;
