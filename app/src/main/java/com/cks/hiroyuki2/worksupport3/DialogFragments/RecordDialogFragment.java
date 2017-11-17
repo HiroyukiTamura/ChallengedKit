@@ -54,6 +54,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import cn.refactor.library.SmoothCheckBox;
 
 import static com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment.GROUP;
@@ -91,6 +95,8 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
     private com.shawnlin.numberpicker.NumberPicker picker;
     private RadioGroup radio;
     private Dialog dialog;
+    private GroupMemberParams groupMemberParams;
+    private Unbinder unbinder;
 
     public static RecordDialogFragment newInstance(Bundle bundle){
         Log.d(TAG, "newInstance: fire");
@@ -193,14 +199,26 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
                         .setMessage("本当にグループ「"+ groupName +"」から退会しますか？");
                 break;}
 
-            case GroupSettingRVAdapter.REMOVE_MEMBER:{
+            case GroupSettingRVAdapter.CLICK_GROUP_MEMBER:{
                 User user = (User) getArguments().getSerializable(GroupSettingRVAdapter.USER);
-                if (user == null) break;
-                editBuilder(builder, null, R.string.ok, R.string.cancel, null, this, null)
-                        .setMessage("「"+ user.getName() +"」さんをグループから退会させますか？");
+                if (user == null)
+                    break;
+                View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_content_person, null);
+                groupMemberParams = new GroupMemberParams();
+                unbinder = ButterKnife.bind(groupMemberParams, view);
+                editBuilder(builder, null, R.string.ok, R.string.cancel, view, null, null);
+//                editBuilder(builder, null, R.string.ok, R.string.cancel, null, this, null)
+//                        .setMessage("「"+ user.getName() +"」さんをグループから退会させますか？");
                 break;}
         }
         return dialog = builder.create();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (unbinder != null)
+            unbinder.unbind();
     }
 
     @Override
@@ -590,7 +608,7 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
             case GroupSettingFragment.TAG_EXIT_GROUP:
                 sendIntent(getTargetRequestCode(), this);
                 break;
-            case GroupSettingRVAdapter.REMOVE_MEMBER:
+            case GroupSettingRVAdapter.CLICK_GROUP_MEMBER:
                 sendIntent(getTargetRequestCode(), this);
                 break;
         }
@@ -624,5 +642,21 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
         }
 
         return true;
+    }
+
+    private class GroupMemberParams{
+        @BindView(R.id.name) TextView name;
+        @BindView(R.id.icon) ImageView icon;
+
+        @OnClick(R.id.register_user)
+        void onClickRegsterUser(){
+            Log.d(TAG, "onClickRegsterUser() called");
+            sendIntent(getTargetRequestCode(), RecordDialogFragment.this);
+        }
+
+        @OnClick(R.id.item_remove)
+        void onClickItemRemove(){
+            sendIntent(getTargetRequestCode(), RecordDialogFragment.this);
+        }
     }
 }

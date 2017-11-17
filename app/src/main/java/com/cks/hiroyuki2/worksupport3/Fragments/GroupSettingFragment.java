@@ -156,6 +156,11 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
         kickDialogInOnClick(TAG_EXIT_GROUP, CALLBACK_EXIT_GROUP, bundle, this);
     }
 
+    @OnClick(R.id.item_invite)
+    public void onClickInvite(){
+
+    }
+
     @OnClick(R.id.icon_fl)
     public void onClickIcon() {
         kickIntentIcon(this, REQ_CODE_ICON);
@@ -303,7 +308,7 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
 //    }
 
     @Override
-    public void onClickRemoveOthers(Bundle bundle) {
+    public void onClickGroupMember(Bundle bundle) {
         kickDialogInOnClick(CLICK_GROUP_MEMBER, CALLBACK_CLICK_GROUP_MEMBER, bundle, this);
     }
     //endregion
