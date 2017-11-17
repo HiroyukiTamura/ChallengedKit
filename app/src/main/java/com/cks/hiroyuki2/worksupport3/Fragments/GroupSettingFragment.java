@@ -37,7 +37,9 @@ import com.squareup.picasso.Picasso;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,6 +51,7 @@ import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
+import static com.cks.hiroyuki2.worksupport3.Util.OLD_GRP_NAME;
 import static com.cks.hiroyuki2.worksupport3.Util.showCompleteNtf;
 import static com.cks.hiroyuki2.worksupport3.Util.showUploadingNtf;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
@@ -70,6 +73,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.setNullableText;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter.CALLBACK_REMOVE_MEMBER;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter.REMOVE_MEMBER;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter.USER;
 
 /**
  * このクラスは{@link com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity}と酷似しています。ヘッダ部分のロジックとレイアウトを合わせてFragmentとして切り出してもいいかもしれません。
@@ -159,7 +163,10 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
 
     @OnClick({R.id.edit_name, R.id.name})
     void onClickEditBtn() {
-        kickInputDialog(new Bundle(), SET_TAG_MK_GROUP, CALLBACK_SET_TAG_MK_GROUP, this);
+        String string = (String) name.getText();
+        Bundle bundle = new Bundle();
+        bundle.putString(OLD_GRP_NAME, group.groupName);
+        kickInputDialog(bundle , SET_TAG_MK_GROUP, CALLBACK_SET_TAG_MK_GROUP, this);
     }
 
     @Override
@@ -194,8 +201,7 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
                     Picasso.with(getContext())
                             .load(uri)
                             .into(icon, GroupSettingFragment.this);
-                    showCompleteNtf(group.groupName, ntfId, R.string.ntf_txt_change_group_img);
-                    updateValue(UPDATE_CODE_PHOTO_URL, group.photoUrl);
+                    updateValue(UPDATE_CODE_PHOTO_URL, group.photoUrl, ntfId);
                 }
             }, storageUtil, new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -210,8 +216,9 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
             getActivity().finish();
         } else if (requestCode == CALLBACK_SET_TAG_MK_GROUP && resultCode == RESULT_OK) {
             String input = data.getStringExtra(INPUT);
+            group.groupName = input;
             name.setText(input);
-            updateValue(UPDATE_CODE_NAME, input);
+            updateValue(UPDATE_CODE_NAME, input, 0);
         } else if (requestCode == CALLBACK_REMOVE_MEMBER && resultCode == RESULT_OK){
             onResultRemoveMember(data);
         } else {
@@ -220,12 +227,13 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
     }
 
     private void onResultRemoveMember(Intent data){
-        String uid = data.getStringExtra(UID);
-        if (uid == null){
+        User user = (User) data.getSerializableExtra(USER);
+        if (user == null){
             Util.onError(this, TAG+"uid == null", R.string.error);
             return;
         }
 
+        String uid = user.getUserUid();
         final int pos = adapter.getPosFromUid(uid);
         if (pos == Integer.MAX_VALUE){
             Util.onError(this, TAG+"pos == Integer.MAX_VALUE", R.string.error);
@@ -246,7 +254,7 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
         }.update(CODE_UPDATE_CHILDREN);
     }
 
-    private void updateValue(@updateCode final int code, String value){
+    private void updateValue(@updateCode final int code, String value, /*UPDATE_CODE_PHOTO_URLでのみ使用*/final int ntfId){
         HashMap<String, Object> hashMap = new HashMap<>();
         switch (code) {
             case UPDATE_CODE_NAME:{
@@ -271,7 +279,10 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
                         toastNullable(getContext(), R.string.updated_group_name);
                         break;
                     case UPDATE_CODE_PHOTO_URL:
-                        toastNullable(getContext(), R.string.updated_group_name);
+                        showCompleteNtf(group.groupName, ntfId, R.string.ntf_txt_change_group_img);
+                        Picasso.with(getContext())/*もともとはデフォルトの画像が挿入されていて、もし画像取得ができれば、デフォルトのImageView手前にあるImageViewに描画し、デフォルトのImageViewを隠す。*/
+                                .load(group.photoUrl)
+                                .into(icon, GroupSettingFragment.this);
                         break;
                 }
             }
@@ -288,13 +299,11 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
     //region GroupSettingRVAdapter.IGroupSettingRVAdapter
     @Override
     public void onClickRemoveMe() {
-        // TODO: 2017/11/07 デバッグこれから
         onClickItemExit();
     }
 
     @Override
     public void onClickRemoveOthers(Bundle bundle) {
-        // TODO: 2017/11/07 デバッグこれから
         kickDialogInOnClick(REMOVE_MEMBER, CALLBACK_REMOVE_MEMBER, bundle, this);
     }
     //endregion

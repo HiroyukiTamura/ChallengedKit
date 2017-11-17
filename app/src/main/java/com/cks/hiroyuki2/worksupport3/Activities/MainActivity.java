@@ -45,6 +45,7 @@ import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment_;
 import com.cks.hiroyuki2.worksupport3.Fragments.AnalyticsFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.RecordFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment_;
@@ -555,11 +556,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @OnActivityResult(REQ_CODE_GROUP_SETTING)
-    void onResultExitGroup(int requesCode){
-        if (requesCode != Activity.RESULT_OK) return;
+    void onResultExitGroup(int requesCode, @OnActivityResult.Extra(GroupSettingFragment.INTENT_EXIT) boolean isExit){
+        if (requesCode != Activity.RESULT_OK)
+            return;
 
         String tag = SocialFragment.class.getSimpleName();
         getSupportFragmentManager().popBackStack(tag, 0);
+
+        if (isExit){
+            //グループから削除
+        }
     }
 
     private RecordFragment getRecordFragmentInstance(){
@@ -600,10 +606,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public LoginCheck getLoginCheck(){
         return check;
     }
-
-//    @Override
-//    public void onClick(View view) {
-//        Log.d(TAG, "onClick: snackbar clicked");
-//        Util.checkPermission(this, listener);
-//    }
 }

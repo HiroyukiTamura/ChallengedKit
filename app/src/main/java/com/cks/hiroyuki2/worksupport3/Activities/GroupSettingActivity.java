@@ -4,6 +4,8 @@
 
 package com.cks.hiroyuki2.worksupport3.Activities;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +21,9 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
+import icepick.Icepick;
+import icepick.State;
+
 import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 
 /**
@@ -27,10 +32,24 @@ import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 @EActivity(R.layout.activity_group_setting)
 public class GroupSettingActivity extends AppCompatActivity {
     private static final String TAG = "MANUAL_TAG: " + GroupSettingActivity.class.getSimpleName();
+    private boolean isSavedInstance = false;
     @ViewById(R.id.toolbar) Toolbar toolbar;
     @ViewById(R.id.fragment_container) FrameLayout fl;
-    @Extra Group group;
-    
+    @State @Extra Group group;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
+        isSavedInstance = true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
+    }
+
     @AfterViews
     void afterViews() {
         setSupportActionBar(toolbar);
@@ -38,7 +57,10 @@ public class GroupSettingActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        getSupportActionBar().setTitle(R.string.toolbar_title_setting_group);
         initAdMob(this);
-        setFragment();
+
+        if (isSavedInstance){
+            setFragment();
+        }
     }
     
     private void setFragment(){
