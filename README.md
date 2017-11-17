@@ -1,6 +1,5 @@
-## ChalengedKit
-
 ！[header](https://github.com/HiroyukTamura/ChalengedKit/blob/OldDepentdencies/doc/edited3.jpg)
+
 
 ## こんな機能があります
 * 【記録】睡眠時間や症状の有無など、毎日の体調記録がつけられます。項目は自由に変更することができます。
