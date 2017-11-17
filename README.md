@@ -1,4 +1,4 @@
-# ChalengedKit
+![edited3](https://user-images.githubusercontent.com/26954245/32928895-db1ef6d6-cb97-11e7-8a3b-6b4cb9f741f4.jpg)
 
 ## こんな機能があります
 * 【記録】睡眠時間や症状の有無など、毎日の体調記録がつけられます。項目は自由に変更することができます。
