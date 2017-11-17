@@ -71,8 +71,8 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
 import static com.cks.hiroyuki2.worksupprotlib.Util.setNullableText;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
-import static com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter.CALLBACK_REMOVE_MEMBER;
-import static com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter.REMOVE_MEMBER;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter.CALLBACK_CLICK_GROUP_MEMBER;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter.CLICK_GROUP_MEMBER;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter.USER;
 
 /**
@@ -219,7 +219,7 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
             group.groupName = input;
             name.setText(input);
             updateValue(UPDATE_CODE_NAME, input, 0);
-        } else if (requestCode == CALLBACK_REMOVE_MEMBER && resultCode == RESULT_OK){
+        } else if (requestCode == CALLBACK_CLICK_GROUP_MEMBER && resultCode == RESULT_OK){
             onResultRemoveMember(data);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -297,14 +297,14 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
     }
 
     //region GroupSettingRVAdapter.IGroupSettingRVAdapter
-    @Override
-    public void onClickRemoveMe() {
-        onClickItemExit();
-    }
+//    @Override
+//    public void onClickRemoveMe() {
+//        onClickItemExit();
+//    }
 
     @Override
     public void onClickRemoveOthers(Bundle bundle) {
-        kickDialogInOnClick(REMOVE_MEMBER, CALLBACK_REMOVE_MEMBER, bundle, this);
+        kickDialogInOnClick(CLICK_GROUP_MEMBER, CALLBACK_CLICK_GROUP_MEMBER, bundle, this);
     }
     //endregion
 }
