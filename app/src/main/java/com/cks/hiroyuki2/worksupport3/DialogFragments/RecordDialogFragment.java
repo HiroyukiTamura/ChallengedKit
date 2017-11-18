@@ -47,6 +47,7 @@ import com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter;
 import com.example.hiroyuki3.worksupportlibw.Adapters.RecordRVAdapter;
 import com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter;
 import com.example.hiroyuki3.worksupportlibw.Adapters.SocialGroupListRVAdapter;
+import com.squareup.picasso.Picasso;
 
 import org.apmem.tools.layouts.FlowLayout;
 
@@ -60,9 +61,11 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.refactor.library.SmoothCheckBox;
 
+import static android.view.View.GONE;
 import static com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment.GROUP;
 import static com.cks.hiroyuki2.worksupprotlib.Util.LIST_MAP_VALUE;
 import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
+import static com.cks.hiroyuki2.worksupprotlib.Util.setImgFromStorage;
 import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.editBuilder;
 import static com.cks.hiroyuki2.worksupprotlib.UtilDialog.sendIntent;
 
@@ -205,8 +208,11 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
                     break;
                 View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_content_person, null);
                 groupMemberParams = new GroupMemberParams();
+                groupMemberParams.registerItem.setVisibility(GONE);/*今は自動追加は許さない*/
+                groupMemberParams.name.setText(user.getName());
+                setImgFromStorage(user, groupMemberParams.icon, R.drawable.ic_face_origin_48dp);
                 unbinder = ButterKnife.bind(groupMemberParams, view);
-                editBuilder(builder, null, R.string.ok, R.string.cancel, view, null, null);
+                editBuilder(builder, null, 0, 0, view, null, null);
 //                editBuilder(builder, null, R.string.ok, R.string.cancel, null, this, null)
 //                        .setMessage("「"+ user.getName() +"」さんをグループから退会させますか？");
                 break;}
@@ -644,18 +650,17 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
         return true;
     }
 
-    private class GroupMemberParams{
+    public static String WITCH_CLICKED = "WITCH_CLICKED";
+
+    public class GroupMemberParams{
         @BindView(R.id.name) TextView name;
         @BindView(R.id.icon) ImageView icon;
+        @BindView(R.id.register_user) View registerItem;
 
-        @OnClick(R.id.register_user)
-        void onClickRegsterUser(){
-            Log.d(TAG, "onClickRegsterUser() called");
-            sendIntent(getTargetRequestCode(), RecordDialogFragment.this);
-        }
-
-        @OnClick(R.id.item_remove)
-        void onClickItemRemove(){
+        @OnClick({R.id.register_user, R.id.item_remove})
+        void onClickRegisterUser(View v){
+            Log.d(TAG, "onClickRegisterUser() called");
+            getArguments().putInt(WITCH_CLICKED, v.getId());
             sendIntent(getTargetRequestCode(), RecordDialogFragment.this);
         }
     }

@@ -197,25 +197,25 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
         if (resultCode != RESULT_OK)
             return;
 
-        final FirebaseUser user = Util.getUserMe();
-        if (user == null){
+        final FirebaseUser userMe = Util.getUserMe();
+        if (userMe == null){
             onError(this, "FirebaseAuth.getInstance().getCurrentUser() == null", R.string.error);
-            if (getActivity() != null){
-                getActivity().setResult(RESULT_CANCELED);
-                getActivity().finish();
-            }
+//            if (getActivity() != null){
+//                getActivity().setResult(RESULT_CANCELED);
+//                getActivity().finish();
+//            }
             return;
         }
 
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("/"+ user.getUid() +"/"+ userUid +"/name", name);
-        hashMap.put("/"+ user.getUid() +"/"+ userUid +"/photoUrl", photoUrl);
-        hashMap.put("/"+ userUid + "/" + user.getUid() + "/name", user.getDisplayName());
+        hashMap.put("/"+ userMe.getUid() +"/"+ userUid +"/name", name);
+        hashMap.put("/"+ userMe.getUid() +"/"+ userUid +"/photoUrl", photoUrl);
+        hashMap.put("/"+ userUid + "/" + userMe.getUid() + "/name", userMe.getDisplayName());
         String myPhotoUrl = "null";
-        if (user.getPhotoUrl() != null){
-            myPhotoUrl = user.getPhotoUrl().toString();
+        if (userMe.getPhotoUrl() != null){
+            myPhotoUrl = userMe.getPhotoUrl().toString();
         }
-        hashMap.put("/"+ userUid + "/" + user.getUid() + "/photoUrl", myPhotoUrl);
+        hashMap.put("/"+ userUid + "/" + userMe.getUid() + "/photoUrl", myPhotoUrl);
         getRef("friend").updateChildren(hashMap);
     }
 

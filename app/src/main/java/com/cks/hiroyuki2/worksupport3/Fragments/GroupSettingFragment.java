@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,13 @@ import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Callback;
@@ -49,6 +56,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
+import static com.cks.hiroyuki2.worksupport3.DialogFragments.RecordDialogFragment.WITCH_CLICKED;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
 import static com.cks.hiroyuki2.worksupport3.Util.OLD_GRP_NAME;
@@ -69,6 +77,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
 import static com.cks.hiroyuki2.worksupprotlib.Util.kickIntentIcon;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.setNullableText;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter.CALLBACK_CLICK_GROUP_MEMBER;
@@ -184,7 +193,7 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
      * AndroidAnnotations導入してないので@OnActivityResult使えません。
      */
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, final Intent data) {
         if (requestCode == REQ_CODE_ICON && resultCode == RESULT_OK){
             final Uri uri = data.getData();
             if (isOverSize(uri, LIMIT_SIZE_PROF)){
@@ -224,11 +233,51 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
             group.groupName = input;
             name.setText(input);
             updateValue(UPDATE_CODE_NAME, input, 0);
-        } else if (requestCode == CALLBACK_CLICK_GROUP_MEMBER && resultCode == RESULT_OK){
-            onResultRemoveMember(data);
+        } else if (requestCode == CALLBACK_CLICK_GROUP_MEMBER && resultCode == RESULT_OK) {
+            int witch = data.getIntExtra(WITCH_CLICKED, Integer.MAX_VALUE);
+            if (witch == R.id.register_user){
+                /*onResultRegistUser(data);*/
+                /*今はユーザ追加は許していない*/
+            } else if (witch == R.id.item_remove){
+                onResultRemoveMember(data);
+            } else {
+                Util.onError(this, "witch == Integer.MAX_VALUE", R.string.error);
+            }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    /**
+     * {@link SocialFragment}と共通化できる。
+     */
+    private void onResultRegistUser(Intent data){
+        User newFriend = (User)data.getSerializableExtra(USER);
+        final FirebaseUser userMe = Util.getUserMe();
+        if (userMe == null){
+            Util.onError(this, "FirebaseAuth.getInstance().getCurrentUser() == null", R.string.error);
+            return;
+        }
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("/"+ userMe.getUid() +"/"+ newFriend.getUserUid() +"/name", newFriend.getName());
+        hashMap.put("/"+ userMe.getUid() +"/"+ newFriend.getUserUid() +"/photoUrl", newFriend.getPhotoUrl());
+        hashMap.put("/"+ newFriend.getUserUid() + "/" + userMe.getUid() + "/name", userMe.getDisplayName());
+        String myPhotoUrl = "null";
+        if (userMe.getPhotoUrl() != null){
+            myPhotoUrl = userMe.getPhotoUrl().toString();
+        }
+        hashMap.put("/"+ newFriend.getUserUid() + "/" + userMe.getUid() + "/photoUrl", myPhotoUrl);
+        getRef("friend").updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null)
+                    Util.onError(GroupSettingFragment.this, TAG+databaseError.getDetails(), R.string.error);
+                else {
+                    toastNullable(getContext(), "ユーザ登録しました");
+                }
+            }
+        });
     }
 
     private void onResultRemoveMember(Intent data){
