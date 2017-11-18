@@ -53,7 +53,7 @@ android {
     buildToolsVersion '27.0.1'
     defaultConfig {
         applicationId "com.cks.hiroyuki2.worksupport3"
-        minSdkVersion 18
+        minSdkVersion 19
         targetSdkVersion 27
         versionCode 7
         versionName "0.1.6"
