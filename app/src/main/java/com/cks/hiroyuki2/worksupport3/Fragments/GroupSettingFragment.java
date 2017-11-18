@@ -28,6 +28,7 @@ import com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter;
+import com.example.hiroyuki3.worksupportlibw.AdditionalUtil;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
@@ -56,12 +57,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
+import static com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity.REQ_CODE_ADD_GROUP_MEMBER;
 import static com.cks.hiroyuki2.worksupport3.DialogFragments.RecordDialogFragment.WITCH_CLICKED;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
 import static com.cks.hiroyuki2.worksupport3.Util.OLD_GRP_NAME;
 import static com.cks.hiroyuki2.worksupport3.Util.showCompleteNtf;
 import static com.cks.hiroyuki2.worksupport3.Util.showUploadingNtf;
+import static com.cks.hiroyuki2.worksupprotlib.Entity.User.makeUserFromSnap;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
 import com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
@@ -71,6 +74,7 @@ import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.isOverSize;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.uploadFile;
 import static com.cks.hiroyuki2.worksupport3.Fragments.AddGroupFragment.REQ_CODE_ICON;
 import static com.cks.hiroyuki2.worksupport3.DialogFragments.RecordDialogFragmentInput.INPUT;
+import static com.cks.hiroyuki2.worksupprotlib.Util.DEFAULT;
 import static com.cks.hiroyuki2.worksupprotlib.Util.UID;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getExtension;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
@@ -83,6 +87,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter.CALLBACK_CLICK_GROUP_MEMBER;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter.CLICK_GROUP_MEMBER;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter.USER;
+import static com.example.hiroyuki3.worksupportlibw.AdditionalUtil.getPosFromUid;
 
 /**
  * このクラスは{@link com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity}と酷似しています。ヘッダ部分のロジックとレイアウトを合わせてFragmentとして切り出してもいいかもしれません。
@@ -167,7 +172,37 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
 
     @OnClick(R.id.item_invite)
     public void onClickInvite(){
+        getRef("friend", getUserMe().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot == null || !dataSnapshot.exists()){
+                    Util.onError(GroupSettingFragment.this, "dataSnapshot == null || !dataSnapshot.exists()", R.string.error);
+                } else {
+                    List<User> userList = new ArrayList<>();
+                    for (DataSnapshot child: dataSnapshot.getChildren()) {
+                        if (child.getKey().equals(DEFAULT))
+                            continue;
+                        User user = makeUserFromSnap(child);
+                        int pos = getPosFromUid(group.userList, user.getUserUid());
+                        if (pos != Integer.MAX_VALUE)
+                            continue;
 
+                        userList.add(user);
+                    }
+
+                    com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity_
+                            .intent(GroupSettingFragment.this)
+                            .userList((ArrayList<User>) userList)
+                            .requestCode(REQ_CODE_ADD_GROUP_MEMBER)
+                            .startForResult(REQ_CODE_ADD_GROUP_MEMBER);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Util.onError(GroupSettingFragment.this, TAG+databaseError.getDetails(), R.string.error);
+            }
+        });
     }
 
     @OnClick(R.id.icon_fl)

@@ -172,6 +172,7 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
         com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity_
                 .intent(this)
                 .userList((ArrayList<User>) userList)
+                .requestCode(REQ_CODE_CREATE_GROUP)
                 .startForResult(REQ_CODE_CREATE_GROUP);
     }
 

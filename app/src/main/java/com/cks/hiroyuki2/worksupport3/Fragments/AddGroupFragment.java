@@ -12,11 +12,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity;
 import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil;
@@ -72,8 +75,10 @@ public class AddGroupFragment extends Fragment implements Callback , SocialListR
     @ViewById(R.id.name) TextView name;
     @ViewById(R.id.recycler) RecyclerView rvUser;
     @ViewById(R.id.def_icon_fl) FrameLayout defIconContainer;
+    @ViewById(R.id.header_layout) View header;
     @StringRes(R.string.new_group_name) public String groupName;
-    @FragmentArg("userList") ArrayList<User> userList;//空でありうる
+    @FragmentArg ArrayList<User> userList;//空でありうる
+    @FragmentArg int requestCode;
 
     public SocialListRVAdapter userAdapter;
     public String dlIconUri = "null";
@@ -97,12 +102,16 @@ public class AddGroupFragment extends Fragment implements Callback , SocialListR
 
     @AfterViews
     void afterViews(){
+        if (requestCode == AddGroupActivity.REQ_CODE_ADD_GROUP_MEMBER){
+            header.setVisibility(GONE);
+        } else {
+            name.setText(groupName);
+        }
+        userAdapter = new SocialListRVAdapter(userList, this, CODE_ADD_GROUP_FRAG);
         storageUtil = new FirebaseStorageUtil(getContext(), null);
         rvUser.setLayoutManager(new LinearLayoutManager(getContext()));
         rvUser.setNestedScrollingEnabled(false);
-        userAdapter = new SocialListRVAdapter(userList, this, CODE_ADD_GROUP_FRAG);
         rvUser.setAdapter(userAdapter);
-        name.setText(groupName);
     }
 
     @Override
@@ -194,10 +203,4 @@ public class AddGroupFragment extends Fragment implements Callback , SocialListR
         toastNullable(getContext(), R.string.error);
         showCompleteNtf(fileName, ntfId, string);
     }
-
-    //    @Override
-//    public void onOkMkGroupDialog(String input) {
-//        groupName = input;
-//        name.setText(groupName);
-//    }
 }
