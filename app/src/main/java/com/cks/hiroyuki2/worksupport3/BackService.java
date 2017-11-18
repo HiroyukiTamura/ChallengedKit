@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.RemoteException;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -40,7 +41,10 @@ import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.writeFriendPref;
 import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.writeGroup;
 import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.writeGroupKeys;
 import static com.cks.hiroyuki2.worksupprotlib.Util.DEFAULT;
+import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
+import static com.cks.hiroyuki2.worksupprotlib.Util.printHashKey;
+import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 
 /**
  * BackServiceおじさん！
@@ -56,16 +60,27 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
     private static final String urlStart = "https://wordsupport3.firebaseio.com";/*まさかのwor"D"support*/
     private List<String> groupKeys = new ArrayList<>();
     private Messenger mServiceMessenger;
-    static int CREATE_GROUP = 1;
+    public static final int SEND_CODE_SOCIAL_STATE = 1;
+
     static final String SEND_CODE = "SEND_CODE";
     static final int SEND_CODE_FRIEND_CHANGED = 10;
+
+    public static final String MY_ACTION ="MY_ACTION";
+    public static final int REJECT_SOCIAL = 1;
+    public static final int ACCEPT_SOCIAL = 0;
+    public static final int UNKNOWN_STATE = -1;
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef(value = {REJECT_SOCIAL, ACCEPT_SOCIAL, UNKNOWN_STATE})
+    @interface socialState{}
+    @socialState private int isAcceptSocial = UNKNOWN_STATE;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef(value = {Service.START_FLAG_REDELIVERY, Service.START_FLAG_RETRY},
             flag = true)
     @interface COMMAND_FLAG {}
 
-    private static class RequestHandler extends Handler {
+    class RequestHandler extends Handler {
         private final WeakReference<BackService> contextWeakReference;
         RequestHandler(BackService backService){
             contextWeakReference = new WeakReference<>(backService);
@@ -73,25 +88,15 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
 
         @Override
         public void handleMessage(Message msg) {
-//            if (msg.what == CREATE_GROUP && msg.obj != null){
-//                String groupKey = (String)msg.obj;
-//                BackService backService = contextWeakReference.get();
-//                if (backService != null)
-//                    backService.onCreateGroup(groupKey);
-//            }
-//            if (msg.replyTo != null) {
-//                try {
-//                    msg.replyTo.send(Message.obtain()); // send response.
-//                } catch (RemoteException e) {
-//                    Util.logStackTrace(e);
-//                }
+//            switch (msg.what){
+//                case MSG_CODE_SOCIAL_STATE:
+//                    break;
+//                default:
+//                    super.handleMessage(msg);
+//                    break;
 //            }
         }
     }
-
-//    private void onCreateGroup(String groupKey){
-//        groupKeys.add(groupKey);
-//    }
 
     @Override
     public void onCreate() {
@@ -134,6 +139,7 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
         if (user != null) {
             uid = user.getUid();
 //            writeLocalProf(user);
+            getRef("accept", "social").addValueEventListener(this);
             getRef("friend", uid).addValueEventListener(this);
             getRef("userData", uid, "group").addValueEventListener(this);
 
@@ -235,8 +241,19 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
         String url = dataSnapshot.getRef().toString();
-        Log.d(TAG, "onDataChange() called with: dataSnapshot = [" + url +"]" + "比べる人" + urlStart +"/friend/"+ uid);
-        if (url.equals(urlStart +"/friend/"+ uid)){
+        if (url.equals(urlStart + "/accept/social")){
+            if (dataSnapshot.exists()){
+                boolean accept = dataSnapshot.getValue(Boolean.class);
+                isAcceptSocial = accept?
+                        ACCEPT_SOCIAL:
+                        REJECT_SOCIAL;
+                Intent i = new Intent()
+                        .setAction(MY_ACTION)
+                        .putExtra(SEND_CODE, SEND_CODE_SOCIAL_STATE)
+                        .putExtra(INTENT_KEY_1, isAcceptSocial);
+                sendBroadcast(i);
+            }
+        } else if (url.equals(urlStart +"/friend/"+ uid)){
             String content = null;
             JSONArray ja = new JSONArray();
             List<String> newUidList = new ArrayList<>();
@@ -277,7 +294,7 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
 
             writeFriendPref(getApplicationContext(), content);
 
-            Intent intent = new Intent("MY_ACTION");
+            Intent intent = new Intent(MY_ACTION);
             intent.putExtra(SEND_CODE, SEND_CODE_FRIEND_CHANGED);
             intent.putExtra(INTENT_KEY_1, content);
             intent.putStringArrayListExtra(INTENT_KEY_2, (ArrayList<String>) newUidList);

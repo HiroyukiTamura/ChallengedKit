@@ -31,7 +31,11 @@ import java.util.List;
 
 import static com.cks.hiroyuki2.worksupport3.BackService.INTENT_KEY_1;
 import static com.cks.hiroyuki2.worksupport3.BackService.INTENT_KEY_2;
+import static com.cks.hiroyuki2.worksupport3.BackService.MY_ACTION;
 import static com.cks.hiroyuki2.worksupport3.BackService.SEND_CODE;
+import static com.cks.hiroyuki2.worksupport3.BackService.SEND_CODE_SOCIAL_STATE;
+import static com.cks.hiroyuki2.worksupport3.BackService.UNKNOWN_STATE;
+import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 
 /**
@@ -44,6 +48,8 @@ public class ServiceConnector extends BroadcastReceiver implements ServiceConnec
     private Context context;
     private boolean isBind = false;
     private Messenger mServiceMessenger;
+    @BackService.socialState
+    private int socialDbState = UNKNOWN_STATE;
 
     public ServiceConnector(@NonNull Context context){
         this.context = context;
@@ -59,6 +65,8 @@ public class ServiceConnector extends BroadcastReceiver implements ServiceConnec
                 if (context instanceof MainActivity){
                     ((MainActivity)context).notifyFriendChanged(list, newUserUids);
                 }
+            case SEND_CODE_SOCIAL_STATE:
+                socialDbState = intent.getIntExtra(INTENT_KEY_1, UNKNOWN_STATE);
                 break;
         }
     }
@@ -105,7 +113,7 @@ public class ServiceConnector extends BroadcastReceiver implements ServiceConnec
 
     public void setIntentFilter(){
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("MY_ACTION");//ここらへんManifestでできる？
+        intentFilter.addAction(MY_ACTION);//ここらへんManifestでできる？
         context.registerReceiver(this, intentFilter);
     }
 
@@ -128,7 +136,15 @@ public class ServiceConnector extends BroadcastReceiver implements ServiceConnec
     private class ResponseHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            Log.d(TAG, "handleMessage() called with: msg = [" + msg + "]");
+//            switch (msg.what){
+//                case MSG_CODE_SOCIAL_STATE:
+//                    socialDbState = msg.arg1;
+//                    break;
+//            }
         }
+    }
+
+    public int getSocialDbState(){
+        return socialDbState;
     }
 }

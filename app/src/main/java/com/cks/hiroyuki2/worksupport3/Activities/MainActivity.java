@@ -41,6 +41,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 
+import com.cks.hiroyuki2.worksupport3.BackService;
 import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment_;
 import com.cks.hiroyuki2.worksupport3.Fragments.AnalyticsFragment;
@@ -610,5 +611,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public LoginCheck getLoginCheck(){
         return check;
+    }
+
+
+    public int checkSocialState(){
+        return connector.getSocialDbState();
     }
 }

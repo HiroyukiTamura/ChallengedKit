@@ -16,6 +16,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +60,9 @@ import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.view.View.VISIBLE;
 import static android.view.View.inflate;
+import static com.cks.hiroyuki2.worksupport3.BackService.ACCEPT_SOCIAL;
+import static com.cks.hiroyuki2.worksupport3.BackService.REJECT_SOCIAL;
+import static com.cks.hiroyuki2.worksupport3.BackService.UNKNOWN_STATE;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupprotlib.Entity.Group.makeGroupFromSnap;
 import static com.cks.hiroyuki2.worksupprotlib.Entity.User.makeUserFromSnap;
@@ -66,7 +71,6 @@ import com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRootRef;
 import static com.cks.hiroyuki2.worksupprotlib.Util.DEFAULT;
-import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_KEY_GROUP_USER_DATA;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
@@ -92,6 +96,7 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
     @ViewById(R.id.recycler_user) RecyclerView rvUser;
     @ViewById(R.id.recycler_share) RecyclerView rvShare;
     @ViewById(R.id.scroll) ScrollView sv;
+    @ViewById(R.id.maintain_rl) RelativeLayout maintain;
     SocialListRVAdapter userAdapter;
     SocialGroupListRVAdapter groupAdapter;
     private List<User> userList = new ArrayList<>();
@@ -120,10 +125,24 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
 
     @AfterViews
     void onAfterViews(){
+        switch (((MainActivity) context).checkSocialState()){
+            case UNKNOWN_STATE:
+                onError(this, TAG+"checkSocialState() == UNKNOWN_STATE", R.string.error);
+                break;
+            case REJECT_SOCIAL:
+                onOutOfService();
+                break;
+            case ACCEPT_SOCIAL:
+                onAcceptSocial();
+                break;
+        }
+    }
+
+    private void onAcceptSocial(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null){
             onError(this, "user == null", R.string.error);
-            return;//エラー処理？？
+            return;
         }
 
         myNameTv.setText(user.getDisplayName());
@@ -136,6 +155,10 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
         rvShare.setLayoutManager(new LinearLayoutManager(getContext()));
 
         retrieveUserList();
+    }
+
+    private void onOutOfService(){
+        maintain.setVisibility(VISIBLE);
     }
 
     @Override
