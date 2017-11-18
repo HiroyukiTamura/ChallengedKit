@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,6 +22,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.AppLaunchChecker;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -137,7 +139,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @ViewById(R.id.fragment_container_ll) LinearLayout container_outer;
     @ViewById(R.id.toolbar_shadow) View toolbarShadow;
     @ViewById(R.id.fragment_container) FrameLayout fragContainer;
+    @ViewById(R.id.coordinator) CoordinatorLayout cl;
     private int toolbarHeight;
+    private Handler handler = new Handler();
+    private Runnable r = new Runnable() {
+        @Override
+        public void run() {
+            finish();
+        }
+    };
     @BackService.socialState @State public int socialDbState = UNKNOWN_STATE;
 //    @Extra String groupKey;
     @org.androidannotations.annotations.res.StringRes(R.string.ntf_channel) String channelName;
@@ -542,20 +552,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // Sign in failed
             if (response == null) {
                 // User pressed back button
-                onError(this, "handleSignInResponse: User pressed back button", R.string.error);
-                finish();
+                handler.postDelayed(r, 3000);
+                Snackbar.make(cl, R.string.user_register_err, Snackbar.LENGTH_LONG).setAction(R.string.register, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        handler.removeCallbacks(r);
+                        loginCheck();
+                    }
+                }).show();
                 return;
             }
 
             if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
                 onError(this, "handleSignInResponse: no_internet_connection", R.string.no_network_msg);
-                finish();
+                handler.postDelayed(r, 3000);
                 return;
             }
 
             if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
                 onError(this, "handleSignInResponse: unknown_error", R.string.error);
-                finish();
+                handler.postDelayed(r, 3000);
                 return;
             }
 

@@ -58,6 +58,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import static com.cks.hiroyuki2.worksupprotlib.Util.NOTIFICATION_CHANNEL;
+import static com.cks.hiroyuki2.worksupprotlib.Util.NOTIFICATION_CHANNEL_SECOND;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
@@ -122,7 +123,7 @@ public class Util {
 
     private static NotificationCompat.Builder createNtfBase(String fileName, String text, int id){
         return new NotificationCompat.Builder(getApplicationContext(), NOTIFICATION_CHANNEL)
-                .setSmallIcon(R.drawable.ic_cloud_upload_white_24dp)
+                .setSmallIcon(R.drawable.ic_cloud_upload_white_24dp)// TODO: 2017/11/19 これ直すこと 
                 .setContentTitle(fileName)
                 .setContentText(text)
                 .setTicker(text)
@@ -183,5 +184,21 @@ public class Util {
         else if (fragment instanceof SocialFragment)
             return SocialFragment.class.getSimpleName();
         return null;
+    }
+
+    public static void showFcmMsg(String messageBody) {
+        final int ntfId = (int)System.currentTimeMillis();
+        String title = getApplicationContext().getString(R.string.app_name);
+
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(getApplicationContext(), NOTIFICATION_CHANNEL_SECOND)
+                        .setSmallIcon(R.drawable.ic_info_white_24dp)
+                        .setContentTitle(title)
+                        .setContentText(messageBody)
+                        .setAutoCancel(true)
+                        .setTicker(title)
+                        .setContentIntent(createPendingIntent(ntfId));
+
+        showNtf(ntfId, notificationBuilder.build());
     }
 }
