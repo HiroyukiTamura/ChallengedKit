@@ -97,6 +97,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.getFabLp;
 import com.facebook.appevents.AppEventsLogger;
+import com.google.firebase.auth.FirebaseUser;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener/*, CalenderFragment.OnFragmentInteractionListener*/,
@@ -556,16 +557,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @OnActivityResult(REQ_CODE_GROUP_SETTING)
-    void onResultExitGroup(int requesCode, @OnActivityResult.Extra(GroupSettingFragment.INTENT_EXIT) boolean isExit){
+    void onResultExitGroup(int requesCode, @OnActivityResult.Extra(GroupSettingFragment.GROUP) Group group){
         if (requesCode != Activity.RESULT_OK)
             return;
 
+        FirebaseUser userMe = getUserMe();
+        if (userMe == null){
+            onError(this, TAG+"userMe == null", R.string.error);
+            return;
+        }
+
         String tag = SocialFragment.class.getSimpleName();
         getSupportFragmentManager().popBackStack(tag, 0);
-
-        if (isExit){
-            //グループから削除
-        }
+        SocialFragment fragment = (SocialFragment) getSupportFragmentManager().findFragmentByTag(tag);
+        fragment.exitGroup(getUserMe().getUid(), group.groupKey, R.string.exit_group_toast);
     }
 
     private RecordFragment getRecordFragmentInstance(){

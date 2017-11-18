@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.RecordFragment;
 import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
 import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
@@ -197,9 +198,9 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
                         .setMessage("グループ「"+groupNode.name+"」に招待されています。参加しますか？");
                 break;}
             case GroupSettingFragment.TAG_EXIT_GROUP:{
-                String groupName = getArguments().getString(GROUP, "");
+                Group group = (Group) getArguments().getSerializable(GROUP);
                 editBuilder(builder, null, R.string.ok, R.string.cancel, null, this, null)
-                        .setMessage("本当にグループ「"+ groupName +"」から退会しますか？");
+                        .setMessage("本当にグループ「"+ group.groupName +"」から退会しますか？");
                 break;}
 
             case GroupSettingRVAdapter.CLICK_GROUP_MEMBER:{
@@ -208,10 +209,10 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
                     break;
                 View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_content_person, null);
                 groupMemberParams = new GroupMemberParams();
+                unbinder = ButterKnife.bind(groupMemberParams, view);
                 groupMemberParams.registerItem.setVisibility(GONE);/*今は自動追加は許さない*/
                 groupMemberParams.name.setText(user.getName());
                 setImgFromStorage(user, groupMemberParams.icon, R.drawable.ic_face_origin_48dp);
-                unbinder = ButterKnife.bind(groupMemberParams, view);
                 editBuilder(builder, null, 0, 0, view, null, null);
 //                editBuilder(builder, null, R.string.ok, R.string.cancel, null, this, null)
 //                        .setMessage("「"+ user.getName() +"」さんをグループから退会させますか？");
@@ -656,12 +657,14 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
         @BindView(R.id.name) TextView name;
         @BindView(R.id.icon) ImageView icon;
         @BindView(R.id.register_user) View registerItem;
+        @BindView(R.id.item_remove) View itemRmove;
 
         @OnClick({R.id.register_user, R.id.item_remove})
         void onClickRegisterUser(View v){
             Log.d(TAG, "onClickRegisterUser() called");
             getArguments().putInt(WITCH_CLICKED, v.getId());
             sendIntent(getTargetRequestCode(), RecordDialogFragment.this);
+            dismiss();
         }
     }
 }

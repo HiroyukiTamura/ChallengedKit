@@ -161,7 +161,7 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
     public void onClickItemExit() {
         Bundle bundle = new Bundle();
         bundle.putString("from", TAG_EXIT_GROUP);
-        bundle.putString(GROUP, group.groupName);
+        bundle.putSerializable(GROUP, group);
         kickDialogInOnClick(TAG_EXIT_GROUP, CALLBACK_EXIT_GROUP, bundle, this);
     }
 
@@ -224,9 +224,7 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
                 }
             });
         } else if (requestCode == CALLBACK_EXIT_GROUP && resultCode == RESULT_OK){
-            Intent i = getActivity().getIntent();
-            i.putExtra(INTENT_EXIT, true);
-            getActivity().setResult(RESULT_OK);
+            getActivity().setResult(RESULT_OK, data);
             getActivity().finish();
         } else if (requestCode == CALLBACK_SET_TAG_MK_GROUP && resultCode == RESULT_OK) {
             String input = data.getStringExtra(INPUT);
@@ -287,7 +285,7 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
             return;
         }
 
-        String uid = user.getUserUid();
+        final String uid = user.getUserUid();
         final int pos = adapter.getPosFromUid(uid);
         if (pos == Integer.MAX_VALUE){
             Util.onError(this, TAG+"pos == Integer.MAX_VALUE", R.string.error);
@@ -302,7 +300,7 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
         new FbCheckAndWriter(checkRef, getRootRef(), getContext(), children) {
             @Override
             public void onSuccess(DatabaseReference ref) {
-                String name = adapter.getUser(pos).getName();
+                String name = adapter.getUser(adapter.getPosFromUid(uid)).getName();
                 toastNullable(getContext(), "「"+ name + "」さんをグループから削除しました");
             }
         }.update(CODE_UPDATE_CHILDREN);
