@@ -22,26 +22,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:name,android:label">
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"
-            tools:replace="android:value" />
 
-        <activity
-            android:name=".Activities.MainActivity_"
-            android:label=""
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <!--facebook-->
+        <!--fabric-->
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="6c1528b3bbc66a9d925a39b9982d20e328e8e509"
+            tools:replace="android:value" />
+
+        <!--facebook-->
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"
             tools:replace="android:value" />
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -65,6 +56,17 @@
         <!--facebook-->
 
         <activity
+            android:name=".Activities.MainActivity_"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".Activities.AddFriendActivity_"
             android:label=""
             android:parentActivityName=".Activities.MainActivity_"
@@ -77,6 +79,20 @@
         <service
             android:name=".BackService_"
             android:exported="false" />
+
+        <!--firebase cloud messageing-->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_info_white_24dp" />
+        <service
+            android:name=".FcmService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
 
         <activity
             android:name=".Activities.EditDocActivity_"
