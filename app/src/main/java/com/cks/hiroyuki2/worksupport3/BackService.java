@@ -70,7 +70,7 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
     public static final int ACCEPT_SOCIAL = 0;
     public static final int UNKNOWN_STATE = -1;
 
-    @Retention(RetentionPolicy.SOURCE)
+    public @Retention(RetentionPolicy.SOURCE)
     @IntDef(value = {REJECT_SOCIAL, ACCEPT_SOCIAL, UNKNOWN_STATE})
     @interface socialState{}
     @socialState private int isAcceptSocial = UNKNOWN_STATE;

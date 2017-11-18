@@ -48,8 +48,6 @@ public class ServiceConnector extends BroadcastReceiver implements ServiceConnec
     private Context context;
     private boolean isBind = false;
     private Messenger mServiceMessenger;
-    @BackService.socialState
-    private int socialDbState = UNKNOWN_STATE;
 
     public ServiceConnector(@NonNull Context context){
         this.context = context;
@@ -65,8 +63,9 @@ public class ServiceConnector extends BroadcastReceiver implements ServiceConnec
                 if (context instanceof MainActivity){
                     ((MainActivity)context).notifyFriendChanged(list, newUserUids);
                 }
+                break;
             case SEND_CODE_SOCIAL_STATE:
-                socialDbState = intent.getIntExtra(INTENT_KEY_1, UNKNOWN_STATE);
+                ((MainActivity) context).socialDbState = intent.getIntExtra(INTENT_KEY_1, UNKNOWN_STATE);
                 break;
         }
     }
@@ -142,9 +141,5 @@ public class ServiceConnector extends BroadcastReceiver implements ServiceConnec
 //                    break;
 //            }
         }
-    }
-
-    public int getSocialDbState(){
-        return socialDbState;
     }
 }

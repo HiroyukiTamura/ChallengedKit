@@ -27,6 +27,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.Space;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -38,6 +39,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -73,6 +75,7 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.res.ColorRes;
 import org.androidannotations.annotations.res.DimensionPixelSizeRes;
 
 import java.util.Calendar;
@@ -82,21 +85,29 @@ import icepick.Icepick;
 import icepick.State;
 import io.fabric.sdk.android.Fabric;
 
+import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static com.cks.hiroyuki2.worksupport3.BackService.UNKNOWN_STATE;
 import static com.cks.hiroyuki2.worksupport3.Util.getFragmentTag;
 import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 import static com.cks.hiroyuki2.worksupprotlib.LoginCheck.checkIsLogin;
 import static com.cks.hiroyuki2.worksupprotlib.TemplateEditor.initDefaultTemplate;
+import static com.cks.hiroyuki2.worksupprotlib.Util.DATE_PATTERN_DOT_YMD;
 import static com.cks.hiroyuki2.worksupprotlib.Util.NOTIFICATION_CHANNEL;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_KEY_WIDTH;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
 import static com.cks.hiroyuki2.worksupprotlib.Util.RC_SIGN_IN;
+import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
+import static com.cks.hiroyuki2.worksupprotlib.Util.datePattern;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getMonthIllust;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getToolBarHeight;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.getFabLp;
+import static com.example.hiroyuki3.worksupportlibw.Adapters.AboutVPAdapter.PREF_KEY_SHOW_NAV_IMG;
+
 import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -127,9 +138,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @ViewById(R.id.toolbar_shadow) View toolbarShadow;
     @ViewById(R.id.fragment_container) FrameLayout fragContainer;
     private int toolbarHeight;
-    @Extra String groupKey;
+    @BackService.socialState @State public int socialDbState = UNKNOWN_STATE;
+//    @Extra String groupKey;
     @org.androidannotations.annotations.res.StringRes(R.string.ntf_channel) String channelName;
     @org.androidannotations.annotations.res.StringRes(R.string.ntf_channel_description) String channelDsc;
+    @ColorRes(R.color.colorPrimary) int colorNavHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+        showNavHeader(pref.getBoolean(PREF_KEY_SHOW_NAV_IMG, true));
 
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -408,9 +422,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void changeContentFragment(Fragment fragment){
+        String tag = Util.getFragmentTag(fragment);
+        Fragment fragmentOld = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (tag.equals(fragmentOld.getTag()))//現在のfragmentが同じなら何もしない
+            return;
+
         changeToolbarTitle(fragment);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        String tag = Util.getFragmentTag(fragment);
         ft.replace(R.id.fragment_container, fragment, tag);
         ft.addToBackStack(tag);
 
@@ -525,16 +543,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (response == null) {
                 // User pressed back button
                 onError(this, "handleSignInResponse: User pressed back button", R.string.error);
+                finish();
                 return;
             }
 
             if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
-                onError(this, "handleSignInResponse: no_internet_connection", R.string.error);
+                onError(this, "handleSignInResponse: no_internet_connection", R.string.no_network_msg);
+                finish();
                 return;
             }
 
             if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
                 onError(this, "handleSignInResponse: unknown_error", R.string.error);
+                finish();
                 return;
             }
 
@@ -613,8 +634,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return check;
     }
 
-
-    public int checkSocialState(){
-        return connector.getSocialDbState();
+    public void showNavHeader(boolean show){
+        FrameLayout navRoot = (FrameLayout) navigationView.getHeaderView(0);
+        LinearLayout headerLL = navRoot.findViewById(R.id.nav_wrapper);
+        Space space = navRoot.findViewById(R.id.header_space);
+        if (show){
+            int mon = Calendar.getInstance().get(Calendar.MONTH);
+            TextView tv = headerLL.findViewById(R.id.header_tv);
+            if (mon == -1){
+                headerLL.setVisibility(GONE);
+                space.setVisibility(VISIBLE);
+                return;
+            } else if (mon == 10 || mon == 11 || mon == 0 || mon == 1){
+                tv.setTextColor(colorNavHeader);
+            }
+            headerLL.setVisibility(VISIBLE);
+            space.setVisibility(GONE);
+            headerLL.setBackgroundResource(getMonthIllust(mon));
+            tv.setText(cal2date(Calendar.getInstance(), DATE_PATTERN_DOT_YMD));
+        } else {
+            headerLL.setVisibility(GONE);
+            space.setVisibility(VISIBLE);
+        }
     }
 }

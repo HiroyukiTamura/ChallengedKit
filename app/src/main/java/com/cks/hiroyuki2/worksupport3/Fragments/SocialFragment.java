@@ -125,7 +125,7 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
 
     @AfterViews
     void onAfterViews(){
-        switch (((MainActivity) context).checkSocialState()){
+        switch (((MainActivity) context).socialDbState){
             case UNKNOWN_STATE:
                 onError(this, TAG+"checkSocialState() == UNKNOWN_STATE", R.string.error);
                 break;

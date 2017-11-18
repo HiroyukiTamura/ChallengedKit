@@ -13,11 +13,13 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
+import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.example.hiroyuki3.worksupportlibw.Adapters.AboutVPAdapter;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.haha.perflib.Main;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -111,26 +113,31 @@ public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAd
 
     @Override
     public void onClickResetData() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null){
-            onError(this, TAG+"user == null", R.string.error);
-            return;
-        }
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        if (user == null){
+//            onError(this, TAG+"user == null", R.string.error);
+//            return;
+//        }
+//
+//        boolean b = initDefaultTemplate(getContext());
+//        if (!b){
+//            onError(this, TAG+"applyTemplate returns false", R.string.error);
+//            return;
+//        }
+//
+//        String uid = user.getUid();
+//        HashMap<String, Object> map = new HashMap<>();
+////        map.put(makeScheme("userData", uid, "registeredDate"), date);
+//        map.put(makeScheme("userData", uid, "template"), DEFAULT);
+//        map.put(makeScheme("userData", uid, "group", DEFAULT), DEFAULT);
+//        map.put(makeScheme("friend", uid, DEFAULT, "name"), DEFAULT);
+//        map.put(makeScheme("friend", uid, DEFAULT, "photoUrl"), DEFAULT);
+//        map.put(makeScheme("userParam", uid), DEFAULT);
+        /*作りかけ*/
+    }
 
-        boolean b = initDefaultTemplate(getContext());
-        if (!b){
-            onError(this, TAG+"applyTemplate returns false", R.string.error);
-            return;
-        }
-
-        String uid = user.getUid();
-        HashMap<String, Object> map = new HashMap<>();
-//        map.put(makeScheme("userData", uid, "registeredDate"), date);
-        map.put(makeScheme("userData", uid, "template"), DEFAULT);
-        map.put(makeScheme("userData", uid, "group", DEFAULT), DEFAULT);
-        map.put(makeScheme("friend", uid, DEFAULT, "name"), DEFAULT);
-        map.put(makeScheme("friend", uid, DEFAULT, "photoUrl"), DEFAULT);
-        map.put(makeScheme("userParam", uid), DEFAULT);
-        //todo 次回ここから
+    @Override
+    public void onSwitchChange(boolean show) {
+        ((MainActivity) getActivity()).showNavHeader(show);
     }
 }
