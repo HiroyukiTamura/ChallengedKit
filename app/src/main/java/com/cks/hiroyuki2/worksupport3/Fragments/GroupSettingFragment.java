@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
+import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil;
 import com.cks.hiroyuki2.worksupport3.R;
@@ -35,6 +36,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
@@ -57,6 +59,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
+import static com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity.KEY_PARCELABLE;
 import static com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity.REQ_CODE_ADD_GROUP_MEMBER;
 import static com.cks.hiroyuki2.worksupport3.DialogFragments.RecordDialogFragment.WITCH_CLICKED;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
@@ -190,6 +193,11 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
                         userList.add(user);
                     }
 
+                    if (userList.isEmpty()){
+                        toastNullable(getContext(), R.string.grp_no_addable_member);
+                        return;
+                    }
+
                     com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity_
                             .intent(GroupSettingFragment.this)
                             .userList((ArrayList<User>) userList)
@@ -276,9 +284,36 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
             } else {
                 Util.onError(this, "witch == Integer.MAX_VALUE", R.string.error);
             }
+        } else if (requestCode == REQ_CODE_ADD_GROUP_MEMBER && resultCode == RESULT_OK){
+            onResultAddMember(data);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+
+    private void onResultAddMember(Intent data){
+        final List<User> newMembers = data.getParcelableArrayListExtra(KEY_PARCELABLE);
+        HashMap<String, Object> childMap = new HashMap<>();
+        for (User user: newMembers) {
+            GroupInUserDataNode smGroup = new GroupInUserDataNode(group.groupName, group.groupKey, group.photoUrl, false);
+            childMap.put(makeScheme("userData", user.getUserUid(), "group", group.groupKey), smGroup);
+            childMap.put(makeScheme("group", group.groupKey, "member", user.getUserUid()), user);
+        }
+
+        getRef().updateChildren(childMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null){
+                    Util.onError(GroupSettingFragment.this, TAG+databaseError.getDetails(), R.string.error);
+                    return;
+                }
+
+                toastNullable(getContext(), R.string.invite_done);
+                group.userList.addAll(newMembers);
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     /**

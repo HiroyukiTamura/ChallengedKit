@@ -104,10 +104,11 @@ public class AddGroupFragment extends Fragment implements Callback , SocialListR
     void afterViews(){
         if (requestCode == AddGroupActivity.REQ_CODE_ADD_GROUP_MEMBER){
             header.setVisibility(GONE);
+            userAdapter = new SocialListRVAdapter(userList, this, CODE_ADD_GROUP_FRAG);
         } else {
             name.setText(groupName);
+            userAdapter = new SocialListRVAdapter(userList, this, CODE_ADD_GROUP_FRAG);
         }
-        userAdapter = new SocialListRVAdapter(userList, this, CODE_ADD_GROUP_FRAG);
         storageUtil = new FirebaseStorageUtil(getContext(), null);
         rvUser.setLayoutManager(new LinearLayoutManager(getContext()));
         rvUser.setNestedScrollingEnabled(false);

@@ -85,7 +85,7 @@ import static com.example.hiroyuki3.worksupportlibw.AdditionalUtil.CODE_SOCIAL_F
 public class SocialFragment extends Fragment implements ValueEventListener, SocialGroupListRVAdapter.ISocialGroupListRVAdapter {
 
     private static final String TAG = "MANUAL_TAG: " + SocialFragment.class.getSimpleName();
-    private static final int REQ_CODE_CREATE_GROUP = 1632;
+    public static final int REQ_CODE_CREATE_GROUP = 1632;
 
     @ViewById(R.id.name) TextView myNameTv;
     @ViewById(R.id.icon) CircleImageView myIconIv;

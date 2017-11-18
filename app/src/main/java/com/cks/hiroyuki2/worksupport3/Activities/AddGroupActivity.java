@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import icepick.Icepick;
 import icepick.State;
 
+import static com.cks.hiroyuki2.worksupport3.Fragments.SocialFragment.REQ_CODE_CREATE_GROUP;
 import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 import static com.cks.hiroyuki2.worksupprotlib.Entity.User.makeUserFromSnap;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
@@ -61,7 +62,7 @@ public class AddGroupActivity extends AppCompatActivity implements AddGroupFragm
     public static final String INTENT_BUNDLE_GROUP_NAME = "groupName";
     public static final String INTENT_BUNDLE_GROUP_PHOTO_URL = "INTENT_BUNDLE_GROUP_PHOTO_URL";
 //    static final int DLG_TAG_MK_GROUP_CODE = 85751;
-    static final String KEY_PARCELABLE = "KEY_PARCELABLE";
+    public static final String KEY_PARCELABLE = "KEY_PARCELABLE";
     public static final int REQ_CODE_ADD_GROUP_MEMBER = 5438;
 
     @ViewById(R.id.toolbar) Toolbar toolbar;
@@ -89,6 +90,7 @@ public class AddGroupActivity extends AppCompatActivity implements AddGroupFragm
 
     @AfterViews
     void afterView(){
+        // TODO: 2017/11/18 toolbarタイトルセット
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -118,8 +120,14 @@ public class AddGroupActivity extends AppCompatActivity implements AddGroupFragm
     @Click(R.id.fab)
     void onClickFab(){
         Intent intent = new Intent();
-        intent.putExtra(INTENT_BUNDLE_GROUP_NAME, fragment.groupName);
-        intent.putExtra(INTENT_BUNDLE_GROUP_PHOTO_URL, fragment.dlIconUri);
+        switch (requestCode){
+            case REQ_CODE_CREATE_GROUP:
+                intent.putExtra(INTENT_BUNDLE_GROUP_NAME, fragment.groupName);
+                intent.putExtra(INTENT_BUNDLE_GROUP_PHOTO_URL, fragment.dlIconUri);
+                break;
+            case REQ_CODE_ADD_GROUP_MEMBER:
+                break;
+        }
         intent.putParcelableArrayListExtra(KEY_PARCELABLE, (ArrayList<? extends Parcelable>) fragment.userAdapter.getCheckedUsers());
         setResult(RESULT_OK, intent);
         finish();
