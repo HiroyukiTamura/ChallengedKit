@@ -55,7 +55,7 @@ public class GroupSettingActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setTitle(R.string.toolbar_title_setting_group);
+        getSupportActionBar().setTitle(R.string.toolbar_title_setting_group);
         initAdMob(this);
 
         if (isSavedInstance){

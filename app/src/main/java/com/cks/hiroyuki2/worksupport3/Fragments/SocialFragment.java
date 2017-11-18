@@ -260,8 +260,6 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
     void onResultGroupNonAdd(Intent data, int resultCode,
                              @OnActivityResult.Extra(GROUP) final GroupInUserDataNode groupNode,
                              @OnActivityResult.Extra(RecordDialogFragment.DIALOG_BUTTON) int button){
-        if (resultCode == RESULT_OK) return;
-
 //        final GroupInUserDataNode groupNode = (GroupInUserDataNode)data.getSerializableExtra(SocialGroupListRVAdapter.GROUP);
 //        int button = data.getIntExtra(RecordDialogFragment.DIALOG_BUTTON, Integer.MAX_VALUE);
         if (button == BUTTON_POSITIVE){
@@ -273,20 +271,20 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
             hashMap.put(makeScheme("group", groupNode.groupKey, "member", me.getUserUid(), "added"), true);
             hashMap.put(makeScheme("userData", me.getUserUid(), "group", groupNode.groupKey, "added"), true);
             final FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, getRootRef(), context, hashMap) {
+                private Group group;
+
                 @Override
                 public void onSuccess(DatabaseReference ref) {
                     toastNullable(getContext(), R.string.msg_add_group);
-
-                    SharedPreferences pref = getContext().getSharedPreferences(PREF_NAME, MODE_PRIVATE);//todo getContext()==nullのとき落ちるぜ
-                    SharedPreferences.Editor editor = pref.edit();
-                    String s = new Gson().toJson(groupNode);
-                    editor.putString(PREF_KEY_GROUP_USER_DATA, s);//todo これおかしい groupKeyで場合分けしなきゃ
-                    editor.apply();
+                    mListener.onCompleteGroup(group);
+                    groupAdapter.notifyAddedToGroup(groupNode.groupKey);
                 }
 
                 @Override
                 protected void onNodeExist(@NonNull DataSnapshot dataSnapshot) {
-                    Group group = makeGroupFromSnap(getContext(), dataSnapshot, groupNode.groupKey);//todo getContext()==nullのとき落ちるぜ
+                    if (getContext() == null)
+                        return;
+                    group = makeGroupFromSnap(getContext(), dataSnapshot, groupNode.groupKey);
                     if (group == null)
                         return;//例外処理はmakeGroupFromSnap()内で行っています
 
@@ -302,9 +300,6 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
                         onError(SocialFragment.this, TAG+"!isReallyMember", R.string.error);
                         return;
                     }
-
-                    mListener.onCompleteGroup(group);
-                    groupAdapter.notifyAddedToGroup(groupNode.groupKey);
                     super.onNodeExist(dataSnapshot);
 //                  srl.setRefreshing(false);
                     }
@@ -425,6 +420,5 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
         bundle.putSerializable(GROUP, groupInUserDataNode);
         bundle.putString("from", TAG_GROUP_NON_ADDED);
         kickDialogInOnClick(TAG_GROUP_NON_ADDED, CALLBACK_GROUP_NON_ADDED, bundle, this);
-        // TODO: 2017/11/08 デバッグこれから
     }
 }

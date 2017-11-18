@@ -5,6 +5,8 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_tutorial">TutorialActivity</string>
     <string name="title_activity_help">HelpActivity</string>
+    <string name="app_name_correct">ChallengedKit(β)</string><!--ライブラリ間で競合するので、ここでapp_nameは定義しちゃう-->
+    <string name="add_member_title">メンバーを追加</string>
 
     <!--ログインまわり-->
     <string name="facebook_app_id">123697191641575</string>
@@ -14,6 +16,6 @@
 
     <!--広告まわり-->
     <string name="banner_ad_unit_id_test">ca-app-pub-3940256099942544/6300978111</string>
-
+    <!--firebase-->
     <string name="firebase_client_id">490115270967-gcfpdtcgq1odrmc9lcl0imckqskkgn36.apps.googleusercontent.com</string>
 </resources>

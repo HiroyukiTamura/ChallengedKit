@@ -48,6 +48,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.bundle2Data;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
+import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.getFabLp;
 
 /**
@@ -90,10 +91,18 @@ public class AddGroupActivity extends AppCompatActivity implements AddGroupFragm
 
     @AfterViews
     void afterView(){
-        // TODO: 2017/11/18 toolbarタイトルセット
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        switch (requestCode){
+            case REQ_CODE_CREATE_GROUP:
+                toolbar.setTitle(R.string.title_add_group);
+                break;
+            case REQ_CODE_ADD_GROUP_MEMBER:
+                toolbar.setTitle(R.string.add_member_title);
+                break;
+        }
 
         logAnalytics(TAG + "起動", this);
         initAdMob(this);
