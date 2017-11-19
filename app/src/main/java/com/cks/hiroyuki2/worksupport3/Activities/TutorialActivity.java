@@ -37,6 +37,7 @@ public class TutorialActivity extends AppIntro {
     @ColorRes(R.color.bc_meeting) int cb3;
     @ColorRes(R.color.text_input) int txtColor;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
