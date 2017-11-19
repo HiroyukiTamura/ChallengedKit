@@ -126,14 +126,8 @@ public class RecordDialogFragmentPicker extends DialogFragment implements Dialog
             timeEvent.setOffset(getOffsetFromDialog());
         }
 
-        int min = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
-                timePicker.getMinute():
-                timePicker.getCurrentMinute();
-        int hour = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
-                timePicker.getHour():
-                timePicker.getCurrentHour();
-        timeEvent.setMin(min);
-        timeEvent.setHour(hour);
+        timeEvent.setMin(getMin(timePicker));
+        timeEvent.setHour(getHour(timePicker));
 
         Intent intent = new Intent();
         intent.putExtras(getArguments());
@@ -147,7 +141,19 @@ public class RecordDialogFragmentPicker extends DialogFragment implements Dialog
 
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
-        onChangeCallback(timePicker.getHour(), timePicker.getMinute());
+        onChangeCallback(getHour(timePicker), getMin(timePicker));
+    }
+
+    private int getMin(@NonNull TimePicker timePicker){
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                timePicker.getMinute():
+                timePicker.getCurrentMinute();
+    }
+
+    private int getHour(@NonNull TimePicker timePicker){
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                timePicker.getHour():
+                timePicker.getCurrentHour();
     }
 
     private void onChangeCallback(int hourOfDay, int min){
