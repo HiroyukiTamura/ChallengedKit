@@ -77,6 +77,7 @@ public class AddGroupActivity extends AppCompatActivity implements AddGroupFragm
 
     @AfterViews
     void afterView(){
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

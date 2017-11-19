@@ -217,8 +217,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (isFirstLaunch)
             return;
 
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
         toolbarHeight = getToolBarHeight(this);
+
+        findViewById(R.id.toolbar_shadow).setVisibility(GONE);/*これ*/
 
         if(!getSupportFragmentManager().getFragments().isEmpty())
             initToolBar(getSupportFragmentManager().getFragments().get(0));
@@ -538,15 +541,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.w(TAG, "handleSignInResponse: Successfully signed in");
             //結局今のところは、乱数を作成してログインしている。後々要修正。
             check.writeLocalProf();
-            boolean isPreSetting = data.getBooleanExtra(LoginCheck.IS_PRE_SETTING, false);
-            if (isPreSetting){
-                changeContentFragment(com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment_
-                        .builder().build());
-            } else {
+//            boolean isPreSetting = data.getBooleanExtra(LoginCheck.IS_PRE_SETTING, false);
+//            if (isPreSetting){
+//                changeContentFragment(com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment_
+//                        .builder().build());
+//            } else {
                 FirebaseConnection.getInstance().setFireBaseRefs(this);
                 if (!isSavedInstanceState)
                     setContentFragment();
-            }
+//            }
 
         } else {
             // Sign in failed

@@ -57,7 +57,6 @@
 
         <activity
             android:name=".Activities.MainActivity_"
-            android:label=""
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -68,7 +67,6 @@
 
         <activity
             android:name=".Activities.AddFriendActivity_"
-            android:label=""
             android:parentActivityName=".Activities.MainActivity_"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -96,12 +94,10 @@
 
         <activity
             android:name=".Activities.EditDocActivity_"
-            android:label="@string/edit_doc_act_name"
             android:parentActivityName=".Activities.MainActivity_"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.AddGroupActivity_"
-            android:label="@string/title_add_group"
             android:parentActivityName=".Activities.MainActivity_"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -122,7 +118,6 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.GroupSettingActivity_"
-            android:label="@string/toolbar_title_setting_group"
             android:parentActivityName=".Activities.MainActivity_"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
