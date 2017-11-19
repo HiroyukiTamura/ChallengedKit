@@ -253,6 +253,7 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
                         .putExtra(INTENT_KEY_1, isAcceptSocial);
                 sendBroadcast(i);
             }
+
         } else if (url.equals(urlStart +"/friend/"+ uid)){
             String content = null;
             JSONArray ja = new JSONArray();
@@ -280,6 +281,11 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
                 content = ja.toString();
             }
 
+            writeFriendPref(getApplicationContext(), content);
+
+            if (content == null)//初回登録時はここでreturnされるはず
+                return;
+
             /*一連のPrefまわりって、全部Gsonに書き換えたらFirebaseからの読み出しとか楽そうだよなあ。Firebaseの乗り換え時に色々変えよう。*/
             JSONArray oldJa = readFriendPref(getApplicationContext());
             for (int i = 0; i < oldJa.length(); i++) {
@@ -291,8 +297,6 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
                     e.printStackTrace();
                 }
             }
-
-            writeFriendPref(getApplicationContext(), content);
 
             Intent intent = new Intent(MY_ACTION);
             intent.putExtra(SEND_CODE, SEND_CODE_FRIEND_CHANGED);
