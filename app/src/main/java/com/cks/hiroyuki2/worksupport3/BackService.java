@@ -255,31 +255,31 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
             }
 
         } else if (url.equals(urlStart +"/friend/"+ uid)){
-            String content = null;
+            if (!dataSnapshot.exists())
+                return;
+
             JSONArray ja = new JSONArray();
             List<String> newUidList = new ArrayList<>();
-            if (dataSnapshot.exists()){
-                for (DataSnapshot snap: dataSnapshot.getChildren()) {
-                    JSONObject jo = new JSONObject();
-                    String userUid = snap.getKey();
-                    if (userUid.equals(DEFAULT))
-                        continue;
+            for (DataSnapshot snap: dataSnapshot.getChildren()) {
+                JSONObject jo = new JSONObject();
+                String userUid = snap.getKey();
+                if (userUid.equals(DEFAULT))
+                    continue;
 
-                    newUidList.add(userUid);
+                newUidList.add(userUid);
 
-                    String name = (String) retrieveValue(snap, "name");
-                    String photoUrl = (String) retrieveValue(snap, "photoUrl");
-                    try {
-                        jo.put("userUid", userUid);
-                        jo.put("name", name);
-                        jo.put("photoUrl", photoUrl);
-                        ja.put(jo);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                String name = (String) retrieveValue(snap, "name");
+                String photoUrl = (String) retrieveValue(snap, "photoUrl");
+                try {
+                    jo.put("userUid", userUid);
+                    jo.put("name", name);
+                    jo.put("photoUrl", photoUrl);
+                    ja.put(jo);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                content = ja.toString();
             }
+            String content = ja.toString();
 
             writeFriendPref(getApplicationContext(), content);
 
