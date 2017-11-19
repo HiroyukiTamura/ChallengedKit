@@ -66,7 +66,6 @@ import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupprotlib.LoginCheck;
 import com.crashlytics.android.Crashlytics;
-import com.facebook.FacebookSdk;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
@@ -111,7 +110,6 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.getFabLp;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.AboutVPAdapter.PREF_KEY_SHOW_NAV_IMG;
 
-import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.auth.FirebaseUser;
 
 @SuppressLint("Registered")
@@ -164,8 +162,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Fabric.with(this, new Crashlytics());
         logAnalytics(getClass().getSimpleName() + "起動", this);
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
+//        FacebookSdk.sdkInitialize(getApplicationContext());
+//        AppEventsLogger.activateApp(this);
 
 //        initDefaultTemplate(this);
 

@@ -91,9 +91,6 @@ import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog.ADD_ITEM_DIALOG;
-import static com.cks.hiroyuki2.worksupport3.Util.showCompleteNtf;
-import static com.cks.hiroyuki2.worksupport3.Util.showDownloadingNtf;
-import static com.cks.hiroyuki2.worksupport3.Util.showUploadingNtf;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_SET_VALUE;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
@@ -112,6 +109,9 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.intentKicker;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
+import static com.cks.hiroyuki2.worksupprotlib.Util.showCompleteNtf;
+import static com.cks.hiroyuki2.worksupprotlib.Util.showDownloadingNtf;
+import static com.cks.hiroyuki2.worksupprotlib.Util.showUploadingNtf;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.ShareBoardRVAdapter.ITEM_TYPE_DATA;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.ShareBoardRVAdapter.ITEM_TYPE_DOCUMENT;
@@ -619,14 +619,14 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                     @Override
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                         toastNullable(getContext(), R.string.msgDlSuccess);
-                        showCompleteNtf(fileName, ntfId, R.string.msgDlSuccess);
+                        showCompleteNtf(getContext(), fileName, ntfId, R.string.msgDlSuccess);
                     }
                 },
                 storageUtil,
                 new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        showDownloadingNtf(taskSnapshot, fileName, ntfId);
+                        showDownloadingNtf(getContext(), taskSnapshot, fileName, ntfId);
                     }
                 },
                 new OnFailureListener() {
@@ -697,7 +697,7 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
     private void onFailureOparation(Exception e, String fileName, int ntfId, @StringRes int string){
         logStackTrace(e);
         toastNullable(getContext(), R.string.error);
-        showCompleteNtf(fileName, ntfId, string);
+        showCompleteNtf(getContext(), fileName, ntfId, string);
     }
 
     /**このメソッドでストレージのデータを削除できようができまいが、ここに到達した時点で{@link #onChoose4thItem(int, boolean)}でDatabaseは削除しているので、
@@ -873,11 +873,11 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                         if (databaseError != null) {
                                             onError(ShareBoardFragment.this, TAG + databaseError.getDetails(), R.string.error);
-                                            showCompleteNtf(fileName, ntfId, R.string.msg_failed_upload);
+                                            showCompleteNtf(getContext(), fileName, ntfId, R.string.msg_failed_upload);
                                         } else {
                                             toastNullable(getContext(), R.string.msg_succeed_upload);
                                             addContent(content);
-                                            showCompleteNtf(fileName, ntfId, R.string.msg_succeed_upload);
+                                            showCompleteNtf(getContext(), fileName, ntfId, R.string.msg_succeed_upload);
                                         }
                                     }
                                 });
@@ -885,7 +885,7 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                 }, storageUtil, new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        showUploadingNtf(taskSnapshot, fileName, ntfId);
+                        showUploadingNtf(getContext(), taskSnapshot, fileName, ntfId);
                     }
                 });
             }
@@ -1005,6 +1005,5 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                     kickDialogInOnClick(DIALOG_TAG_DOC_VERT, DIALOG_CODE_DOC_VERT, bundle, this);
                     break;}
         }
-
     }
 }
