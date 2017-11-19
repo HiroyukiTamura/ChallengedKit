@@ -37,10 +37,8 @@ import icepick.Icepick;
 import icepick.State;
 
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
-import static com.cks.hiroyuki2.worksupport3.DialogFragments.AboutDialogFragment.CALLBACK_LAUNCHER_ICON;
 import static com.cks.hiroyuki2.worksupport3.DialogFragments.AboutDialogFragment.CALLCACK_IMG;
 import static com.cks.hiroyuki2.worksupport3.DialogFragments.AboutDialogFragment.TAG_IMG;
-import static com.cks.hiroyuki2.worksupport3.DialogFragments.AboutDialogFragment.TAG_LAUNCHER_ICON;
 import static com.cks.hiroyuki2.worksupprotlib.TemplateEditor.initDefaultTemplate;
 import static com.cks.hiroyuki2.worksupprotlib.Util.DEFAULT;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
@@ -50,6 +48,8 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAdapter{
     private static final String TAG = "MANUAL_TAG: " + AboutFragment.class.getSimpleName();
     private static final String TOS_URL = "https://github.com/HiroyukTamura/ChalengedKit/wiki/%E5%85%8D%E8%B2%AC%E4%BA%8B%E9%A0%85%E3%83%BB%E3%83%97%E3%83%A9%E3%82%A4%E3%83%90%E3%82%B7%E3%83%BC%E3%83%9D%E3%83%AA%E3%82%B7%E3%83%BC";
+    private static final String NTF_URL = "https://github.com/HiroyukTamura/ChalengedKit/wiki/%E3%81%8A%E7%9F%A5%E3%82%89%E3%81%9B";
+    private static final String IMG_LICENSE_URL = "https://github.com/HiroyukTamura/ChalengedKit/wiki/%E7%94%BB%E5%83%8F";
 
     private AboutVPAdapter adapter;
     @State int currentPos;
@@ -97,7 +97,9 @@ public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAd
 
     @Override
     public void onClickLauncher() {
-        kickDialogInOnClick(TAG_LAUNCHER_ICON, CALLBACK_LAUNCHER_ICON, new Bundle(), this);
+//        kickDialogInOnClick(TAG_LAUNCHER_ICON, CALLBACK_LAUNCHER_ICON, new Bundle(), this);
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(IMG_LICENSE_URL));
+        startActivity(intent);
     }
 
     @Override
@@ -108,6 +110,12 @@ public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAd
     @Override
     public void onClickAppTos() {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(TOS_URL));
+        startActivity(intent);
+    }
+
+    @Override
+    public void onClickNotification() {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(NTF_URL));
         startActivity(intent);
     }
 
