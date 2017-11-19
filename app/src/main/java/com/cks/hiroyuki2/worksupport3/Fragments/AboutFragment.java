@@ -19,7 +19,6 @@ import com.example.hiroyuki3.worksupportlibw.Adapters.AboutVPAdapter;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.squareup.haha.perflib.Main;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
