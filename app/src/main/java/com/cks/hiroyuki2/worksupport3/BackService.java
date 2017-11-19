@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.RemoteException;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -42,10 +41,7 @@ import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.writeFriendPref;
 import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.writeGroup;
 import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.writeGroupKeys;
 import static com.cks.hiroyuki2.worksupprotlib.Util.DEFAULT;
-import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
-import static com.cks.hiroyuki2.worksupprotlib.Util.printHashKey;
-import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 
 /**
  * BackServiceおじさん！

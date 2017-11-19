@@ -6,19 +6,14 @@ package com.cks.hiroyuki2.worksupport3.Fragments;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ViewPager;
-import android.util.ArrayMap;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,43 +22,31 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
 import com.cks.hiroyuki2.worksupprotlib.Fab;
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.Util;
-import com.cks.hiroyuki2.worksupprotlib.UtilSpec;
 import com.example.hiroyuki3.worksupportlibw.Adapters.AnalyticsVPAdapter;
 import com.example.hiroyuki3.worksupportlibw.Presenter.AnalyticsVPUiOperator;
-import com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemTime;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
-import org.androidannotations.annotations.PageScrolled;
-import org.androidannotations.annotations.PageSelected;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.ColorRes;
 import org.androidannotations.annotations.res.DimensionPixelSizeRes;
 import org.androidannotations.annotations.res.DrawableRes;
 import org.apmem.tools.layouts.FlowLayout;
 
-import java.util.HashMap;
 import java.util.List;
 
 import fr.castorflex.android.verticalviewpager.VerticalViewPager;
 import icepick.Icepick;
 import icepick.State;
 
-import static com.cks.hiroyuki2.worksupprotlib.Util.IS_DATA_MINE;
-import static com.cks.hiroyuki2.worksupprotlib.Util.UID;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getToolBarHeight;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeCircleAndTxt;
 import static com.cks.hiroyuki2.worksupprotlib.Util.time2String;

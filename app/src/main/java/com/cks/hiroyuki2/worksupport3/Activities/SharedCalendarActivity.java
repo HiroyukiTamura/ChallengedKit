@@ -6,7 +6,6 @@ package com.cks.hiroyuki2.worksupport3.Activities;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -30,9 +29,6 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.Calendar;
-
-import icepick.Icepick;
-import icepick.State;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;

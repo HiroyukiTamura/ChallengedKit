@@ -48,7 +48,6 @@ import com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter;
 import com.example.hiroyuki3.worksupportlibw.Adapters.RecordRVAdapter;
 import com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter;
 import com.example.hiroyuki3.worksupportlibw.Adapters.SocialGroupListRVAdapter;
-import com.squareup.picasso.Picasso;
 
 import org.apmem.tools.layouts.FlowLayout;
 
@@ -87,12 +86,12 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
     public static final String DIALOG_BUTTON = "DIALOG_BUTTON";
     public static final String DIALOG_TIME_VALUE = "DIALOG_TIME_VALUE";
     public static final int CALLBACK_TIME_VALUE = 101;
-    public static final int CALLBACK_TIME_VALUE_2 = 102;
+//    public static final int CALLBACK_TIME_VALUE_2 = 102;
     public static final String ADD_NEW_TAG = "ADD_NEW_TAG";
     private SharedPreferences pref;
     private int selectedCircleNum = 0;
     private View root;//CalenderFragment.EDIT_TAGで使用
-    private CheckBox checkBox;
+//    private CheckBox checkBox;
     private SmoothCheckBox checkBoxS;
     private String[] strings;
     private CheckBox checkBoxDisplay;

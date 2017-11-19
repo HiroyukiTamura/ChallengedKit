@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -28,7 +29,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Activities.EditDocActivity;
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
@@ -74,7 +74,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -271,7 +270,10 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
     private void setExpandCollapse(){
         expandCollapse = new AutoTransition();
         expandCollapse.setDuration(120);
-        expandCollapse.setInterpolator(AnimationUtils.loadInterpolator(getContext(), android.R.interpolator.fast_out_slow_in));
+        int interpolator = android.os.Build.VERSION.SDK_INT >= 21?
+                android.R.interpolator.fast_out_slow_in:
+                android.R.interpolator.linear;
+        expandCollapse.setInterpolator(AnimationUtils.loadInterpolator(getContext(), interpolator));
 
         expandCollapse.addListener(new Transition.TransitionListener() {
             @Override

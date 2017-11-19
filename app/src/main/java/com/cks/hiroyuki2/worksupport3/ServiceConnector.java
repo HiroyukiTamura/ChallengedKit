@@ -35,7 +35,6 @@ import static com.cks.hiroyuki2.worksupport3.BackService.MY_ACTION;
 import static com.cks.hiroyuki2.worksupport3.BackService.SEND_CODE;
 import static com.cks.hiroyuki2.worksupport3.BackService.SEND_CODE_SOCIAL_STATE;
 import static com.cks.hiroyuki2.worksupport3.BackService.UNKNOWN_STATE;
-import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 
 /**

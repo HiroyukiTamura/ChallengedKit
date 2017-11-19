@@ -2,26 +2,13 @@ package com.cks.hiroyuki2.worksupport3;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.icu.text.AlphabeticIndex;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
-import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.content.ContextCompat;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.AddFriendFragment;
@@ -37,30 +24,15 @@ import com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SharedCalendarFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SocialFragment;
-import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
-import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEvent;
-import com.cks.hiroyuki2.worksupprotlib.MainActivity;
-import com.cks.hiroyuki2.worksupprotlib.UtilSpec;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.UploadTask;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.listener.single.PermissionListener;
 
-import org.jetbrains.annotations.Contract;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
-
-import static android.os.Build.VERSION.SDK_INT;
-import static com.cks.hiroyuki2.worksupprotlib.Util.NOTIFICATION_CHANNEL;
-import static com.cks.hiroyuki2.worksupprotlib.Util.NOTIFICATION_CHANNEL_SECOND;
 
 /**
  * 特段の理由がない限り、Util系のメソッドはlibに移管してください。
