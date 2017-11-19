@@ -47,8 +47,8 @@ android {
         applicationId "com.cks.hiroyuki2.worksupport3"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 8
-        versionName "0.2.0"
+        versionCode 10
+        versionName "0.2.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
@@ -90,7 +90,7 @@ dependencies {
     compile 'com.takisoft.fix:preference-v7:27.0.0.0'
     compile 'org.jetbrains:annotations-java5:15.0'
     //    compile 'com.github.channguyen:rsv:1.0.1'
-    compile 'com.github.HiroyukTamura:WorkSupportLibW:b884894'
+    compile 'com.github.HiroyukTamura:WorkSupportLibW:3128450'
     compile 'com.prolificinteractive:material-calendarview:1.4.3'
     compile 'com.firebaseui:firebase-ui:3.1.0'
     compile 'com.google.firebase:firebase-core:11.4.2'
@@ -103,7 +103,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-vision:11.4.2'
     compile 'com.google.android.gms:play-services-oss-licenses:11.4.2'
     compile 'com.google.firebase:firebase-messaging:11.4.2'
-    compile 'com.facebook.android:facebook-android-sdk:4.28.0'
+//    compile 'com.facebook.android:facebook-android-sdk:4.28.0'
     compile 'org.apmem.tools:layouts:1.10@aar'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     compile 'com.github.andyxialm:SmoothCheckBox:47f69d4ce8'

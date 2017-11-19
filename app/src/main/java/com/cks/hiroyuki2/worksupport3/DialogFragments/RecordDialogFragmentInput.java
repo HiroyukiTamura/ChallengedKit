@@ -58,6 +58,7 @@ public class RecordDialogFragmentInput extends DialogFragment implements DialogI
         return frag;
     }
 
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

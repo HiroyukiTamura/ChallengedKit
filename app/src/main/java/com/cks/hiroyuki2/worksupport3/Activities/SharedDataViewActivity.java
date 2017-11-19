@@ -4,13 +4,13 @@
 
 package com.cks.hiroyuki2.worksupport3.Activities;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.AnalyticsFragment;
@@ -24,6 +24,7 @@ import org.androidannotations.annotations.ViewById;
 import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 
+@SuppressLint("Registered")
 @EActivity(R.layout.activity_shared_data_view_activity)
 public class SharedDataViewActivity extends AppCompatActivity implements AnalyticsFragment.OnHamburgerClickListener {
 

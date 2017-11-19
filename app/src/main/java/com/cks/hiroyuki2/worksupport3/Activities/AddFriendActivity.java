@@ -4,6 +4,7 @@
 
 package com.cks.hiroyuki2.worksupport3.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -55,6 +56,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.delimiter;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 
+@SuppressLint("Registered")
 @EActivity(R.layout.activity_add_fridend_acitivity)
 public class AddFriendActivity extends AppCompatActivity implements PermissionListener{
     

@@ -1,20 +1,12 @@
 package com.cks.hiroyuki2.worksupport3.Fragments;
 
 
-import android.graphics.Color;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.*;
 import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
-import com.example.hiroyuki3.worksupportlibw.AdditionalUtil;
 import com.example.hiroyuki3.worksupportlibw.Presenter.RecordUiOperator;
 import com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemTime;
 

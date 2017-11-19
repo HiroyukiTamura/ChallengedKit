@@ -65,8 +65,6 @@ import static com.cks.hiroyuki2.worksupport3.DialogFragments.RecordDialogFragmen
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
 import static com.cks.hiroyuki2.worksupport3.Util.OLD_GRP_NAME;
-import static com.cks.hiroyuki2.worksupport3.Util.showCompleteNtf;
-import static com.cks.hiroyuki2.worksupport3.Util.showUploadingNtf;
 import static com.cks.hiroyuki2.worksupprotlib.Entity.User.makeUserFromSnap;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
 import com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter;
@@ -86,6 +84,8 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.setNullableText;
+import static com.cks.hiroyuki2.worksupprotlib.Util.showCompleteNtf;
+import static com.cks.hiroyuki2.worksupprotlib.Util.showUploadingNtf;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter.CALLBACK_CLICK_GROUP_MEMBER;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter.CLICK_GROUP_MEMBER;
@@ -263,7 +263,7 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
             }, storageUtil, new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                    showUploadingNtf(taskSnapshot, fileName, ntfId);
+                    showUploadingNtf(getContext(), taskSnapshot, fileName, ntfId);
                 }
             });
         } else if (requestCode == CALLBACK_EXIT_GROUP && resultCode == RESULT_OK){
@@ -401,7 +401,7 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
                         toastNullable(getContext(), R.string.updated_group_name);
                         break;
                     case UPDATE_CODE_PHOTO_URL:
-                        showCompleteNtf(group.groupName, ntfId, R.string.ntf_txt_change_group_img);
+                        showCompleteNtf(getContext(), group.groupName, ntfId, R.string.ntf_txt_change_group_img);
                         Picasso.with(getContext())/*もともとはデフォルトの画像が挿入されていて、もし画像取得ができれば、デフォルトのImageView手前にあるImageViewに描画し、デフォルトのImageViewを隠す。*/
                                 .load(group.photoUrl)
                                 .into(icon, GroupSettingFragment.this);

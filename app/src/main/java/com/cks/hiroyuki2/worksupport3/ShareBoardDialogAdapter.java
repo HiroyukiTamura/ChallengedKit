@@ -20,7 +20,6 @@ import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import java.util.List;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-import static com.cks.hiroyuki2.worksupprotlib.Util.setImgFromStorage;
 
 /**
  * Created by hiroyuki2 on 2017/10/27.

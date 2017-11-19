@@ -4,13 +4,13 @@
 
 package com.cks.hiroyuki2.worksupport3;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.RemoteException;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -41,15 +41,13 @@ import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.writeFriendPref;
 import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.writeGroup;
 import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.writeGroupKeys;
 import static com.cks.hiroyuki2.worksupprotlib.Util.DEFAULT;
-import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
-import static com.cks.hiroyuki2.worksupprotlib.Util.printHashKey;
-import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 
 /**
  * BackServiceおじさん！
  */
 
+@SuppressLint("Registered")
 @EService
 public class BackService extends Service implements FirebaseAuth.AuthStateListener, ValueEventListener{
 
@@ -253,32 +251,38 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
                         .putExtra(INTENT_KEY_1, isAcceptSocial);
                 sendBroadcast(i);
             }
+
         } else if (url.equals(urlStart +"/friend/"+ uid)){
-            String content = null;
+            if (!dataSnapshot.exists())
+                return;
+
             JSONArray ja = new JSONArray();
             List<String> newUidList = new ArrayList<>();
-            if (dataSnapshot.exists()){
-                for (DataSnapshot snap: dataSnapshot.getChildren()) {
-                    JSONObject jo = new JSONObject();
-                    String userUid = snap.getKey();
-                    if (userUid.equals(DEFAULT))
-                        continue;
+            for (DataSnapshot snap: dataSnapshot.getChildren()) {
+                JSONObject jo = new JSONObject();
+                String userUid = snap.getKey();
+                if (userUid.equals(DEFAULT))
+                    continue;
 
-                    newUidList.add(userUid);
+                newUidList.add(userUid);
 
-                    String name = (String) retrieveValue(snap, "name");
-                    String photoUrl = (String) retrieveValue(snap, "photoUrl");
-                    try {
-                        jo.put("userUid", userUid);
-                        jo.put("name", name);
-                        jo.put("photoUrl", photoUrl);
-                        ja.put(jo);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                String name = (String) retrieveValue(snap, "name");
+                String photoUrl = (String) retrieveValue(snap, "photoUrl");
+                try {
+                    jo.put("userUid", userUid);
+                    jo.put("name", name);
+                    jo.put("photoUrl", photoUrl);
+                    ja.put(jo);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                content = ja.toString();
             }
+            String content = ja.toString();
+
+            writeFriendPref(getApplicationContext(), content);
+
+            if (content == null)//初回登録時はここでreturnされるはず
+                return;
 
             /*一連のPrefまわりって、全部Gsonに書き換えたらFirebaseからの読み出しとか楽そうだよなあ。Firebaseの乗り換え時に色々変えよう。*/
             JSONArray oldJa = readFriendPref(getApplicationContext());
@@ -291,8 +295,6 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
                     e.printStackTrace();
                 }
             }
-
-            writeFriendPref(getApplicationContext(), content);
 
             Intent intent = new Intent(MY_ACTION);
             intent.putExtra(SEND_CODE, SEND_CODE_FRIEND_CHANGED);

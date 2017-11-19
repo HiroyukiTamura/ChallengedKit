@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity;
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil;
@@ -49,14 +48,14 @@ import static android.view.View.GONE;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickInputDialog;
 import static com.cks.hiroyuki2.worksupport3.DialogFragments.RecordDialogFragmentInput.INPUT;
 import static com.cks.hiroyuki2.worksupport3.Util.OLD_GRP_NAME;
-import static com.cks.hiroyuki2.worksupport3.Util.showCompleteNtf;
-import static com.cks.hiroyuki2.worksupport3.Util.showUploadingNtf;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.LIMIT_SIZE_PROF;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.isOverSize;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.uploadFile;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getExtension;
 import static com.cks.hiroyuki2.worksupprotlib.Util.kickIntentIcon;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
+import static com.cks.hiroyuki2.worksupprotlib.Util.showCompleteNtf;
+import static com.cks.hiroyuki2.worksupprotlib.Util.showUploadingNtf;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 import static com.example.hiroyuki3.worksupportlibw.AdditionalUtil.CODE_ADD_GROUP_FRAG;
 
@@ -169,13 +168,13 @@ public class AddGroupFragment extends Fragment implements Callback , SocialListR
                             Picasso.with(getContext())
                                     .load(uri)
                                     .into(icon, AddGroupFragment.this);
-                        showCompleteNtf(fileName, ntfId, R.string.ntf_txt_change_group_img);
+                        showCompleteNtf(getContext(), fileName, ntfId, R.string.ntf_txt_change_group_img);
                     }
                 }, storageUtil
                 , new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        showUploadingNtf(taskSnapshot, fileName, ntfId);
+                        showUploadingNtf(getContext(), taskSnapshot, fileName, ntfId);
                     }
                 });
     }
@@ -202,6 +201,6 @@ public class AddGroupFragment extends Fragment implements Callback , SocialListR
     private void onFailureOparation(Exception e, String fileName, int ntfId, @android.support.annotation.StringRes int string){
         logStackTrace(e);
         toastNullable(getContext(), R.string.error);
-        showCompleteNtf(fileName, ntfId, string);
+        showCompleteNtf(getContext(), fileName, ntfId, string);
     }
 }

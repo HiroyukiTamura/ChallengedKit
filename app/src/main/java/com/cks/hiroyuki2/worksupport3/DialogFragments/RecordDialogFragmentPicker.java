@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -125,8 +126,9 @@ public class RecordDialogFragmentPicker extends DialogFragment implements Dialog
             timeEvent.setOffset(getOffsetFromDialog());
         }
 
-        timeEvent.setHour(timePicker.getHour());
-        timeEvent.setMin(timePicker.getMinute());
+        timeEvent.setMin(getMin(timePicker));
+        timeEvent.setHour(getHour(timePicker));
+
         Intent intent = new Intent();
         intent.putExtras(getArguments());
         target.onActivityResult(getTargetRequestCode(), RESULT_OK, intent);//targetはRecordFragment or EditTemplateFragmentのどちらかです
@@ -139,7 +141,19 @@ public class RecordDialogFragmentPicker extends DialogFragment implements Dialog
 
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
-        onChangeCallback(timePicker.getHour(), timePicker.getMinute());
+        onChangeCallback(getHour(timePicker), getMin(timePicker));
+    }
+
+    private int getMin(@NonNull TimePicker timePicker){
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                timePicker.getMinute():
+                timePicker.getCurrentMinute();
+    }
+
+    private int getHour(@NonNull TimePicker timePicker){
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                timePicker.getHour():
+                timePicker.getCurrentHour();
     }
 
     private void onChangeCallback(int hourOfDay, int min){

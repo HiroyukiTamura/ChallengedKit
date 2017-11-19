@@ -14,7 +14,6 @@ import android.support.v4.view.ViewPager;
 import com.cks.hiroyuki2.worksupport3.Activities.SharedCalendarActivity;
 import com.cks.hiroyuki2.worksupprotlib.Entity.CalendarOneEvent;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
-import com.cks.hiroyuki2.worksupprotlib.RecordDataUtil;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.example.hiroyuki3.worksupportlibw.Adapters.SharedCalendarVPAdapter;

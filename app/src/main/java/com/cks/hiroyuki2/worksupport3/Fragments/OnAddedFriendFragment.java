@@ -4,19 +4,14 @@
 
 package com.cks.hiroyuki2.worksupport3.Fragments;
 
-import android.app.Activity;
 import android.support.v4.app.Fragment;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -26,8 +21,6 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.HashMap;
 
-import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;

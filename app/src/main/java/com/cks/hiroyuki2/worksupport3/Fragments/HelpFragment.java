@@ -2,22 +2,16 @@ package com.cks.hiroyuki2.worksupport3.Fragments;
 
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupprotlib.Util;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
-
-import java.util.List;
 
 @EFragment(R.layout.fragment_help)
 public class HelpFragment extends Fragment implements View.OnClickListener{

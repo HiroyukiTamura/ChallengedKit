@@ -5,6 +5,8 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import static com.cks.hiroyuki2.worksupprotlib.Util.showFcmMsg;
+
 /**
  * FCM用のサービス。フォアグランドでもFCMを受け取るにはこのサービスが必要となる。
  */
@@ -25,7 +27,7 @@ public class FcmService extends FirebaseMessagingService {
         if (remoteMessage.getNotification() != null) {
             String msg = remoteMessage.getNotification().getBody();
             Log.d(TAG, "onMessageReceived: " +msg);
-            Util.showFcmMsg(msg);
+            showFcmMsg(msg, getApplicationContext());
         }
     }
 

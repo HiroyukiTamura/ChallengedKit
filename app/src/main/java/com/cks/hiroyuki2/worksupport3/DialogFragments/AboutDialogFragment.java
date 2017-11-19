@@ -3,23 +3,12 @@ package com.cks.hiroyuki2.worksupport3.DialogFragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.text.Html;
 import android.view.View;
 import android.webkit.WebView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment;
-import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.Util;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-
-import static android.view.View.VISIBLE;
 
 /**
  * @see AboutFragment

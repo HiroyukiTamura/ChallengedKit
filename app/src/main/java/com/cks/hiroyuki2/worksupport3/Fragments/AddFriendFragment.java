@@ -9,16 +9,13 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.cks.hiroyuki2.worksupport3.Activities.AddFriendActivity;
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.Util;
 import com.example.hiroyuki3.worksupportlibw.Adapters.AddFriendVPAdapter;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.zxing.integration.android.IntentIntegrator;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -26,7 +23,6 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.HashMap;
 
-import static android.app.Activity.RESULT_CANCELED;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 

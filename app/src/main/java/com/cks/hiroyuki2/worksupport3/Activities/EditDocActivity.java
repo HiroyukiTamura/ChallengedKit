@@ -4,6 +4,7 @@
 
 package com.cks.hiroyuki2.worksupport3.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -51,6 +52,7 @@ import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 import static com.cks.hiroyuki2.worksupprotlib.Util.setImgFromStorage;
 
+@SuppressLint("Registered")
 @EActivity(R.layout.activity_edit_doc2)
 public class EditDocActivity extends AppCompatActivity implements TextWatcher /*implements View.OnFocusChangeListener*/ {
     private static final String TAG = "MANUAL_TAG: " + EditDocActivity.class.getSimpleName();
