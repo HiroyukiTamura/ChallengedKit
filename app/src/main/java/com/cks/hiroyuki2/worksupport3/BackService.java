@@ -4,6 +4,7 @@
 
 package com.cks.hiroyuki2.worksupport3;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
@@ -50,6 +51,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
  * BackServiceおじさん！
  */
 
+@SuppressLint("Registered")
 @EService
 public class BackService extends Service implements FirebaseAuth.AuthStateListener, ValueEventListener{
 

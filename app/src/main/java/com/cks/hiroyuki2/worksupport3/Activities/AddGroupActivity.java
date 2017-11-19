@@ -4,6 +4,7 @@
 
 package com.cks.hiroyuki2.worksupport3.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -56,6 +57,7 @@ import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.getFabLp;
  * todo 画面回転
  * {@link com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment}と{@link com.cks.hiroyuki2.worksupport3.Fragments.SocialFragment}から呼ばれる。
  */
+@SuppressLint("Registered")
 @EActivity(R.layout.activity_add_group)
 public class AddGroupActivity extends AppCompatActivity implements AddGroupFragment.IAddGroupFragment{
 

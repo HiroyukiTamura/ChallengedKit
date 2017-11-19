@@ -4,6 +4,7 @@
 
 package com.cks.hiroyuki2.worksupport3.Activities;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
@@ -46,6 +47,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
  * SharedCalendar系列の長。ひとり子分は{@link SharedCalendarFragment}
  * icepickがうまく働かない・・・
  */
+@SuppressLint("Registered")
 @EActivity(R.layout.activity_shared_calendar)
 public class SharedCalendarActivity extends AppCompatActivity {
     

@@ -5,6 +5,7 @@
 package com.cks.hiroyuki2.worksupport3.Activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -113,6 +114,7 @@ import static com.example.hiroyuki3.worksupportlibw.Adapters.AboutVPAdapter.PREF
 import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.auth.FirebaseUser;
 
+@SuppressLint("Registered")
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener/*, CalenderFragment.OnFragmentInteractionListener*/,
         SocialFragment.IOnCompleteGroup, AnalyticsFragment.OnHamburgerClickListener, FragmentManager.OnBackStackChangedListener {

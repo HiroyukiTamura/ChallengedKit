@@ -4,6 +4,7 @@
 
 package com.cks.hiroyuki2.worksupport3.Activities;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
@@ -29,6 +30,7 @@ import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 /**
  * {@link GroupSettingFragment} の親。今のところこのActivityが関わるFragmentはこれひとつのみ。
  */
+@SuppressLint("Registered")
 @EActivity(R.layout.activity_group_setting)
 public class GroupSettingActivity extends AppCompatActivity {
     private static final String TAG = "MANUAL_TAG: " + GroupSettingActivity.class.getSimpleName();

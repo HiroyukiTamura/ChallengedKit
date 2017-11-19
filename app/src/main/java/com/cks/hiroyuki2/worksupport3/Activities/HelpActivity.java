@@ -1,5 +1,6 @@
 package com.cks.hiroyuki2.worksupport3.Activities;
 
+import android.annotation.SuppressLint;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +19,7 @@ import org.androidannotations.annotations.ViewById;
 
 import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 
+@SuppressLint("Registered")
 @EActivity(R.layout.activity_help)
 public class HelpActivity extends AppCompatActivity implements HelpFragment.IHelpFragment{
 
