@@ -74,6 +74,9 @@ public class OnAddedFriendFragment extends Fragment {
         }
         hashMap.put("/"+ userUid + "/" + user.getUid() + "/photoUrl", myPhotoUrl);
         getRef("friend").updateChildren(hashMap);
+
+        if (getActivity() != null)
+            getActivity().finish();
         /*え？リスナーをセットしないの？と君は言うだろう。だが、friend分枝はサービス側で監視しているんだ。friend分枝が書き込まれたら、サービス側でリスナが走って、UIに更新してくれるんだ。*/
     }
 }
