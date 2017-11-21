@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         toolbarHeight = getToolBarHeight(this);
 
-        findViewById(R.id.toolbar_shadow).setVisibility(GONE);/*これ*/
+        findViewById(R.id.bannersizes_fl_adframe).setVisibility(GONE);/*これ*/
 
         if(!getSupportFragmentManager().getFragments().isEmpty())
             initToolBar(getSupportFragmentManager().getFragments().get(0));
