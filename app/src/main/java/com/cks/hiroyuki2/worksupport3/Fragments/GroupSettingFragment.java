@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
@@ -263,7 +264,7 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
             }, storageUtil, new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                    showUploadingNtf(getContext(), taskSnapshot, fileName, ntfId);
+                    showUploadingNtf(MainActivity.class, getContext(), taskSnapshot, fileName, ntfId);
                 }
             });
         } else if (requestCode == CALLBACK_EXIT_GROUP && resultCode == RESULT_OK){
@@ -401,7 +402,7 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
                         toastNullable(getContext(), R.string.updated_group_name);
                         break;
                     case UPDATE_CODE_PHOTO_URL:
-                        showCompleteNtf(getContext(), group.groupName, ntfId, R.string.ntf_txt_change_group_img);
+                        showCompleteNtf(MainActivity.class, getContext(), group.groupName, ntfId, R.string.ntf_txt_change_group_img);
                         Picasso.with(getContext())/*もともとはデフォルトの画像が挿入されていて、もし画像取得ができれば、デフォルトのImageView手前にあるImageViewに描画し、デフォルトのImageViewを隠す。*/
                                 .load(group.photoUrl)
                                 .into(icon, GroupSettingFragment.this);

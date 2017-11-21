@@ -621,14 +621,14 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                     @Override
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                         toastNullable(getContext(), R.string.msgDlSuccess);
-                        showCompleteNtf(getContext(), fileName, ntfId, R.string.msgDlSuccess);
+                        showCompleteNtf(MainActivity.class, getContext(), fileName, ntfId, R.string.msgDlSuccess);
                     }
                 },
                 storageUtil,
                 new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        showDownloadingNtf(getContext(), taskSnapshot, fileName, ntfId);
+                        showDownloadingNtf(MainActivity.class, getContext(), taskSnapshot, fileName, ntfId);
                     }
                 },
                 new OnFailureListener() {
@@ -699,7 +699,7 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
     private void onFailureOparation(Exception e, String fileName, int ntfId, @StringRes int string){
         logStackTrace(e);
         toastNullable(getContext(), R.string.error);
-        showCompleteNtf(getContext(), fileName, ntfId, string);
+        showCompleteNtf(MainActivity.class, getContext(), fileName, ntfId, string);
     }
 
     /**このメソッドでストレージのデータを削除できようができまいが、ここに到達した時点で{@link #onChoose4thItem(int, boolean)}でDatabaseは削除しているので、
@@ -875,11 +875,11 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                         if (databaseError != null) {
                                             onError(ShareBoardFragment.this, TAG + databaseError.getDetails(), R.string.error);
-                                            showCompleteNtf(getContext(), fileName, ntfId, R.string.msg_failed_upload);
+                                            showCompleteNtf(MainActivity.class, getContext(), fileName, ntfId, R.string.msg_failed_upload);
                                         } else {
                                             toastNullable(getContext(), R.string.msg_succeed_upload);
                                             addContent(content);
-                                            showCompleteNtf(getContext(), fileName, ntfId, R.string.msg_succeed_upload);
+                                            showCompleteNtf(MainActivity.class, getContext(), fileName, ntfId, R.string.msg_succeed_upload);
                                         }
                                     }
                                 });
@@ -887,7 +887,7 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                 }, storageUtil, new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        showUploadingNtf(getContext(), taskSnapshot, fileName, ntfId);
+                        showUploadingNtf(MainActivity.class, getContext(), taskSnapshot, fileName, ntfId);
                     }
                 });
             }

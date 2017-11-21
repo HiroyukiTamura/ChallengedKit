@@ -2,6 +2,7 @@ package com.cks.hiroyuki2.worksupport3;
 
 import android.util.Log;
 
+import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -27,7 +28,7 @@ public class FcmService extends FirebaseMessagingService {
         if (remoteMessage.getNotification() != null) {
             String msg = remoteMessage.getNotification().getBody();
             Log.d(TAG, "onMessageReceived: " +msg);
-            showFcmMsg(msg, getApplicationContext());
+            showFcmMsg(msg, getApplicationContext(), MainActivity.class);
         }
     }
 

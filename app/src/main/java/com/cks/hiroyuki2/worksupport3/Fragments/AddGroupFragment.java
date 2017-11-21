@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity;
+import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
@@ -28,6 +29,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.haha.perflib.Main;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -168,13 +170,13 @@ public class AddGroupFragment extends Fragment implements Callback , SocialListR
                             Picasso.with(getContext())
                                     .load(uri)
                                     .into(icon, AddGroupFragment.this);
-                        showCompleteNtf(getContext(), fileName, ntfId, R.string.ntf_txt_change_group_img);
+                        showCompleteNtf(MainActivity.class, getContext(), fileName, ntfId, R.string.ntf_txt_change_group_img);
                     }
                 }, storageUtil
                 , new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        showUploadingNtf(getContext(), taskSnapshot, fileName, ntfId);
+                        showUploadingNtf(MainActivity.class, getContext(), taskSnapshot, fileName, ntfId);
                     }
                 });
     }
@@ -201,6 +203,6 @@ public class AddGroupFragment extends Fragment implements Callback , SocialListR
     private void onFailureOparation(Exception e, String fileName, int ntfId, @android.support.annotation.StringRes int string){
         logStackTrace(e);
         toastNullable(getContext(), R.string.error);
-        showCompleteNtf(getContext(), fileName, ntfId, string);
+        showCompleteNtf(MainActivity.class, getContext(), fileName, ntfId, string);
     }
 }
