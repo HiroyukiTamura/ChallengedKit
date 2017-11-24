@@ -1,0 +1,25 @@
+{
+  "eleList": [
+    {
+      "content": "配慮事項の件ですが、来月から通院日の日程を増やしたいのですが可能でしょうか。",
+      "lastEdit": "20171119",
+      "user": {
+        "isChecked": false,
+        "name": "Hiroyuki T",
+        "photoUrl": "null",
+        "userUid": "HZJILspbuZecelJkHqIb5sAej3S2"
+      }
+    },
+    {
+      "content": "了解です。次の月例面談の際に話し合いましょう。",
+      "lastEdit": "20171120",
+      "user": {
+        "isChecked": false,
+        "name": "山田花子",
+        "photoUrl": "null",
+        "userUid": "HZJILspbuZecelJkHqIb5sAej3S2"
+      }
+    }
+  ],
+  "title": "配慮事項の件"
+}

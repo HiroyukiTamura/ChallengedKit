@@ -5,7 +5,7 @@
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
-        maven { url "https://maven.google.com" } // or google() for Gradle 4+
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         jcenter()
         mavenCentral()
         google()
@@ -18,7 +18,7 @@ buildscript {
         // We recommend changing it to the latest version from our changelog:
         // https://docs.fabric.io/android/changelog.html#fabric-gradle-plugin
         classpath 'io.fabric.tools:gradle:1.+'
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.8.1'
+        classpath 'com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'
         classpath 'com.google.gms:oss-licenses:0.9.1'
     }
 }
@@ -31,7 +31,7 @@ apply plugin: 'com.google.gms.oss.licenses.plugin'
 repositories {
     maven { url 'https://maven.fabric.io/public' }
     maven { url "https://clojars.org/repo/" }
-    maven { url "https://maven.google.com" } // or google() for Gradle 4+
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     jcenter()
     google()
     maven {
@@ -90,7 +90,7 @@ dependencies {
     compile 'com.takisoft.fix:preference-v7:27.0.0.0'
     compile 'org.jetbrains:annotations-java5:15.0'
     //    compile 'com.github.channguyen:rsv:1.0.1'
-    compile 'com.github.HiroyukTamura:WorkSupportLibW:6f508db'
+    compile 'com.github.HiroyukTamura:WorkSupportLibW:1.4.18'
     compile 'com.prolificinteractive:material-calendarview:1.4.3'
     compile 'com.firebaseui:firebase-ui:3.1.0'
     compile 'com.google.firebase:firebase-core:11.4.2'
@@ -112,7 +112,7 @@ dependencies {
     compile 'com.github.castorflex.verticalviewpager:library:19.0.1'
     compile 'org.adw.library:discrete-seekbar:1.0.1'
     compile 'com.shawnlin:number-picker:2.4.4'
-    compile 'com.jakewharton:butterknife:8.8.1'
+    compile 'com.jakewharton:butterknife:9.0.0-SNAPSHOT'
     compile 'com.github.SumiMakito:AwesomeQRCode:1.0.6'
     compile 'com.journeyapps:zxing-android-embedded:3.5.0'
     compile 'de.hdodenhof:circleimageview:2.2.0'
@@ -127,7 +127,7 @@ dependencies {
     compile 'com.github.deano2390:MaterialShowcaseView:1.2.0@aar'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'org.androidannotations:androidannotations:4.4.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-SNAPSHOT'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.3.1'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.2'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.2'

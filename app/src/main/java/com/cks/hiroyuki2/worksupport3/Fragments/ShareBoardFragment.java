@@ -957,7 +957,7 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
         final Content content = group.contentList.get(listPos);
         final DocumentEle docEle = (DocumentEle) data.getSerializableExtra(EditDocActivity.INTENT_KEY_DOC);
 
-        DatabaseReference ref = getRef(makeScheme("group", group.groupKey, "contents", "おかしなあたい"/*content.contentKey*/, "comment"));
+        DatabaseReference ref = getRef(makeScheme("group", group.groupKey, "contents", content.contentKey, "comment"));
         ref.runTransaction(new Transaction.Handler() {
             private String newVal;
 
@@ -983,7 +983,7 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                     rvAdapter.notifyItemChanged(actualPos);
                 }
             }
-        }, false);
+        });
     }
 
     @Override

@@ -82,8 +82,6 @@ public class SharedCalendarActivity extends AppCompatActivity {
         initAdMob(this);
         logAnalytics(TAG + "起動", this);
 
-        findViewById(R.id.bannersizes_fl_adframe).setVisibility(View.GONE);// TODO: 2017/11/20 広告
-
         fab.setLayoutParams(getFabLp(this));
 
         setSupportActionBar(toolbar);
