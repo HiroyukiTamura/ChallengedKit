@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cks.hiroyuki2.worksupport3.Activities.GroupSettingActivity;
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
@@ -399,6 +400,9 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
                 switch (code){
                     case UPDATE_CODE_NAME:
                         toastNullable(getContext(), R.string.updated_group_name);
+                        GroupSettingActivity activity = (GroupSettingActivity)getActivity();
+                        if (activity != null)
+                            activity.setNewGroupName(value);
                         break;
                     case UPDATE_CODE_PHOTO_URL:
                         showCompleteNtf(MainActivity.class, getContext(), group.groupName, ntfId, R.string.ntf_txt_change_group_img);

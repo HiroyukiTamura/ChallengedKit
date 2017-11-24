@@ -92,4 +92,8 @@ public class GroupSettingActivity extends AppCompatActivity {
         }
         super.onBackPressed();
     }
+
+    public void setNewGroupName(String newGroupName) {
+        this.newGroupName = newGroupName;
+    }
 }
