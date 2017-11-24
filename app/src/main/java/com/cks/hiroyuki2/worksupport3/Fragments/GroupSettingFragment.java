@@ -4,7 +4,6 @@
 
 package com.cks.hiroyuki2.worksupport3.Fragments;
 
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -377,7 +376,7 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
         }.update(CODE_UPDATE_CHILDREN);
     }
 
-    private void updateValue(@updateCode final int code, String value, /*UPDATE_CODE_PHOTO_URLでのみ使用*/final int ntfId){
+    private void updateValue(@updateCode final int code, final String value, /*UPDATE_CODE_PHOTO_URLでのみ使用*/final int ntfId){
         HashMap<String, Object> hashMap = new HashMap<>();
         switch (code) {
             case UPDATE_CODE_NAME:{

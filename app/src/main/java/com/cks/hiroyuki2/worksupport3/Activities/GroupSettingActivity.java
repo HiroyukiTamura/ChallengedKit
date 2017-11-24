@@ -5,6 +5,7 @@
 package com.cks.hiroyuki2.worksupport3.Activities;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
@@ -35,6 +36,8 @@ import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 public class GroupSettingActivity extends AppCompatActivity {
     private static final String TAG = "MANUAL_TAG: " + GroupSettingActivity.class.getSimpleName();
     private boolean isSavedInstance = false;
+    public static final String NEW_GROUP_NAME = "NEW_GROUP_NAME";
+    @State String newGroupName = null;
     @ViewById(R.id.toolbar) Toolbar toolbar;
     @ViewById(R.id.fragment_container) FrameLayout fl;
     @State @Extra Group group;
@@ -74,8 +77,19 @@ public class GroupSettingActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            super.onBackPressed();
+            onBackPressed();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (newGroupName != null){
+            Intent intent = new Intent()
+                    .putExtra(NEW_GROUP_NAME, newGroupName);
+            setResult(RESULT_OK, intent);
+            finish();
+        }
+        super.onBackPressed();
     }
 }
