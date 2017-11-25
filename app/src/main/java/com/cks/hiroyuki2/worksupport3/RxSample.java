@@ -74,50 +74,109 @@ public class RxSample {
             return;
         }
 
-        Observable.just(user)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
-                .map(new Function<FirebaseUser, ObservableSource<?>>() {
+        Observable<String> tokenObs = Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                user.getIdToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                     @Override
-                    public ObservableSource<?> apply(FirebaseUser firebaseUser) throws Exception {
-                        FbTokenObserber obserber = new FbTokenObserber();
-                        obserber.setListener(firebaseUser);
-
-                        //token取得時のタイムアウト
-                        for (int i = 0; i < 7; i++) {
-                            Thread.sleep(1000);
-                            if (obserber.isListenerFired())
-                                break;
+                    public void onComplete(@NonNull Task<GetTokenResult> task) {
+                        if (task.isSuccessful()){
+                            emitter.onNext(task.getResult().getToken());
+                        } else {
+                            emitter.onError(task.getException());
                         }
-
-                        ApiService apiService = getRetroFit().create(ApiService.class);
-                        return apiService.getData("Bearer " + obserber.getToken())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribeOn(Schedulers.newThread());
                     }
-                })
-                .subscribe(new Observer<Object>() {
-                    @Override
-                    public void onNext(Object o) {
-                        Log.d(TAG, "onNext: "+o.toString());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG, "onComplete() called");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        com.cks.hiroyuki2.worksupprotlib.Util.onError(context, TAG+e.getMessage(), R.string.error);
-                    }
-
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(TAG, "onSubscribe: fire");
-                    }
+                });
+            }
         });
+
+        tokenObs.observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.newThread())
+            .subscribe(new Consumer<String>() {
+                @Override
+                public void accept(String token) throws Exception {
+                    Log.d(TAG, "accept:" + token);
+                    ApiService apiService = getRetroFit().create(ApiService.class);
+                    apiService.getData("Bearer " + token)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.newThread())
+                            .subscribe(new Consumer<RequestBody>() {
+                                @Override
+                                public void accept(RequestBody requestBody) throws Exception {
+                                    Log.d(TAG, "onSuccess: " + requestBody.toString());
+                                }
+                            }, new Consumer<Throwable>() {
+                                @Override
+                                public void accept(Throwable throwable) throws Exception {
+                                    com.cks.hiroyuki2.worksupprotlib.Util.onError(context, throwable.getMessage(), R.string.error);
+                                }
+                            });
+                }
+            }, new Consumer<Throwable>() {
+                @Override
+                public void accept(Throwable throwable) throws Exception {
+                    throwable.printStackTrace();
+                }
+        });
+
+//        Observable.just(0)
+//                .map(new Function<Integer, Object>() {
+//                    @Override
+//                    public Object apply(Integer integer) throws Exception {
+//                        return tokenObs;
+//                    }
+//                })
+//                .flatMap(new Function<Object, ObservableSource<?>>() {
+//                    @Override
+//                    public ObservableSource<?> apply(Object o) throws Exception {
+//                        return tokenObs;
+//                    }
+//                })
+//
+//        Observable.just(user)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribeOn(Schedulers.newThread())
+//                .map(new Function<FirebaseUser, ObservableSource<?>>() {
+//                    @Override
+//                    public ObservableSource<?> apply(FirebaseUser firebaseUser) throws Exception {
+//                        FbTokenObserber obserber = new FbTokenObserber();
+//                        obserber.setListener(firebaseUser);
+//
+//                        //token取得時のタイムアウト
+//                        for (int i = 0; i < 7; i++) {
+//                            Thread.sleep(1000);
+//                            if (obserber.isListenerFired())
+//                                break;
+//                        }
+//
+//                        ApiService apiService = getRetroFit().create(ApiService.class);
+//                        return apiService.getData("Bearer " + obserber.getToken())
+//                                .observeOn(AndroidSchedulers.mainThread())
+//                                .subscribeOn(Schedulers.newThread());
+//                    }
+//                })
+//                .subscribe(new Observer<Object>() {
+//                    @Override
+//                    public void onNext(Object o) {
+//                        Log.d(TAG, "onNext: "+o.toString());
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                        Log.d(TAG, "onComplete() called");
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        e.printStackTrace();
+//                        com.cks.hiroyuki2.worksupprotlib.Util.onError(context, TAG+e.getMessage(), R.string.error);
+//                    }
+//
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//                        Log.d(TAG, "onSubscribe: fire");
+//                    }
+//        });
 //        Observable.just(Observable.fromArray("hogehoge")
 //                .map(new Function<String, ObservableSource<?>>() {
 //            @Override

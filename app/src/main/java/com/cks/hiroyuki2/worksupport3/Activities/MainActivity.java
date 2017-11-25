@@ -683,4 +683,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             space.setVisibility(VISIBLE);
         }
     }
+
+    public ServiceConnector getConnector() {
+        return connector;
+    }
 }
