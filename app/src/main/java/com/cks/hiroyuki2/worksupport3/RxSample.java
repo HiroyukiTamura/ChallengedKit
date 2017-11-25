@@ -86,7 +86,9 @@ public class RxSample {
                             if (obserber.isListenerFired())
                                 break;
                         }
-                        return Observable.just(obserber.getToken());//エラー時には空文字列が返ってくる
+                        return Observable.just(obserber.getToken())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.newThread());//エラー時には空文字列が返ってくる
                     }
                 })
                 .map(new Function<Object, Object>() {
@@ -94,7 +96,8 @@ public class RxSample {
                     public Object apply(Object token) throws Exception {
                         ApiService apiService = getRetroFit().create(ApiService.class);
                         return apiService.getData("Bearer " + token)
-                                .observeOn(AndroidSchedulers.mainThread());
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.newThread());
                     }
                 })
                 .subscribe(new Observer<Object>() {
@@ -119,44 +122,42 @@ public class RxSample {
                         Log.d(TAG, "onSubscribe: fire");
                     }
         });
-
-
-        Observable.just(Observable.fromArray("hogehoge")
-                .map(new Function<String, ObservableSource<?>>() {
-            @Override
-            public ObservableSource<?> apply(String s) throws Exception {
-                Log.d(TAG, "apply() called with: s = [" + s + "]");
-
-                return new ObservableSource<Object>() {
-                    @Override
-                    public void subscribe(Observer<? super Object> observer) {
-                        observer.onNext("てってれー");
-                    }
-                };
-            }
-        })).observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Observer<Object>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(Object value) {
-                        Log.d(TAG, "onNext() called with: value = [" + value.toString() + "]");
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG, "onComplete() called");
-                    }
-
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(TAG, "onSubscribe() called with: d = [" + d + "]");
-                    }
-                });
+//        Observable.just(Observable.fromArray("hogehoge")
+//                .map(new Function<String, ObservableSource<?>>() {
+//            @Override
+//            public ObservableSource<?> apply(String s) throws Exception {
+//                Log.d(TAG, "apply() called with: s = [" + s + "]");
+//
+//                return new ObservableSource<Object>() {
+//                    @Override
+//                    public void subscribe(Observer<? super Object> observer) {
+//                        observer.onNext("てってれー");
+//                    }
+//                };
+//            }
+//        })).observeOn(AndroidSchedulers.mainThread())
+//                .subscribeOn(Schedulers.newThread())
+//                .subscribe(new Observer<Object>() {
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    @Override
+//                    public void onNext(Object value) {
+//                        Log.d(TAG, "onNext() called with: value = [" + value.toString() + "]");
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                        Log.d(TAG, "onComplete() called");
+//                    }
+//
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//                        Log.d(TAG, "onSubscribe() called with: d = [" + d + "]");
+//                    }
+//                });
     }
 
     public void access() {
