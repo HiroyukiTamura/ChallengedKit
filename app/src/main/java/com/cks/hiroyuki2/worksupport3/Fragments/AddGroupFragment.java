@@ -29,7 +29,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.haha.perflib.Main;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 

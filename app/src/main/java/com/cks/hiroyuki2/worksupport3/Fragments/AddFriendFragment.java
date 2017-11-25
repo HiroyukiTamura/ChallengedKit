@@ -14,19 +14,13 @@ import android.widget.LinearLayout;
 
 import com.cks.hiroyuki2.worksupport3.Activities.AddFriendActivity;
 import com.cks.hiroyuki2.worksupport3.R;
-import com.cks.hiroyuki2.worksupport3.Util;
 import com.example.hiroyuki3.worksupportlibw.Adapters.AddFriendVPAdapter;
-import com.google.firebase.auth.FirebaseUser;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
-import java.util.HashMap;
-
 import static com.cks.hiroyuki2.worksupport3.Util.checkPermission;
-import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
-import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 
 /**
  * {@link AddFriendActivity}のひとり子分。

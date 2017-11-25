@@ -2,15 +2,11 @@ package com.cks.hiroyuki2.worksupport3;
 
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.cks.hiroyuki2.worksupprotlib.*;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by hiroyuki2 on 2017/11/25.

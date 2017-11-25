@@ -15,9 +15,14 @@ public class ServiceMessage {
     private DocumentEle documentEle;
     private FirebaseUser user;
 
-    public ServiceMessage(@NonNull DocumentEle ele, @NonNull FirebaseUser user){
+    private String groupKey;
+    private String contentsKey;
+
+    public ServiceMessage(@NonNull DocumentEle ele, @NonNull FirebaseUser user, @NonNull String groupKey, @NonNull String contentsKey){
         this.documentEle = ele;
         this.user = user;
+        this.groupKey = groupKey;
+        this.contentsKey = contentsKey;
     }
 
     public DocumentEle getDocumentEle() {
@@ -26,5 +31,13 @@ public class ServiceMessage {
 
     public FirebaseUser getUser() {
         return user;
+    }
+
+    public String getGroupKey() {
+        return groupKey;
+    }
+
+    public String getContentsKey() {
+        return contentsKey;
     }
 }

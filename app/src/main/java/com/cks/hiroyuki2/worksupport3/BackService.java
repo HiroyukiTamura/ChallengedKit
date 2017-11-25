@@ -15,7 +15,6 @@ import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -41,16 +40,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
 import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -63,7 +59,6 @@ import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.writeGroup;
 import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.writeGroupKeys;
 import static com.cks.hiroyuki2.worksupprotlib.Util.DEFAULT;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
-import static com.cks.hiroyuki2.worksupprotlib.Util.toast;
 
 /**
  * BackServiceおじさん！
@@ -366,29 +361,26 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
     }
 
     private void addComment(@NonNull ServiceMessage sm){
-        sm.getUser().getIdToken(false).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-            @Override
-            public void onComplete(@NonNull Task<GetTokenResult> task) {
-                if (!task.isSuccessful()) {
-                    onError(getApplicationContext(), TAG + task.toString(), R.string.error);
-                    return;
+        sm.getUser().getIdToken(false).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                onError(getApplicationContext(), TAG + task.toString(), R.string.error);
+                return;
+            }
+
+            String token = task.getResult().getToken();
+            ApiService apiService = getRetroFit().create(ApiService.class);
+            apiService.getData("Bearer " + token)
+                    .enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                    Log.d(TAG, "onResponse: code" + response.code());
                 }
 
-                String token = task.getResult().getToken();
-                ApiService apiService = getRetroFit().create(ApiService.class);
-                apiService.getData("Bearer " + token)
-                        .enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                        Log.d(TAG, "onResponse: code" + response.code());
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                        onError(getApplicationContext(), t.getMessage(), R.string.error);
-                    }
-                });
-            }
+                @Override
+                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                    onError(getApplicationContext(), t.getMessage(), R.string.error);
+                }
+            });
         });
     }
 
