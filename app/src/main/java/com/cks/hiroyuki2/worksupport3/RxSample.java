@@ -77,25 +77,21 @@ public class RxSample {
         Observable.just(user)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
-                .flatMap(new Function<FirebaseUser, ObservableSource<?>>() {
+                .map(new Function<FirebaseUser, ObservableSource<?>>() {
                     @Override
                     public ObservableSource<?> apply(FirebaseUser firebaseUser) throws Exception {
                         FbTokenObserber obserber = new FbTokenObserber();
+                        obserber.setListener(firebaseUser);
+
+                        //token取得時のタイムアウト
                         for (int i = 0; i < 7; i++) {
                             Thread.sleep(1000);
                             if (obserber.isListenerFired())
                                 break;
                         }
-                        return Observable.just(obserber.getToken())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribeOn(Schedulers.newThread());//エラー時には空文字列が返ってくる
-                    }
-                })
-                .map(new Function<Object, Object>() {
-                    @Override
-                    public Object apply(Object token) throws Exception {
+
                         ApiService apiService = getRetroFit().create(ApiService.class);
-                        return apiService.getData("Bearer " + token)
+                        return apiService.getData("Bearer " + obserber.getToken())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribeOn(Schedulers.newThread());
                     }
@@ -250,7 +246,7 @@ public class RxSample {
     }
 
     public interface ApiService {
-        @GET("users/{HiroyukTamura}/repos")
+        @GET("users/HiroyukTamura/repos")
         @Headers({
                 "User-Agent: Retrofit-Sample-App"
         })

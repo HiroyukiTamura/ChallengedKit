@@ -29,11 +29,7 @@ public class FbTokenObserber {
 
     }
 
-    public boolean setListener(){
-        FirebaseUser user = com.cks.hiroyuki2.worksupprotlib.Util.getUserMe();
-        if (user == null)
-            return false;
-
+    public void setListener(FirebaseUser user){
         listener = new OnCompleteListener<GetTokenResult>() {
             @Override
             public void onComplete(@NonNull Task<GetTokenResult> task) {
@@ -44,7 +40,6 @@ public class FbTokenObserber {
         };
 
         user.getIdToken(false).addOnCompleteListener(listener);
-        return true;
     }
 
     /**
