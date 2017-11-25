@@ -98,8 +98,8 @@ public class ServiceConnector extends BroadcastReceiver implements ServiceConnec
         mServiceMessenger = new Messenger(iBinder);
         isBind = true;
 
-        ServiceMessage sm = new ServiceMessage(null, getUserMe(), "sampleGroupKey", "sampleContentsKey");
-        send(SEND_CODE_ADD_COMMENT, sm);
+//        ServiceMessage sm = new ServiceMessage(null, getUserMe(), "sampleGroupKey", "sampleContentsKey");
+//        send(SEND_CODE_ADD_COMMENT, sm);
     }
 
     @Override

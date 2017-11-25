@@ -960,10 +960,10 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
         final Content content = group.contentList.get(listPos);
         final DocumentEle docEle = (DocumentEle) data.getSerializableExtra(EditDocActivity.INTENT_KEY_DOC);
 
-        ServiceMessage sm = new ServiceMessage(docEle, user, group.groupKey, content.contentKey);
-        boolean sendSuccess = ((MainActivity)getActivity()).getConnector().send(SEND_CODE_ADD_COMMENT, sm);
-        if (!sendSuccess)
-            onError(this, TAG+"!sendSuccess", R.string.error);
+//        ServiceMessage sm = new ServiceMessage(docEle, user, group.groupKey, content.contentKey);
+//        boolean sendSuccess = ((MainActivity)getActivity()).getConnector().send(SEND_CODE_ADD_COMMENT, sm);
+//        if (!sendSuccess)
+//            onError(this, TAG+"!sendSuccess", R.string.error);
 
         DatabaseReference ref = getRef(makeScheme("group", group.groupKey, "contents", content.contentKey, "comment"));
         ref.runTransaction(new Transaction.Handler() {
