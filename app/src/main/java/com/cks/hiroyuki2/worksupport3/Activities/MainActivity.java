@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         loginCheck();
 
-        new RxSample(this).access();
+        new RxSample(this).init();
 
 //        setContentFragment();
 

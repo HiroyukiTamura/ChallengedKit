@@ -16,8 +16,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -55,6 +58,7 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
     static final String INTENT_KEY_1 = "INTENT_KEY_1";
     static final String INTENT_KEY_2 = "INTENT_KEY_2";
     private String uid;
+    private String authToken;
     private static final String urlStart = "https://wordsupport3.firebaseio.com";/*まさかのwor"D"support*/
     private List<String> groupKeys = new ArrayList<>();
     private Messenger mServiceMessenger;
@@ -134,6 +138,7 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
         FirebaseUser user = firebaseAuth.getCurrentUser();
+
         if (user != null) {
             uid = user.getUid();
 //            writeLocalProf(user);

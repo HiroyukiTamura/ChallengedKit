@@ -956,14 +956,6 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
 //        rvAdapter.notifyItemRangeInserted(group.contentList.size()-1, 1);//これデバッグすること
     }
 
-    public interface ApiService {
-        @GET("users/{HiroyukTamura}/repos")
-        @Headers({
-                "User-Agent: Retrofit-Sample-App"
-        })
-        retrofit2.Call<RequestBody> getData(@Header("Authorization") String authorization);
-    }
-
     /**
      * トランザクションで値を上書きします。ノードの存在をチェックしなくても、落ちません。
      */
