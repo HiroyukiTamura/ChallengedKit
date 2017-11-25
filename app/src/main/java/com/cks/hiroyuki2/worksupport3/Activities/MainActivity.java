@@ -600,14 +600,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @OnActivityResult(REQ_CODE_GROUP_SETTING)
     void onResultExitGroup(int requesCode,
-                           @OnActivityResult.Extra(GroupSettingFragment.GROUP) Group group,
-                           @OnActivityResult.Extra(GroupSettingActivity.NEW_GROUP_NAME) String newGroupName){
+                           @OnActivityResult.Extra(GroupSettingFragment.GROUP) Group group
+                           /*@OnActivityResult.Extra(GroupSettingActivity.NEW_GROUP_NAME) String newGroupName*/){
         if (requesCode != Activity.RESULT_OK)
             return;
 
-        if (newGroupName != null){
-            setToolbarTitle(newGroupName);
-        } else if (group != null){
+        if (group == null){
+            //グループ名変更など、設定操作をした後なので、リロードさせる
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(ShareBoardFragment.class.getSimpleName());
+            if (fragment != null)
+                ((ShareBoardFragment) fragment).onRefresh();
+//            setToolbarTitle(newGroupName);
+        } else {
             FirebaseUser userMe = getUserMe();
             if (userMe == null){
                 onError(this, TAG+"userMe == null", R.string.error);

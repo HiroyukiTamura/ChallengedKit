@@ -82,18 +82,18 @@ public class GroupSettingActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * @see MainActivity#onResultExitGroup(int, Group)
+     * を発火させたいのでこのような実装になってる
+     */
     @Override
     public void onBackPressed() {
-        if (newGroupName != null){
-            Intent intent = new Intent()
-                    .putExtra(NEW_GROUP_NAME, newGroupName);
-            setResult(RESULT_OK, intent);
-            finish();
-        }
+        setResult(RESULT_OK, new Intent());
+        finish();
         super.onBackPressed();
     }
 
-    public void setNewGroupName(String newGroupName) {
-        this.newGroupName = newGroupName;
-    }
+//    public void setNewGroupName(String newGroupName) {
+//        this.newGroupName = newGroupName;
+//    }
 }

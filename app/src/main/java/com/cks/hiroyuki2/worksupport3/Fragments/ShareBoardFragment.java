@@ -263,6 +263,8 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
         rvAdapter = new ShareBoardRVAdapter(group, this);
         rv.setAdapter(rvAdapter);
 
+        ((MainActivity) context).initToolBar(this, group.groupName);//え？またここでもtoolbarTitleをupdateするんですか？するんです！
+
         animator = new PreventableAnimator();
         rv.setItemAnimator(animator);
 
@@ -365,7 +367,7 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                     return;
                 }
 
-                toastNullable(getContext(), R.string.success_swipe);
+//                toastNullable(getContext(), R.string.success_swipe);
                 group = groupC;
                 storageUtil = new FirebaseStorageUtil(getContext(), group);
                 srl.setRefreshing(false);
@@ -480,7 +482,7 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                 toastNullable(getContext(), R.string.updated_comment_msg);
                 //リスト書き込みしてUI更新
                 content.comment = newComment;/*リスト書き込みはするが、はてローカルに書き込む？*/
-                rvAdapter.notifyItemChanged(listPos);
+                rvAdapter.notifyDataSetChanged();
             }
         };
         writer.update(CODE_SET_VALUE);
