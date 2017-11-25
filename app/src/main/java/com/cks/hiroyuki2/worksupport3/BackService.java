@@ -369,11 +369,11 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
 
             String token = task.getResult().getToken();
             ApiService apiService = getRetroFit().create(ApiService.class);
-            apiService.getData("Bearer " + token)
+            apiService.getData("Bearer " + token, sm.getGroupKey(), sm.getContentsKey())
                     .enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                    Log.d(TAG, "onResponse: code" + response.code());
+                    Log.d(TAG, "onResponse: code " + response.code() +"message "+ response.message());
                 }
 
                 @Override
@@ -406,10 +406,12 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
     }
 
     public interface ApiService {
-        @GET("helloWorld/")
+        @GET("helloWorld/api/")
         @Headers({
                 "User-Agent: Retrofit-Sample-App"
         })
-        Call<ResponseBody> getData(@Header("Authorization") String authorization);
+        Call<ResponseBody> getData(@Header("Authorization") String authorization,
+                                   @Header("groupKey") String groupKey,
+                                   @Header("contentsKey") String contentsKey);
     }
 }

@@ -124,16 +124,19 @@ public class ServiceConnector extends BroadcastReceiver implements ServiceConnec
         context.unregisterReceiver(this);
     }
 
-    public void send(int what, Object obj){
+    public boolean send(int what, Object obj){
+        boolean success = false;
         if (mServiceMessenger != null) {
             try {
                 Message msg = Message.obtain(null, what, obj);
 //                msg.replyTo = mSelfMessenger;
                 mServiceMessenger.send(msg);
+                success = true;
             } catch (RemoteException e) {
                 logStackTrace(e);
             }
         }
+        return success;
     }
 
     private class ResponseHandler extends Handler {
