@@ -50,63 +50,7 @@ public class Util {
     public static final int CODE_READ_STORAGE = 1;
     public static final int CODE_CAMERA = 2;
     public static final String OLD_GRP_NAME = "OLD_GRP_NAME";
-
-//    public static void showUploadingNtf(Context context, UploadTask.TaskSnapshot taskSnapshot, String fileName, int id){
-//        String text = context.getString(R.string.msg_start_upload);
-//        NotificationCompat.Builder builder = createNtfBase(context, fileName, text, id)
-//                .setAutoCancel(false)
-//                .setProgress((int) taskSnapshot.getTotalByteCount(), (int) taskSnapshot.getBytesTransferred(), false);
-//        if (SDK_INT >= 21)
-//            builder.setCategory(Notification.CATEGORY_PROGRESS);
-//        Notification notification = builder.build();
-//        notification.flags = Notification.FLAG_NO_CLEAR;
-//        showNtf(context, id, notification);
-//    }
-
-//    public static void showDownloadingNtf(Context context, FileDownloadTask.TaskSnapshot taskSnapshot, String fileName, int id){
-//        String text = context.getString(R.string.msg_succeed_download);
-//        NotificationCompat.Builder builder = createNtfBase(context, fileName, text, id)
-//                .setAutoCancel(false)
-//                .setProgress((int) taskSnapshot.getTotalByteCount(), (int) taskSnapshot.getBytesTransferred(), false);
-//        if (SDK_INT >= 21)
-//            builder.setCategory(Notification.CATEGORY_PROGRESS);
-//        Notification notification = builder.build();
-//        notification.flags = Notification.FLAG_NO_CLEAR;
-//        showNtf(context, id, notification);
-//    }
-//
-//    public static void showCompleteNtf(Context context, String fileName, int id, @StringRes int textRes){
-//        String text = context.getString(textRes);
-//        NotificationCompat.Builder builder = createNtfBase(context, fileName, text, id);
-//        if (SDK_INT >= 21)
-//            builder.setCategory(Notification.CATEGORY_STATUS);
-//        showNtf(context, id, builder.build());
-//    }
-//
-//    private static PendingIntent createPendingIntent(Context context, int id){
-//        Intent intent = new Intent(context, MainActivity.class);
-//        intent.setFlags(
-//                Intent.FLAG_ACTIVITY_CLEAR_TOP  // 起動中のアプリがあってもこちらを優先する
-//                        | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED  // 起動中のアプリがあってもこちらを優先する
-//                        | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS  // 「最近利用したアプリ」に表示させない
-//        );
-//        return PendingIntent.getActivity(context, id, intent,
-//                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-//    }
-//
-//    private static NotificationCompat.Builder createNtfBase(Context context, String fileName, String text, int id){
-//        return new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL)
-//                .setSmallIcon(R.drawable.ic_cloud_upload_white_24dp)// TODO: 2017/11/19 これ直すこと
-//                .setContentTitle(fileName)
-//                .setContentText(text)
-//                .setTicker(text)
-//                .setContentIntent(createPendingIntent(context, id));
-//    }
-//
-//    private static void showNtf(Context context, int id, Notification ntf){
-//        NotificationManagerCompat manager = NotificationManagerCompat.from(context);
-//        manager.notify(id, ntf);
-//    }
+    public static final String API_URL = "https://www.google.co.jp/";
 
     public static void initAdMob(Context context){
         MobileAds.initialize(context.getApplicationContext(), "ca-app-pub-3940256099942544~3347511713");

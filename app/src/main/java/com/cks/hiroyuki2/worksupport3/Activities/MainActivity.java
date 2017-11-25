@@ -58,6 +58,7 @@ import com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment_;
 import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SocialFragment;
 import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupport3.RxSample;
 import com.cks.hiroyuki2.worksupport3.ServiceConnector;
 import com.cks.hiroyuki2.worksupport3.Util;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
@@ -243,6 +244,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         loginCheck();
+
+        new RxSample(this).access();
 
 //        setContentFragment();
 
