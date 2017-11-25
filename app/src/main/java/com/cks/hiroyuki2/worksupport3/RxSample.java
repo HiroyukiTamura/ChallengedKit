@@ -49,7 +49,6 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 
-import static com.cks.hiroyuki2.worksupport3.Util.API_URL;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.nullableEqual;

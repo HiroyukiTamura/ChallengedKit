@@ -103,7 +103,6 @@ import static android.app.Activity.RESULT_OK;
 import static com.cks.hiroyuki2.worksupport3.BackService.SEND_CODE_ADD_COMMENT;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog.ADD_ITEM_DIALOG;
-import static com.cks.hiroyuki2.worksupport3.Util.API_URL;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_SET_VALUE;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;

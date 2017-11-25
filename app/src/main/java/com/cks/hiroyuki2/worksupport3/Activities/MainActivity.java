@@ -247,9 +247,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         loginCheck();
 
-        ServiceMessage sm = new ServiceMessage(null, getUserMe());
-        connector.send(SEND_CODE_ADD_COMMENT, sm);
-
 //        setContentFragment();
 
 //        signIn();

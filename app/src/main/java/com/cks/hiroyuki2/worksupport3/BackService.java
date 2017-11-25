@@ -44,6 +44,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -376,14 +377,14 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
                 String token = task.getResult().getToken();
                 ApiService apiService = getRetroFit().create(ApiService.class);
                 apiService.getData("Bearer " + token)
-                        .enqueue(new Callback<RequestBody>() {
+                        .enqueue(new Callback<ResponseBody>() {
                     @Override
-                    public void onResponse(@NonNull Call<RequestBody> call, @NonNull Response<RequestBody> response) {
+                    public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                         Log.d(TAG, "onResponse: code" + response.code());
                     }
 
                     @Override
-                    public void onFailure(@NonNull Call<RequestBody> call, @NonNull Throwable t) {
+                    public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                         onError(getApplicationContext(), t.getMessage(), R.string.error);
                     }
                 });
@@ -409,15 +410,14 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
                 .baseUrl(API_URL)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
     }
 
     public interface ApiService {
-        @GET("/helloWorld/")
+        @GET("helloWorld/")
         @Headers({
                 "User-Agent: Retrofit-Sample-App"
         })
-        Call<RequestBody> getData(@Header("Authorization") String authorization);
+        Call<ResponseBody> getData(@Header("Authorization") String authorization);
     }
 }
