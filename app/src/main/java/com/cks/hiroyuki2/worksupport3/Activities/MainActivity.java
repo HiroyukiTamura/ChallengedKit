@@ -60,6 +60,7 @@ import com.cks.hiroyuki2.worksupport3.Fragments.SocialFragment;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.RxSample;
 import com.cks.hiroyuki2.worksupport3.ServiceConnector;
+import com.cks.hiroyuki2.worksupport3.ServiceMessage;
 import com.cks.hiroyuki2.worksupport3.Util;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
@@ -91,6 +92,7 @@ import io.fabric.sdk.android.Fabric;
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static com.cks.hiroyuki2.worksupport3.BackService.SEND_CODE_ADD_COMMENT;
 import static com.cks.hiroyuki2.worksupport3.BackService.UNKNOWN_STATE;
 import static com.cks.hiroyuki2.worksupport3.Util.getFragmentTag;
 import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
@@ -245,7 +247,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         loginCheck();
 
-        new RxSample(this).init();
+        ServiceMessage sm = new ServiceMessage(null, getUserMe());
+        connector.send(SEND_CODE_ADD_COMMENT, sm);
 
 //        setContentFragment();
 

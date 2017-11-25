@@ -28,7 +28,9 @@ import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.Scheduler;
 import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
 import io.reactivex.SingleObserver;
+import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -74,14 +76,14 @@ public class RxSample {
             return;
         }
 
-        Observable<String> tokenObs = Observable.create(new ObservableOnSubscribe<String>() {
+        Single<String> tokenSingle = Single.create(new SingleOnSubscribe<String>() {
             @Override
-            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+            public void subscribe(SingleEmitter<String> emitter) throws Exception {
                 user.getIdToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                     @Override
                     public void onComplete(@NonNull Task<GetTokenResult> task) {
                         if (task.isSuccessful()){
-                            emitter.onNext(task.getResult().getToken());
+                            emitter.onSuccess(task.getResult().getToken());
                         } else {
                             emitter.onError(task.getException());
                         }
@@ -90,7 +92,7 @@ public class RxSample {
             }
         });
 
-        tokenObs.observeOn(AndroidSchedulers.mainThread())
+        tokenSingle.observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.newThread())
             .subscribe(new Consumer<String>() {
                 @Override

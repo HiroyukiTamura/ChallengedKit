@@ -34,6 +34,7 @@ import com.cks.hiroyuki2.worksupport3.Activities.EditDocActivity;
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog;
+import com.cks.hiroyuki2.worksupport3.ServiceMessage;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Document;
 import com.cks.hiroyuki2.worksupprotlib.Entity.DocumentEle;
@@ -99,6 +100,7 @@ import retrofit2.http.Headers;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
+import static com.cks.hiroyuki2.worksupport3.BackService.SEND_CODE_ADD_COMMENT;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog.ADD_ITEM_DIALOG;
 import static com.cks.hiroyuki2.worksupport3.Util.API_URL;
@@ -961,13 +963,17 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
      */
     private void addDocComment(final Intent data){
         final int listPos = data.getIntExtra(EditDocActivity.INTENT_KEY_POS, Integer.MAX_VALUE);
-        if (listPos == Integer.MAX_VALUE){
+        FirebaseUser user = getUserMe();
+        if (listPos == Integer.MAX_VALUE || user == null){
             onError(this, "pos == Integer.MAX_VALUE", R.string.error);
             return;
         }
 
         final Content content = group.contentList.get(listPos);
         final DocumentEle docEle = (DocumentEle) data.getSerializableExtra(EditDocActivity.INTENT_KEY_DOC);
+
+        ServiceMessage sm = new ServiceMessage(docEle, user);
+        ((MainActivity)getActivity()).getConnector().send(SEND_CODE_ADD_COMMENT, sm);
 
         DatabaseReference ref = getRef(makeScheme("group", group.groupKey, "contents", content.contentKey, "comment"));
         ref.runTransaction(new Transaction.Handler() {

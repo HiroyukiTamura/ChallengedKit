@@ -50,7 +50,6 @@ public class Util {
     public static final int CODE_READ_STORAGE = 1;
     public static final int CODE_CAMERA = 2;
     public static final String OLD_GRP_NAME = "OLD_GRP_NAME";
-    public static final String API_URL = "https://www.google.co.jp/";
 
     public static void initAdMob(Context context){
         MobileAds.initialize(context.getApplicationContext(), "ca-app-pub-3940256099942544~3347511713");
