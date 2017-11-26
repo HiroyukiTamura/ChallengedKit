@@ -13,14 +13,18 @@ import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
@@ -47,8 +51,10 @@ import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRootRef;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.uploadFile;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getExtension;
+import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.showCompleteNtf;
 import static com.cks.hiroyuki2.worksupprotlib.Util.showDownloadingNtf;
 import static com.cks.hiroyuki2.worksupprotlib.Util.showUploadingNtf;
@@ -215,6 +221,40 @@ public class FbIntentService extends IntentService implements OnFailureListener{
         });
     }
 
+    /**
+     * storageのファイルは削除していないことに注意してください。cloudFunc側で実装してください。
+     */
+    @ServiceAction
+    public void removeFileFromStorage(@NonNull String groupKey, @NonNull String contentKey, final boolean isDoc){
+        getRef("group", groupKey, "contents", contentKey)
+                .removeValue(new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if (databaseError != null)
+                            onErrorForService(databaseError.getMessage(), R.string.error);
+                        else {
+                            RxBus.publish(RxBus.REMOVE_STORAGE_FILE, contentKey);
+                            if (!isDoc){
+                                FirebaseStorage.getInstance().getReference()
+                                        .child(makeScheme("shareFile", groupKey, contentKey))
+                                        .delete()
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                logStackTrace(e);
+                                            }
+                                        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d(TAG, "onSuccess: addOnSuccessListener");
+                                            }
+                                        });
+                            }
+                        }
+                    }
+                });
+    }
+
     @Override
     public void onFailure(@NonNull Exception e) {
         logStackTrace(e);
@@ -238,5 +278,11 @@ public class FbIntentService extends IntentService implements OnFailureListener{
         public void run(){
             Toast.makeText(getApplicationContext(), mText, Toast.LENGTH_LONG).show();
         }
+    }
+
+    public void onErrorForService(@NonNull String errLog, @StringRes int msgRes){
+        toastHandler.post(new DisplayToast(msgRes));
+        logAnalytics(errLog, this);
+        Answers.getInstance().logCustom(new CustomEvent(errLog));
     }
 }

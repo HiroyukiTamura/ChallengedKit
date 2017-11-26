@@ -24,6 +24,7 @@ import com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SharedCalendarFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SocialFragment;
+import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
@@ -36,6 +37,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -155,6 +157,15 @@ public class Util {
                 "Content-Type: application/json"
         })
         Single<ShortenUrlResponse> getData(@Body HashMap<String, String> postData, @Query("key") String key);
+    }
+
+    // TODO: 2017/11/27 libに移管してposで取得⇒操作系を一掃して！！
+    @Nullable
+    public static Content getContentByKey(@NonNull List<Content> contentList, @NonNull String key){
+        for (Content content : contentList)
+            if (content.contentKey.equals(key))
+                return content;
+        return null;
     }
 
 //    public static void showFcmMsg(String messageBody, Context context) {

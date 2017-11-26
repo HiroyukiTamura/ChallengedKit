@@ -10,15 +10,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.transition.AutoTransition;
 import android.support.transition.Transition;
 import android.support.transition.TransitionManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,7 +31,7 @@ import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupport3.FbIntentService_;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog;
-import com.cks.hiroyuki2.worksupport3.ServiceMessage;
+import com.cks.hiroyuki2.worksupport3.RxBus;
 import com.cks.hiroyuki2.worksupport3.ShortenUrlResponse;
 import com.cks.hiroyuki2.worksupport3.Util;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
@@ -60,13 +57,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import org.androidannotations.annotations.AfterViews;
@@ -78,53 +73,29 @@ import org.jetbrains.annotations.Contract;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import icepick.Icepick;
 import icepick.State;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
-import retrofit2.http.Header;
-import retrofit2.http.Headers;
-import retrofit2.http.POST;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
-import static com.cks.hiroyuki2.worksupport3.BackService.API_URL;
-import static com.cks.hiroyuki2.worksupport3.BackService.SEND_CODE_ADD_COMMENT;
-import static com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog.newInstance;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog.ADD_ITEM_DIALOG;
+import static com.cks.hiroyuki2.worksupport3.Util.getContentByKey;
 import static com.cks.hiroyuki2.worksupport3.Util.getRetroFit;
-import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_SET_VALUE;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.LIMIT_SIZE;
-import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.getShortenUrlFromRes;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.isOverSize;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.uploadFile;
 import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.getOneGroupFromJson;
@@ -139,7 +110,6 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.showCompleteNtf;
-import static com.cks.hiroyuki2.worksupprotlib.Util.showDownloadingNtf;
 import static com.cks.hiroyuki2.worksupprotlib.Util.showUploadingNtf;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.ShareBoardRVAdapter.ITEM_TYPE_DATA;
@@ -194,6 +164,20 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
         super.onCreate(savedInstanceState);
         Icepick.restoreInstanceState(this, savedInstanceState);
         storageUtil = new FirebaseStorageUtil(getContext(), group);
+
+        RxBus.subscribe(RxBus.REMOVE_STORAGE_FILE, this, new Consumer<Object>() {
+            @Override
+            public void accept(Object contentsKey) throws Exception {
+                Content content = getContentByKey(group.contentList, (String) contentsKey);
+                if (content == null){
+                    onError(ShareBoardFragment.this, TAG+ "content == null", R.string.error);
+                    return;
+                }
+
+                group.contentList.remove(content);
+                rvAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -806,7 +790,6 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
         FbIntentService_.intent(getContext().getApplicationContext())
                 .dlFileFromStorage(group.groupKey, content.contentKey, content.contentName, uri)
                 .start();
-
 //        String tempFileName = String.valueOf(new Random().nextInt());
 //        File file = new File(getContext().getCacheDir(), tempFileName);
 //
@@ -873,23 +856,26 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
 
     //region onChoose4thItem系列
     private void onChoose4thItem(final int listPos, final boolean isDoc){
-        final Content content = group.contentList.get(listPos);
-        getRef("group", group.groupKey, "contents", content.contentKey)
-                .removeValue(new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null)
-                    onError(ShareBoardFragment.this, TAG + databaseError.getMessage(), R.string.error);
-                else {
-                    toastNullable(getContext(), R.string.msg_delete_item);
-                    group.contentList.remove(listPos);
-                    rvAdapter.notifyDataSetChanged();
-                    if (!isDoc)
-                        onSuccessRemoveData(content);
-                }
+        FbIntentService_.intent(getContext().getApplicationContext())
+                .removeFileFromStorage(group.groupKey, group.contentList.get(listPos).contentKey, isDoc)
+                .start();
 
-            }
-        });
+//        final Content content = group.contentList.get(listPos);
+//        getRef("group", group.groupKey, "contents", content.contentKey)
+//                .removeValue(new DatabaseReference.CompletionListener() {
+//            @Override
+//            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+//                if (databaseError != null)
+//                    onError(ShareBoardFragment.this, TAG + databaseError.getMessage(), R.string.error);
+//                else {
+//                    toastNullable(getContext(), R.string.msg_delete_item);
+//                    group.contentList.remove(listPos);
+//                    rvAdapter.notifyDataSetChanged();
+//                    if (!isDoc)
+//                        onSuccessRemoveData(content);
+//                }
+//            }
+//        });
     }
 
     private void onFailureOparation(Exception e, String fileName, int ntfId, @StringRes int string){
@@ -898,22 +884,22 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
         showCompleteNtf(MainActivity.class, getContext(), fileName, ntfId, string);
     }
 
-    /**このメソッドでストレージのデータを削除できようができまいが、ここに到達した時点で{@link #onChoose4thItem(int, boolean)}でDatabaseは削除しているので、
-     * トーストは{@link #onChoose4thItem(int, boolean)}で出すようにする。*/
-    private void onSuccessRemoveData(Content content){
-        StorageReference ref = FirebaseStorage.getInstance().getReference().child("shareFile/"+group.groupKey+"/"+content.contentKey);
-        ref.delete().addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                logStackTrace(e);
-            }
-        }).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d(TAG, "onSuccess: addOnSuccessListener");
-            }
-        });
-    }
+//    /**このメソッドでストレージのデータを削除できようができまいが、ここに到達した時点で{@link #onChoose4thItem(int, boolean)}でDatabaseは削除しているので、
+//     * トーストは{@link #onChoose4thItem(int, boolean)}で出すようにする。*/
+//    private void onSuccessRemoveData(Content content){
+//        StorageReference ref = FirebaseStorage.getInstance().getReference().child("shareFile/"+group.groupKey+"/"+content.contentKey);
+//        ref.delete().addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                logStackTrace(e);
+//            }
+//        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void aVoid) {
+//                Log.d(TAG, "onSuccess: addOnSuccessListener");
+//            }
+//        });
+//    }
     //endregion
 
     //region EditDocActivityにintent投げる系

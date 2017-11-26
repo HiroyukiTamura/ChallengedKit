@@ -14,7 +14,6 @@ public class ServiceMessage {
 
     private DocumentEle documentEle;
     private FirebaseUser user;
-
     private String groupKey;
     private String contentsKey;
 
