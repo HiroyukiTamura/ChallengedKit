@@ -427,9 +427,20 @@ public class GroupSettingFragment extends RxFragment implements Callback, OnFail
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
+                                String uid = FirebaseAuth.getInstance().getUid();
+
                                 if (dataSnapshot == null || !dataSnapshot.exists()){
-                                    emitter.onError(new IllegalArgumentException("dataSnapshot == null || !dataSnapshot.exists()"));
+                                    emitter.onError(new IllegalArgumentException("dataSnapshot == null || !dataSnapshot.exists() グループ消滅？"));
                                     return;
+                                }
+
+                                if (!dataSnapshot.hasChild(FirebaseAuth.getInstance().getUid())){
+                                    emitter.onError(new IllegalArgumentException("!dataSnapshot.hasChild(FirebaseAuth.getInstance().getUid()) グループ脱退？"));
+                                }
+
+                                if (!dataSnapshot.child(uid).child("isChecked").getValue(Boolean.class)){
+                                    //ここには来ないはず
+                                    emitter.onError(new IllegalArgumentException("!dataSnapshot.child(uid).child(isChecked).getValue(Boolean.class) グループ未参加？"));
                                 }
 
                                 HashMap<String, Object> childMap = new HashMap<>();

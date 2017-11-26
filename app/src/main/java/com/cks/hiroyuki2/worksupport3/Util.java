@@ -29,10 +29,16 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.listener.single.PermissionListener;
+
+import org.jetbrains.annotations.Contract;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -55,7 +61,10 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
 import static com.cks.hiroyuki2.worksupprotlib.Util.URL_SHORTEN_API;
+import static com.cks.hiroyuki2.worksupprotlib.Util.data2Bundle;
+import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
 
 /**
  * 特段の理由がない限り、Util系のメソッドはlibに移管してください。
@@ -165,6 +174,26 @@ public class Util {
         for (Content content : contentList)
             if (content.contentKey.equals(key))
                 return content;
+        return null;
+    }
+
+    @Nullable @Contract(pure = true)
+    public static String checkAdmittionAsMember(@Nullable DataSnapshot dataSnapshot, @NonNull String uid){
+        if (dataSnapshot == null)
+            return "dataSnapshot == null";
+        if (!dataSnapshot.exists())
+            return "!dataSnapshot.exists() グループ消滅？";
+        if (!dataSnapshot.hasChild("member")){
+            return "!dataSnapshot.hasChild(\"member\")　グループ消滅？";
+        }
+
+        DataSnapshot memberSnap = dataSnapshot.child("member");
+        if (!memberSnap.hasChild(uid)){
+            return "!dataSnapshot.hasChild(uid) グループを既に退会？";
+        }
+        if (!memberSnap.child(uid).child("isChecked").getValue(Boolean.class)){
+            return "グループ未加入？";
+        }
         return null;
     }
 

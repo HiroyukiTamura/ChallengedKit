@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FileDownloadTask;
@@ -65,7 +66,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
  */
 
 @EIntentService
-public class FbIntentService extends IntentService implements OnFailureListener{
+public class FbIntentService extends IntentService implements OnFailureListener, OnPausedListener<UploadTask.TaskSnapshot>{
     private static final String TAG = "MANUAL_TAG: " + FbIntentService.class.getSimpleName();
     private Handler toastHandler = new Handler(Looper.getMainLooper());
 
@@ -80,83 +81,128 @@ public class FbIntentService extends IntentService implements OnFailureListener{
     }
 
     @ServiceAction
-    public void updateGroupName(@NonNull String groupKey, @NonNull String newGroupName){
+    public void updateGroupName(@NonNull String uid, @NonNull String groupKey, @NonNull String newGroupName){
         Log.d(TAG, "sampleAction() called");
-        DatabaseReference ref = getRef("group", groupKey, "groupName");
-        FbCheckAndWriter writer = new FbCheckAndWriter(ref, ref, getApplicationContext(), newGroupName) {
+
+        new isMeGroupMemberChecker(){
             @Override
-            public void onSuccess(DatabaseReference ref) {
-                Log.d(TAG, "onSuccess: 成功したよね");
-                RxBus.publish(RxBus.UPDATE_GROUP_NAME, "てってれー");
-            }
-        };
-        writer.update(CODE_SET_VALUE);
-    }
-
-    @ServiceAction
-    public void updateGroupPhotoUrl(@NonNull Group group, /*このuriは、ローカルファイルのuri*/ @NonNull Uri uri){
-        FirebaseStorageUtil storageUtil = new FirebaseStorageUtil(getApplicationContext(), group);
-        toastHandler.post(new DisplayToast(R.string.msg_start_upload));
-        String type = getExtension(getApplicationContext(), uri);
-        String key = getRef("keyPusher").push().getKey();
-        final String fileName = key + "." + type;
-
-        final int ntfId = (int) System.currentTimeMillis();
-
-        uploadFile("group_icon/" + fileName, uri, this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Uri uri = taskSnapshot.getDownloadUrl();
-                RxBus.publish(UPDATE_GROUP_PHOTO, uri);/*Firebaseの仕様上NPEはあり得ないので、you can ignore this warning*/
-
-                DatabaseReference ref = getRef("group", group.groupKey, "photoUrl");
-                FbCheckAndWriter writer = new FbCheckAndWriter(ref, ref, getApplicationContext(), uri.toString()) {
+            protected void onSuccess(DataSnapshot dataSnapshot) {
+                DatabaseReference ref = getRef("group", groupKey, "groupName");
+                FbCheckAndWriter writer = new FbCheckAndWriter(ref, ref, getApplicationContext(), newGroupName) {
                     @Override
                     public void onSuccess(DatabaseReference ref) {
-                        showCompleteNtf(MainActivity.class, getApplicationContext(), group.groupName, ntfId, R.string.ntf_txt_change_group_img);
+                        Log.d(TAG, "onSuccess: 成功したよね");
+                        RxBus.publish(RxBus.UPDATE_GROUP_NAME, "てってれー");
                     }
                 };
                 writer.update(CODE_SET_VALUE);
             }
-        }, storageUtil, new OnProgressListener<UploadTask.TaskSnapshot>() {
+
             @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                showUploadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, fileName, ntfId);
+            protected void onError(@NonNull String errMsg) {
+                onErrorForService(errMsg, R.string.error);
             }
-        });
+        }.check(uid, groupKey);
     }
+
+    @ServiceAction
+    public void updateGroupPhotoUrl(@NonNull String uid, @NonNull String groupKey, @NonNull String groupName, /*このuriは、ローカルファイルのuri*/ @NonNull Uri uri){
+        new isMeGroupMemberChecker(){
+            @Override
+            protected void onSuccess(DataSnapshot dataSnapshot) {
+                toastHandler.post(new DisplayToast(R.string.msg_start_upload));
+                String type = getExtension(getApplicationContext(), uri);
+                String key = getRef("keyPusher").push().getKey();
+                final String fileName = key + "." + type;
+
+                final int ntfId = (int) System.currentTimeMillis();
+
+                uploadFile("group_icon/" + fileName, uri, FbIntentService.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Uri uri = taskSnapshot.getDownloadUrl();
+                        RxBus.publish(UPDATE_GROUP_PHOTO, uri);/*Firebaseの仕様上NPEはあり得ないので、you can ignore this warning*/
+
+                        DatabaseReference ref = getRef("group", groupKey, "photoUrl");
+                        FbCheckAndWriter writer = new FbCheckAndWriter(ref, ref, getApplicationContext(), uri.toString()) {
+                            @Override
+                            public void onSuccess(DatabaseReference ref) {
+                                showCompleteNtf(MainActivity.class, getApplicationContext(), groupName, ntfId, R.string.ntf_txt_change_group_img);
+                            }
+                        };
+                        writer.update(CODE_SET_VALUE);
+                    }
+                },
+                FbIntentService.this,
+                new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        showUploadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, fileName, ntfId);
+                    }
+                });
+            }
+
+            @Override
+            protected void onError(@NonNull String errMsg) {
+                onErrorForService(errMsg, R.string.error);
+            }
+        }.check(uid, groupKey);
+    }
+
 
     @ServiceAction
     public void removeMember(@NonNull String groupKey, @NonNull String uid, @NonNull String name){
-        DatabaseReference checkRef = getRef("group", groupKey);
-        HashMap<String, Object> children = new HashMap<>();
-        children.put(makeScheme("group", groupKey, "member", uid), null);
-        children.put(makeScheme("userData", uid, "group", groupKey), null);
-        new FbCheckAndWriter(checkRef, getRootRef(), getApplicationContext(), children) {
+        new isMeGroupMemberChecker(){
             @Override
-            public void onSuccess(DatabaseReference ref) {
-                RxBus.publish(RxBus.REMOVE_MEMBER, name);
+            protected void onError(@NonNull String errMsg) {
+                onErrorForService(errMsg, R.string.error);
             }
-        }.update(CODE_UPDATE_CHILDREN);
+
+            @Override
+            protected void onSuccess(DataSnapshot dataSnapshot) {
+                DatabaseReference checkRef = getRef("group", groupKey);
+                HashMap<String, Object> children = new HashMap<>();
+                children.put(makeScheme("group", groupKey, "member", uid), null);
+                children.put(makeScheme("userData", uid, "group", groupKey), null);
+                new FbCheckAndWriter(checkRef, getRootRef(), getApplicationContext(), children) {
+                    @Override
+                    public void onSuccess(DatabaseReference ref) {
+                        RxBus.publish(RxBus.REMOVE_MEMBER, name);
+                    }
+                }.update(CODE_UPDATE_CHILDREN);
+            }
+        }.check(uid, groupKey);
     }
 
     @ServiceAction
-    public void editNormalComment(@NonNull String groupKey, @NonNull String contentKey, @Nullable String newComment){
-        DatabaseReference checkRef = getRef("group", groupKey, "contents", contentKey);
-        DatabaseReference writeRef = getRef(checkRef, "comment");
-        FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, writeRef, getApplicationContext(), newComment) {
+    public void editNormalComment(@NonNull String uid, @NonNull String groupKey, @NonNull String contentKey, @Nullable String newComment){
+        new isMeGroupMemberChecker(){
             @Override
-            public void onSuccess(DatabaseReference ref) {
-                Log.d(TAG, "onSuccess: succeed to edit comment"+ ref.toString());
+            protected void onError(@NonNull String errMsg) {
+                onErrorForService(errMsg, R.string.error);
             }
-        };
-        writer.update(CODE_SET_VALUE);
+
+            @Override
+            protected void onSuccess(DataSnapshot dataSnapshot) {
+                DatabaseReference checkRef = getRef("group", groupKey, "contents", contentKey);
+                DatabaseReference writeRef = getRef(checkRef, "comment");
+                FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, writeRef, getApplicationContext(), newComment) {
+                    @Override
+                    public void onSuccess(DatabaseReference ref) {
+                        Log.d(TAG, "onSuccess: succeed to edit comment"+ ref.toString());
+                    }
+                };
+                writer.update(CODE_SET_VALUE);
+            }
+        }.check(uid, groupKey);
     }
 
     /**
      * todo アイコン表示おかしいので要修正
      * 一旦tempファイルを作成して、それをコピーして保存する。
      * じゃないと謎のエラーが出るんだ。謎。
+     * ここでは、{@link isMeGroupMemberChecker}でのチェックは行わない。
+     * なぜなら、1.この動作はDb書き込みでないから許容でき、2.どのみち更新動作時には{@link ShareBoardFragment#onRefresh()}でDBへのアクセスが拒否されるから。
      */
     @ServiceAction
     public void dlFileFromStorage(@NonNull String groupKey, @NonNull String contentKey, @NonNull String contentName, @NonNull Uri localUri){
@@ -164,95 +210,115 @@ public class FbIntentService extends IntentService implements OnFailureListener{
         File file = new File(getCacheDir(), tempFileName);
         final int ntfId = (int)System.currentTimeMillis();
 
-        StorageReference ref = FirebaseStorage.getInstance().getReference()
-                .child(makeScheme("shareFile", groupKey, contentKey));
-        ref.getFile(file).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                logStackTrace(e);
-                toastHandler.post(new DisplayToast(R.string.error));
-                showCompleteNtf(MainActivity.class, getApplicationContext(), contentName, ntfId, R.string.msg_failed_download);
-            }
-        }).addOnPausedListener(new OnPausedListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onPaused(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                //何かするか？？
-            }
-        }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                showDownloadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, contentName, ntfId);
-            }
-        }).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                try(OutputStream outputStream = getContentResolver().openOutputStream(localUri)) {
-                    FileInputStream fis = new FileInputStream(file);
-
-                    // byte型の配列を宣言
-                    byte[] buf = new byte[256];
-                    int len;
-
-                    // ファイルの終わりまで読み込む
-                    while((len = fis.read(buf)) != -1){
-                        outputStream.write(buf);
-                    }
-
-                    //ファイルに内容を書き込む
-                    outputStream.flush();
-
-                    //ファイルの終了処理
-                    outputStream.close();
-                    fis.close();
-
-                } catch(Exception e){
+        FirebaseStorage.getInstance().getReference()
+            .child(makeScheme("shareFile", groupKey, contentKey))
+            .getFile(file)
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
                     logStackTrace(e);
                     toastHandler.post(new DisplayToast(R.string.error));
                     showCompleteNtf(MainActivity.class, getApplicationContext(), contentName, ntfId, R.string.msg_failed_download);
-                    return;
-
-                } finally {
-                    file.delete();
                 }
 
-                toastHandler.post(new DisplayToast(R.string.msgDlSuccess));
-                showCompleteNtf(MainActivity.class, getApplicationContext(), contentName, ntfId, R.string.msgDlSuccess);
-            }
-        });
+            }).addOnPausedListener(new OnPausedListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onPaused(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    //何かするか？？
+                }
+
+            }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    showDownloadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, contentName, ntfId);
+                }
+
+            }).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    try(OutputStream outputStream = getContentResolver().openOutputStream(localUri)) {
+                        FileInputStream fis = new FileInputStream(file);
+
+                        // byte型の配列を宣言
+                        byte[] buf = new byte[256];
+                        int len;
+
+                        // ファイルの終わりまで読み込む
+                        while((len = fis.read(buf)) != -1){
+                            outputStream.write(buf);
+                        }
+
+                        //ファイルに内容を書き込む
+                        outputStream.flush();
+
+                        //ファイルの終了処理
+                        outputStream.close();
+                        fis.close();
+
+                    } catch(Exception e){
+                        logStackTrace(e);
+                        toastHandler.post(new DisplayToast(R.string.error));
+                        showCompleteNtf(MainActivity.class, getApplicationContext(), contentName, ntfId, R.string.msg_failed_download);
+                        return;
+
+                    } finally {
+                        file.delete();
+                    }
+
+                    toastHandler.post(new DisplayToast(R.string.msgDlSuccess));
+                    showCompleteNtf(MainActivity.class, getApplicationContext(), contentName, ntfId, R.string.msgDlSuccess);
+                }
+            });
     }
 
     /**
-     * storageのファイルは削除していないことに注意してください。cloudFunc側で実装してください。
+     * ネストの深さは心の闇の深さ・・・
      */
     @ServiceAction
-    public void removeFileFromStorage(@NonNull String groupKey, @NonNull String contentKey, final boolean isDoc){
-        getRef("group", groupKey, "contents", contentKey)
-                .removeValue(new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        if (databaseError != null)
-                            onErrorForService(databaseError.getMessage(), R.string.error);
-                        else {
-                            RxBus.publish(RxBus.REMOVE_STORAGE_FILE, contentKey);
-                            if (!isDoc){
-                                FirebaseStorage.getInstance().getReference()
-                                        .child(makeScheme("shareFile", groupKey, contentKey))
-                                        .delete()
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                logStackTrace(e);
-                                            }
-                                        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+    public void removeFileFromStorage(@NonNull String uid, @NonNull String groupKey, @NonNull String contentKey, final boolean isDoc){
+        new isMeGroupMemberChecker(){
+            @Override
+            protected void onError(@NonNull String errMsg) {
+                onErrorForService(errMsg, R.string.error);
+            }
+
+            @Override
+            protected void onSuccess(DataSnapshot dataSnapshot) {
+                getRef("group", groupKey, "contents", contentKey)
+                        .removeValue(new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                if (databaseError != null)
+                                    onErrorForService(databaseError.getMessage(), R.string.error);
+                                else {
+                                    RxBus.publish(RxBus.REMOVE_STORAGE_FILE, contentKey);
+
+                                    if (!isDoc){
+                                        FirebaseStorage.getInstance().getReference()
+                                                .child(makeScheme("shareFile", groupKey, contentKey))
+                                                .delete()
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        logStackTrace(e);
+                                                    }
+                                                }).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                                 Log.d(TAG, "onSuccess: addOnSuccessListener");
                                             }
                                         });
+                                    }
+                                }
                             }
-                        }
-                    }
-                });
+                        });
+            }
+        }.check(uid, groupKey);
+    }
+
+    @Override
+    public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
+
     }
 
     @Override
