@@ -25,6 +25,7 @@ import com.cks.hiroyuki2.worksupport3.Activities.GroupSettingActivity;
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupport3.FbIntentService;
 import com.cks.hiroyuki2.worksupport3.FbIntentService_;
+import com.cks.hiroyuki2.worksupport3.RxBus;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
@@ -59,6 +60,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.functions.Consumer;
 
 import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
@@ -141,6 +143,13 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
             group = (Group) getArguments().getSerializable(GROUP);
             storageUtil = new FirebaseStorageUtil(getContext(), group);
         }
+
+        RxBus.subscribe(RxBus.UPDATE_GROUP_NAME, this, new Consumer<Object>() {
+            @Override
+            public void accept(Object o) throws Exception {
+                Log.d(TAG, "accept() called with: o = [" + o.toString() + "]");
+            }
+        });
     }
 
     @Override
@@ -233,6 +242,12 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        RxBus.unregister(this);
     }
 
     /**

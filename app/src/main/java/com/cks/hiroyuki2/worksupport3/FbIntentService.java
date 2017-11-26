@@ -42,6 +42,7 @@ public class FbIntentService extends IntentService {
             @Override
             public void onSuccess(DatabaseReference ref) {
                 Log.d(TAG, "onSuccess: 成功したよね");
+                RxBus.publish(RxBus.UPDATE_GROUP_NAME, "てってれー");
             }
         };
         writer.update(CODE_SET_VALUE);
