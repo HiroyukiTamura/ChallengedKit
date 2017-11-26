@@ -580,7 +580,8 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
     void onResultEditComment(Intent data, int resultCode,
                              @OnActivityResult.Extra(ShareBoardRVAdapter.BUNDLE_KEY_NEW_COMMENT) final String newComment,
                              @OnActivityResult.Extra(ShareBoardRVAdapter.BUNDLE_KEY_POSITION) final int listPos){
-        if (resultCode != RESULT_OK) return;
+        if (resultCode != RESULT_OK)
+            return;
 
 //        Bundle bundle = data.getExtras();
 
@@ -590,8 +591,14 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
         content.comment = newComment;
         rvAdapter.notifyDataSetChanged();
 
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid == null){
+            onError(this, TAG+"uid == null", R.string.error);
+            return;
+        }
+
         FbIntentService_.intent(getActivity().getApplicationContext())
-                .editNormalComment(group.groupKey, content.contentKey, newComment)
+                .editNormalComment(uid, group.groupKey, content.contentKey, newComment)
                 .start();
 //        FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, writeRef, getContext(), newComment) {
 //            @Override
@@ -867,10 +874,15 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
 
     //region onChoose4thItem系列
     private void onChoose4thItem(final int listPos, final boolean isDoc){
-        FbIntentService_.intent(getContext().getApplicationContext())
-                .removeFileFromStorage(group.groupKey, group.contentList.get(listPos).contentKey, isDoc)
-                .start();
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid == null){
+            onError(this, TAG+"uid == null", R.string.error);
+            return;
+        }
 
+        FbIntentService_.intent(getContext().getApplicationContext())
+                .removeFileFromStorage(uid, group.groupKey, group.contentList.get(listPos).contentKey, isDoc)
+                .start();
 //        final Content content = group.contentList.get(listPos);
 //        getRef("group", group.groupKey, "contents", content.contentKey)
 //                .removeValue(new DatabaseReference.CompletionListener() {
@@ -892,7 +904,7 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
     private void onFailureOparation(Exception e, String fileName, int ntfId, @StringRes int string){
         logStackTrace(e);
         toastNullable(getContext(), R.string.error);
-        showCompleteNtf(MainActivity.class, getContext(), fileName, ntfId, string);
+        showCompleteNtf(MainActivity.class, getContext().getApplicationContext(), fileName, ntfId, string);
     }
 
 //    /**このメソッドでストレージのデータを削除できようができまいが、ここに到達した時点で{@link #onChoose4thItem(int, boolean)}でDatabaseは削除しているので、
@@ -952,17 +964,7 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
         Single.create(new SingleOnSubscribe<Uri>() {
             @Override
             public void subscribe(SingleEmitter<Uri> emitter) throws Exception {
-                storageUtil.getStorageUrl(listPos, new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        emitter.onSuccess(uri);
-                    }
-                }, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        emitter.onError(e);
-                    }
-                });
+                storageUtil.getStorageUrl(listPos, emitter::onSuccess, emitter::onError);
             }
         })
         .subscribeOn(Schedulers.newThread())
@@ -997,17 +999,7 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
         Single.create(new SingleOnSubscribe<Uri>() {
             @Override
             public void subscribe(SingleEmitter<Uri> emitter) throws Exception {
-                storageUtil.getStorageUrl(listPos, new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        emitter.onSuccess(uri);
-                    }
-                }, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        emitter.onError(e);
-                    }
-                });
+                storageUtil.getStorageUrl(listPos, emitter::onSuccess, emitter::onError);
             }
         })
         .subscribeOn(Schedulers.newThread())

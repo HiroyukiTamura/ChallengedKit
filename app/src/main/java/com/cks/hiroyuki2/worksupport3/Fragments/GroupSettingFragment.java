@@ -361,8 +361,14 @@ public class GroupSettingFragment extends RxFragment implements Callback, OnFail
                 return;
             }
 
+            String uid = FirebaseAuth.getInstance().getUid();
+            if (uid == null){
+                Util.onError(this, "uid == null", R.string.error);
+                return;
+            }
+
             FbIntentService_.intent(getActivity().getApplication())
-                    .updateGroupPhotoUrl(new Group(group), uri)
+                    .updateGroupPhotoUrl(uid, group.groupKey, group.groupName, uri)
                     .start();
 
 //            Toast.makeText(getContext(), "アップロードしています...", Toast.LENGTH_LONG).show();
@@ -391,11 +397,16 @@ public class GroupSettingFragment extends RxFragment implements Callback, OnFail
             getActivity().setResult(RESULT_OK, data);
             getActivity().finish();
         } else if (requestCode == CALLBACK_SET_TAG_MK_GROUP && resultCode == RESULT_OK) {
+            String uid = FirebaseAuth.getInstance().getUid();
+            if (uid == null){
+                Util.onError(this, "uid == null", R.string.error);
+                return;
+            }
             String input = data.getStringExtra(INPUT);
             group.groupName = input;
             name.setText(input);
             FbIntentService_.intent(getActivity().getApplication())
-                    .updateGroupName(group.groupKey, input)
+                    .updateGroupName(uid, group.groupKey, input)
                     .start();
         } else if (requestCode == CALLBACK_CLICK_GROUP_MEMBER && resultCode == RESULT_OK) {
             int witch = data.getIntExtra(WITCH_CLICKED, Integer.MAX_VALUE);

@@ -26,13 +26,10 @@ public class FbTokenObserber {
     }
 
     public void setListener(FirebaseUser user){
-        listener = new OnCompleteListener<GetTokenResult>() {
-            @Override
-            public void onComplete(@NonNull Task<GetTokenResult> task) {
-                isListenerFired = true;
-                if (task.isSuccessful())
-                    authToken = task.getResult().getToken();
-            }
+        listener = task -> {
+            isListenerFired = true;
+            if (task.isSuccessful())
+                authToken = task.getResult().getToken();
         };
 
         user.getIdToken(false).addOnCompleteListener(listener);

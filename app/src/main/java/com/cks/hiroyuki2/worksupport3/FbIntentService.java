@@ -14,10 +14,9 @@ import android.widget.Toast;
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
+import com.cks.hiroyuki2.worksupprotlib.*;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
-import com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter;
-import com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.CustomEvent;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -117,29 +116,21 @@ public class FbIntentService extends IntentService implements OnFailureListener,
 
                 final int ntfId = (int) System.currentTimeMillis();
 
-                uploadFile("group_icon/" + fileName, uri, FbIntentService.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Uri uri = taskSnapshot.getDownloadUrl();
-                        RxBus.publish(UPDATE_GROUP_PHOTO, uri);/*Firebaseの仕様上NPEはあり得ないので、you can ignore this warning*/
+                uploadFile("group_icon/" + fileName, uri, FbIntentService.this, taskSnapshot -> {
+                    Uri uri1 = taskSnapshot.getDownloadUrl();
+                    RxBus.publish(UPDATE_GROUP_PHOTO, uri1);/*Firebaseの仕様上NPEはあり得ないので、you can ignore this warning*/
 
-                        DatabaseReference ref = getRef("group", groupKey, "photoUrl");
-                        FbCheckAndWriter writer = new FbCheckAndWriter(ref, ref, getApplicationContext(), uri.toString()) {
-                            @Override
-                            public void onSuccess(DatabaseReference ref) {
-                                showCompleteNtf(MainActivity.class, getApplicationContext(), groupName, ntfId, R.string.ntf_txt_change_group_img);
-                            }
-                        };
-                        writer.update(CODE_SET_VALUE);
-                    }
+                    DatabaseReference ref = getRef("group", groupKey, "photoUrl");
+                    FbCheckAndWriter writer = new FbCheckAndWriter(ref, ref, getApplicationContext(), uri1.toString()) {
+                        @Override
+                        public void onSuccess(DatabaseReference ref) {
+                            showCompleteNtf(MainActivity.class, getApplicationContext(), groupName, ntfId, R.string.ntf_txt_change_group_img);
+                        }
+                    };
+                    writer.update(CODE_SET_VALUE);
                 },
                 FbIntentService.this,
-                new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        showUploadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, fileName, ntfId);
-                    }
-                });
+                        taskSnapshot -> showUploadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, fileName, ntfId));
             }
 
             @Override
@@ -213,61 +204,45 @@ public class FbIntentService extends IntentService implements OnFailureListener,
         FirebaseStorage.getInstance().getReference()
             .child(makeScheme("shareFile", groupKey, contentKey))
             .getFile(file)
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
+            .addOnFailureListener(e -> {
+                logStackTrace(e);
+                toastHandler.post(new DisplayToast(R.string.error));
+                showCompleteNtf(MainActivity.class, getApplicationContext(), contentName, ntfId, R.string.msg_failed_download);
+            }).addOnPausedListener(taskSnapshot -> {
+                //何かするか？？
+            }).addOnProgressListener(taskSnapshot -> showDownloadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, contentName, ntfId))
+            .addOnSuccessListener(taskSnapshot -> {
+                try(OutputStream outputStream = getContentResolver().openOutputStream(localUri)) {
+                    FileInputStream fis = new FileInputStream(file);
+
+                    // byte型の配列を宣言
+                    byte[] buf = new byte[256];
+                    int len;
+
+                    // ファイルの終わりまで読み込む
+                    while((len = fis.read(buf)) != -1){
+                        outputStream.write(buf);
+                    }
+
+                    //ファイルに内容を書き込む
+                    outputStream.flush();
+
+                    //ファイルの終了処理
+                    outputStream.close();
+                    fis.close();
+
+                } catch(Exception e){
                     logStackTrace(e);
                     toastHandler.post(new DisplayToast(R.string.error));
                     showCompleteNtf(MainActivity.class, getApplicationContext(), contentName, ntfId, R.string.msg_failed_download);
+                    return;
+
+                } finally {
+                    file.delete();
                 }
 
-            }).addOnPausedListener(new OnPausedListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onPaused(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    //何かするか？？
-                }
-
-            }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    showDownloadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, contentName, ntfId);
-                }
-
-            }).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    try(OutputStream outputStream = getContentResolver().openOutputStream(localUri)) {
-                        FileInputStream fis = new FileInputStream(file);
-
-                        // byte型の配列を宣言
-                        byte[] buf = new byte[256];
-                        int len;
-
-                        // ファイルの終わりまで読み込む
-                        while((len = fis.read(buf)) != -1){
-                            outputStream.write(buf);
-                        }
-
-                        //ファイルに内容を書き込む
-                        outputStream.flush();
-
-                        //ファイルの終了処理
-                        outputStream.close();
-                        fis.close();
-
-                    } catch(Exception e){
-                        logStackTrace(e);
-                        toastHandler.post(new DisplayToast(R.string.error));
-                        showCompleteNtf(MainActivity.class, getApplicationContext(), contentName, ntfId, R.string.msg_failed_download);
-                        return;
-
-                    } finally {
-                        file.delete();
-                    }
-
-                    toastHandler.post(new DisplayToast(R.string.msgDlSuccess));
-                    showCompleteNtf(MainActivity.class, getApplicationContext(), contentName, ntfId, R.string.msgDlSuccess);
-                }
+                toastHandler.post(new DisplayToast(R.string.msgDlSuccess));
+                showCompleteNtf(MainActivity.class, getApplicationContext(), contentName, ntfId, R.string.msgDlSuccess);
             });
     }
 
@@ -285,30 +260,22 @@ public class FbIntentService extends IntentService implements OnFailureListener,
             @Override
             protected void onSuccess(DataSnapshot dataSnapshot) {
                 getRef("group", groupKey, "contents", contentKey)
-                        .removeValue(new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                if (databaseError != null)
-                                    onErrorForService(databaseError.getMessage(), R.string.error);
-                                else {
-                                    RxBus.publish(RxBus.REMOVE_STORAGE_FILE, contentKey);
+                        .removeValue((databaseError, databaseReference) -> {
+                            if (databaseError != null)
+                                onErrorForService(databaseError.getMessage(), R.string.error);
+                            else {
+                                RxBus.publish(RxBus.REMOVE_STORAGE_FILE, contentKey);
 
-                                    if (!isDoc){
-                                        FirebaseStorage.getInstance().getReference()
-                                                .child(makeScheme("shareFile", groupKey, contentKey))
-                                                .delete()
-                                                .addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        logStackTrace(e);
-                                                    }
-                                                }).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d(TAG, "onSuccess: addOnSuccessListener");
-                                            }
-                                        });
-                                    }
+                                if (!isDoc){
+                                    FirebaseStorage.getInstance().getReference()
+                                            .child(makeScheme("shareFile", groupKey, contentKey))
+                                            .delete()
+                                            .addOnFailureListener(com.cks.hiroyuki2.worksupprotlib.Util::logStackTrace).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d(TAG, "onSuccess: addOnSuccessListener");
+                                        }
+                                    });
                                 }
                             }
                         });
