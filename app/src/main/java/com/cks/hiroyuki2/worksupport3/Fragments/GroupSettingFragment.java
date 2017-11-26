@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Activities.GroupSettingActivity;
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
+import com.cks.hiroyuki2.worksupport3.FbIntentService;
+import com.cks.hiroyuki2.worksupport3.FbIntentService_;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
@@ -378,42 +380,46 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
     }
 
     private void updateValue(@updateCode final int code, final String value, /*UPDATE_CODE_PHOTO_URLでのみ使用*/final int ntfId){
-        HashMap<String, Object> hashMap = new HashMap<>();
-        switch (code) {
-            case UPDATE_CODE_NAME:{
-                hashMap.put(makeScheme("group", group.groupKey, "groupName"), value);
-                for (User user: group.userList) {
-                    hashMap.put(makeScheme("userData", user.getUserUid(), "group", group.groupKey, "name"), value);
-                }
-                break;}
-            case UPDATE_CODE_PHOTO_URL:{
-                hashMap.put(makeScheme("group", group.groupKey, "photoUrl"), value);
-                for (User user: group.userList) {
-                    hashMap.put(makeScheme("userData", user.getUserUid(), "group", group.groupKey, "photoUrl"), value);
-                }
-                break;}
-        }
-        DatabaseReference ref = getRef("group", group.groupKey);
-        FbCheckAndWriter writer = new FbCheckAndWriter(ref, getRootRef(), getContext(), hashMap) {
-            @Override
-            public void onSuccess(DatabaseReference ref) {
-                switch (code){
-                    case UPDATE_CODE_NAME:
-                        toastNullable(getContext(), R.string.updated_group_name);
-//                        GroupSettingActivity activity = (GroupSettingActivity)getActivity();
-//                        if (activity != null)
-//                            activity.setNewGroupName(value);
-                        break;
-                    case UPDATE_CODE_PHOTO_URL:
-                        showCompleteNtf(MainActivity.class, getContext(), group.groupName, ntfId, R.string.ntf_txt_change_group_img);
-                        Picasso.with(getContext())/*もともとはデフォルトの画像が挿入されていて、もし画像取得ができれば、デフォルトのImageView手前にあるImageViewに描画し、デフォルトのImageViewを隠す。*/
-                                .load(group.photoUrl)
-                                .into(icon, GroupSettingFragment.this);
-                        break;
-                }
-            }
-        };
-        writer.update(CODE_UPDATE_CHILDREN);
+        FbIntentService_.intent(getActivity().getApplication())
+                .sampleAction(group.groupKey, value)
+                .start();
+
+//        HashMap<String, Object> hashMap = new HashMap<>();
+//        switch (code) {
+//            case UPDATE_CODE_NAME:{
+//                hashMap.put(makeScheme("group", group.groupKey, "groupName"), value);
+////                for (User user: group.userList) {
+////                    hashMap.put(makeScheme("userData", user.getUserUid(), "group", group.groupKey, "name"), value);
+////                }
+//                break;}
+//            case UPDATE_CODE_PHOTO_URL:{
+//                hashMap.put(makeScheme("group", group.groupKey, "photoUrl"), value);
+//                for (User user: group.userList) {
+//                    hashMap.put(makeScheme("userData", user.getUserUid(), "group", group.groupKey, "photoUrl"), value);
+//                }
+//                break;}
+//        }
+//        DatabaseReference ref = getRef("group", group.groupKey);
+//        FbCheckAndWriter writer = new FbCheckAndWriter(ref, getRootRef(), getContext(), hashMap) {
+//            @Override
+//            public void onSuccess(DatabaseReference ref) {
+//                switch (code){
+//                    case UPDATE_CODE_NAME:
+//                        toastNullable(getContext(), R.string.updated_group_name);
+////                        GroupSettingActivity activity = (GroupSettingActivity)getActivity();
+////                        if (activity != null)
+////                            activity.setNewGroupName(value);
+//                        break;
+//                    case UPDATE_CODE_PHOTO_URL:
+//                        showCompleteNtf(MainActivity.class, getContext(), group.groupName, ntfId, R.string.ntf_txt_change_group_img);
+//                        Picasso.with(getContext())/*もともとはデフォルトの画像が挿入されていて、もし画像取得ができれば、デフォルトのImageView手前にあるImageViewに描画し、デフォルトのImageViewを隠す。*/
+//                                .load(group.photoUrl)
+//                                .into(icon, GroupSettingFragment.this);
+//                        break;
+//                }
+//            }
+//        };
+//        writer.update(CODE_UPDATE_CHILDREN);
     }
 
     @Override

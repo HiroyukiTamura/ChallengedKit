@@ -135,6 +135,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="Activities.MainActivity_" />
         </activity>
+
+        <service android:name=".FbIntentService_"/>
     </application>
 
 </manifest>
