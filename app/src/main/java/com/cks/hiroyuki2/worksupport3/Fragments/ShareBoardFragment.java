@@ -802,57 +802,62 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
 
         setPermissionInvariant(uri);//パーミッション永続化は不必要化もしれないけど・・・
 
-        String tempFileName = String.valueOf(new Random().nextInt());
-        File file = new File(getContext().getCacheDir(), tempFileName);
+        Content content = group.contentList.get(listPosForDL);
+        FbIntentService_.intent(getContext().getApplicationContext())
+                .dlFileFromStorage(group.groupKey, content.contentKey, content.contentName, uri)
+                .start();
 
-        final int ntfId = (int)System.currentTimeMillis();
-        final String fileName = group.contentList.get(listPosForDL).contentName;
-
-        storageUtil.downloadFile(listPosForDL, file, new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        toastNullable(getContext(), R.string.msgDlSuccess);
-                        showCompleteNtf(MainActivity.class, getContext(), fileName, ntfId, R.string.msgDlSuccess);
-                    }
-                },
-                storageUtil,
-                new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        showDownloadingNtf(MainActivity.class, getContext(), taskSnapshot, fileName, ntfId);
-                    }
-                },
-                new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        onFailureOparation(e, fileName, ntfId, R.string.msg_failed_download);
-                    }
-                });
-
-        try(OutputStream outputStream = getContext().getContentResolver().openOutputStream(uri)) {
-            FileInputStream fis = new FileInputStream(file);
-
-            // byte型の配列を宣言
-            byte[] buf = new byte[256];
-            int len;
-
-            // ファイルの終わりまで読み込む
-            while((len = fis.read(buf)) != -1){
-                outputStream.write(buf);
-            }
-
-            //ファイルに内容を書き込む
-            outputStream.flush();
-
-            //ファイルの終了処理
-            outputStream.close();
-            fis.close();
-        } catch(Exception e){
-            logStackTrace(e);
-            toastNullable(getContext(), R.string.error);
-        } finally {
-            file.delete();
-        }
+//        String tempFileName = String.valueOf(new Random().nextInt());
+//        File file = new File(getContext().getCacheDir(), tempFileName);
+//
+//        final int ntfId = (int)System.currentTimeMillis();
+//        final String fileName = group.contentList.get(listPosForDL).contentName;
+//
+//        storageUtil.downloadFile(listPosForDL, file, new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+//                    @Override
+//                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//                        toastNullable(getContext(), R.string.msgDlSuccess);
+//                        showCompleteNtf(MainActivity.class, getContext(), fileName, ntfId, R.string.msgDlSuccess);
+//                    }
+//                },
+//                storageUtil,
+//                new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+//                    @Override
+//                    public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//                        showDownloadingNtf(MainActivity.class, getContext(), taskSnapshot, fileName, ntfId);
+//                    }
+//                },
+//                new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        onFailureOparation(e, fileName, ntfId, R.string.msg_failed_download);
+//                    }
+//                });
+//
+//        try(OutputStream outputStream = getContext().getContentResolver().openOutputStream(uri)) {
+//            FileInputStream fis = new FileInputStream(file);
+//
+//            // byte型の配列を宣言
+//            byte[] buf = new byte[256];
+//            int len;
+//
+//            // ファイルの終わりまで読み込む
+//            while((len = fis.read(buf)) != -1){
+//                outputStream.write(buf);
+//            }
+//
+//            //ファイルに内容を書き込む
+//            outputStream.flush();
+//
+//            //ファイルの終了処理
+//            outputStream.close();
+//            fis.close();
+//        } catch(Exception e){
+//            logStackTrace(e);
+//            toastNullable(getContext(), R.string.error);
+//        } finally {
+//            file.delete();
+//        }
     }
 
     /**

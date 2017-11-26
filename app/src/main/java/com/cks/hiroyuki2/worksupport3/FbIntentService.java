@@ -22,7 +22,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnPausedListener;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -31,8 +33,12 @@ import com.squareup.picasso.Picasso;
 import org.androidannotations.annotations.EIntentService;
 import org.androidannotations.annotations.ServiceAction;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.Random;
 
 import static com.cks.hiroyuki2.worksupport3.RxBus.UPDATE_GROUP_PHOTO;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_SET_VALUE;
@@ -44,6 +50,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.getExtension;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
 import static com.cks.hiroyuki2.worksupprotlib.Util.showCompleteNtf;
+import static com.cks.hiroyuki2.worksupprotlib.Util.showDownloadingNtf;
 import static com.cks.hiroyuki2.worksupprotlib.Util.showUploadingNtf;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 
@@ -138,6 +145,74 @@ public class FbIntentService extends IntentService implements OnFailureListener{
             }
         };
         writer.update(CODE_SET_VALUE);
+    }
+
+    /**
+     * todo アイコン表示おかしいので要修正
+     * 一旦tempファイルを作成して、それをコピーして保存する。
+     * じゃないと謎のエラーが出るんだ。謎。
+     */
+    @ServiceAction
+    public void dlFileFromStorage(@NonNull String groupKey, @NonNull String contentKey, @NonNull String contentName, @NonNull Uri localUri){
+        String tempFileName = String.valueOf(new Random().nextInt());
+        File file = new File(getCacheDir(), tempFileName);
+        final int ntfId = (int)System.currentTimeMillis();
+
+        StorageReference ref = FirebaseStorage.getInstance().getReference()
+                .child(makeScheme("shareFile", groupKey, contentKey));
+        ref.getFile(file).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                logStackTrace(e);
+                toastHandler.post(new DisplayToast(R.string.error));
+                showCompleteNtf(MainActivity.class, getApplicationContext(), contentName, ntfId, R.string.msg_failed_download);
+            }
+        }).addOnPausedListener(new OnPausedListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onPaused(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                //何かするか？？
+            }
+        }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                showDownloadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, contentName, ntfId);
+            }
+        }).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                try(OutputStream outputStream = getContentResolver().openOutputStream(localUri)) {
+                    FileInputStream fis = new FileInputStream(file);
+
+                    // byte型の配列を宣言
+                    byte[] buf = new byte[256];
+                    int len;
+
+                    // ファイルの終わりまで読み込む
+                    while((len = fis.read(buf)) != -1){
+                        outputStream.write(buf);
+                    }
+
+                    //ファイルに内容を書き込む
+                    outputStream.flush();
+
+                    //ファイルの終了処理
+                    outputStream.close();
+                    fis.close();
+
+                } catch(Exception e){
+                    logStackTrace(e);
+                    toastHandler.post(new DisplayToast(R.string.error));
+                    showCompleteNtf(MainActivity.class, getApplicationContext(), contentName, ntfId, R.string.msg_failed_download);
+                    return;
+
+                } finally {
+                    file.delete();
+                }
+
+                toastHandler.post(new DisplayToast(R.string.msgDlSuccess));
+                showCompleteNtf(MainActivity.class, getApplicationContext(), contentName, ntfId, R.string.msgDlSuccess);
+            }
+        });
     }
 
     @Override
