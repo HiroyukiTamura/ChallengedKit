@@ -35,6 +35,8 @@ import com.cks.hiroyuki2.worksupport3.FbIntentService_;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog;
 import com.cks.hiroyuki2.worksupport3.ServiceMessage;
+import com.cks.hiroyuki2.worksupport3.ShortenUrlResponse;
+import com.cks.hiroyuki2.worksupport3.Util;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Document;
 import com.cks.hiroyuki2.worksupprotlib.Entity.DocumentEle;
@@ -45,8 +47,10 @@ import com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil;
 import com.cks.hiroyuki2.worksupprotlib.PreventableAnimator;
 import com.example.hiroyuki3.worksupportlibw.Adapters.ShareBoardRVAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -62,6 +66,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import org.androidannotations.annotations.AfterViews;
@@ -82,9 +87,11 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import icepick.Icepick;
 import icepick.State;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
@@ -93,13 +100,26 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
+import retrofit2.http.POST;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
+import static com.cks.hiroyuki2.worksupport3.BackService.API_URL;
 import static com.cks.hiroyuki2.worksupport3.BackService.SEND_CODE_ADD_COMMENT;
+import static com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog.newInstance;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog.ADD_ITEM_DIALOG;
+import static com.cks.hiroyuki2.worksupport3.Util.getRetroFit;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_SET_VALUE;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
@@ -146,8 +166,6 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
     private static final int WRITE_REQUEST_CODE = 43;
 
     public static final int REQ_CODE_UPLOAD_MYFILE = 1300;
-    public static final String URL_SHORTEN_API = "https://www.googleapis.com/urlshortener/v1/url"
-            + "?key=AIzaSyDDrs60sI8h7JeNjR-VTAJcbdnwRB5bVrk";
 
     public static final int INTENT_REQ_VIEW_ACTVITIY = 2548;
     //endregion
@@ -618,48 +636,110 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
 
     //region onChoose2ndItem系列
 
+    // TODO: 2017/11/26 ストレージのファイル構造、どうするか決めて整合性とれるようにせよ
     private void onChoose2ndItem(final int listPos){
-        storageUtil.getStorageUrl(listPos, new OnSuccessListener<Uri>() {
+        Single.create(new SingleOnSubscribe<String>() {
             @Override
-            public void onSuccess(Uri uri) {
-                storageUtil.onSuccessShortenUrl(uri, new Callback() {
-                    @Override
-                    public void onFailure(@Nullable Call call, @Nullable IOException e) {
-                        if (e != null)
-                            logStackTrace(e);
-                        showToastOnMainThread();
-                    }
+            public void subscribe(SingleEmitter<String> emitter) throws Exception {
+                FirebaseStorage.getInstance().getReference()
+                        .child("shareFile")
+                        .child(group.groupKey)
+                        .child(group.contentList.get(listPos).contentKey)
+                        .getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()){
+                                    Log.d(TAG, "onComplete: " + task.getResult().toString());
 
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        String shortenUrl = getShortenUrlFromRes(response);
-                        if (shortenUrl == null) {
-                            showToastOnMainThread();
-                            return;
-                        }
+                                    HashMap<String, String> hashMap = new HashMap<>();
+                                    hashMap.put("longUrl", task.getResult().toString());
 
-                        Intent share = new Intent(Intent.ACTION_SEND);
-                        share.setType("text/plain");
-                        String subject = group.contentList.get(listPos).contentName;
-                        share.putExtra(Intent.EXTRA_SUBJECT, subject);
-                        share.putExtra(Intent.EXTRA_TEXT, shortenUrl);
-                        String title = getResources().getStringArray(R.array.vort_dialog)[1];
-                        startActivity(Intent.createChooser(share, title));
-                    }
+                                    getRetroFit().create(Util.urlShortenApi.class)
+                                            .getData(hashMap, Util.API_KEY)
+                                            .subscribeOn(Schedulers.newThread())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .compose(bindToLifecycle())
+                                            .subscribe(new Consumer<ShortenUrlResponse>() {
+                                                @Override
+                                                public void accept(ShortenUrlResponse response) throws Exception {
+                                                    emitter.onSuccess(response.getId());
+                                                }
+                                            }, new Consumer<Throwable>() {
+                                                @Override
+                                                public void accept(Throwable throwable) throws Exception {
+                                                    emitter.onError(throwable);
+                                                    throwable.printStackTrace();
+                                                }
+                                            });
+                                } else {
+                                    emitter.onError(new IllegalArgumentException(task.toString()));
+                                }
+                            }
                 });
             }
-        }, this);
-    }
-
-    @MainThread
-    private void showToastOnMainThread(){
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
+        })
+        .subscribeOn(Schedulers.newThread())
+        .observeOn(AndroidSchedulers.mainThread())
+        .compose(bindToLifecycle())
+        .subscribe(new Consumer<String>() {
             @Override
-            public void run() {
-                onError(ShareBoardFragment.this, TAG + " onErrorメソッド", R.string.error);
+            public void accept(String url) throws Exception {
+                Intent share = new Intent(Intent.ACTION_SEND);
+                share.setType("text/plain");
+                String subject = group.contentList.get(listPos).contentName;
+                share.putExtra(Intent.EXTRA_SUBJECT, subject);
+                share.putExtra(Intent.EXTRA_TEXT, url);
+                String title = getResources().getStringArray(R.array.vort_dialog)[1];
+                startActivity(Intent.createChooser(share, title));
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                onError(ShareBoardFragment.this, TAG+ throwable.getMessage(), R.string.error);
             }
         });
+
+//        storageUtil.getStorageUrl(listPos, new OnSuccessListener<Uri>() {
+//            @Override
+//            public void onSuccess(Uri uri) {
+//                storageUtil.onSuccessShortenUrl(uri, new Callback() {
+//                    @Override
+//                    public void onFailure(@Nullable Call call, @Nullable IOException e) {
+//                        if (e != null)
+//                            logStackTrace(e);
+//                        showToastOnMainThread();
+//                    }
+//
+//                    @Override
+//                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+//                        String shortenUrl = getShortenUrlFromRes(response);
+//                        if (shortenUrl == null) {
+//                            showToastOnMainThread();
+//                            return;
+//                        }
+//
+//                        Intent share = new Intent(Intent.ACTION_SEND);
+//                        share.setType("text/plain");
+//                        String subject = group.contentList.get(listPos).contentName;
+//                        share.putExtra(Intent.EXTRA_SUBJECT, subject);
+//                        share.putExtra(Intent.EXTRA_TEXT, shortenUrl);
+//                        String title = getResources().getStringArray(R.array.vort_dialog)[1];
+//                        startActivity(Intent.createChooser(share, title));
+//                    }
+//                });
+//            }
+//        }, this);
     }
+
+//    @MainThread
+//    private void showToastOnMainThread(){
+//        new Handler(Looper.getMainLooper()).post(new Runnable() {
+//            @Override
+//            public void run() {
+//                onError(ShareBoardFragment.this, TAG + " onErrorメソッド", R.string.error);
+//            }
+//        });
+//    }
     //endregion
 
     //region onChoose3rdItem系列

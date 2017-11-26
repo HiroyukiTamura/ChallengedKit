@@ -28,11 +28,32 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.Single;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
+
+import static com.cks.hiroyuki2.worksupprotlib.Util.URL_SHORTEN_API;
 
 /**
  * 特段の理由がない限り、Util系のメソッドはlibに移管してください。
@@ -50,6 +71,7 @@ public class Util {
     public static final int CODE_READ_STORAGE = 1;
     public static final int CODE_CAMERA = 2;
     public static final String OLD_GRP_NAME = "OLD_GRP_NAME";
+    private static final int TIMEOUT_SEC = 7;
 
     public static void initAdMob(Context context){
         MobileAds.initialize(context.getApplicationContext(), "ca-app-pub-3940256099942544~3347511713");
@@ -100,6 +122,39 @@ public class Util {
         else if (fragment instanceof SocialFragment)
             return SocialFragment.class.getSimpleName();
         return null;
+    }
+
+    @NonNull
+    public static Retrofit getRetroFit(){
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .retryOnConnectionFailure(true)
+                .connectTimeout(TIMEOUT_SEC, TimeUnit.SECONDS)
+                .build();
+
+        return new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build();
+    }
+
+    public final static String BASE_URL = "https://www.googleapis.com/urlshortener/v1/url/";
+    public final static String API_KEY = "AIzaSyDDrs60sI8h7JeNjR-VTAJcbdnwRB5bVrk";
+
+    public interface urlShortenApi {
+        @POST(".")
+        @Headers({
+                "Content-Type: application/json"
+        })
+        Single<ShortenUrlResponse> getData(@Body HashMap<String, String> postData, @Query("key") String key);
     }
 
 //    public static void showFcmMsg(String messageBody, Context context) {
