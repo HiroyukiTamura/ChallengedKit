@@ -176,6 +176,15 @@ public class GroupSettingFragment extends RxFragment implements Callback, OnFail
                         .into(icon, GroupSettingFragment.this);
             }
         });
+
+        RxBus.subscribe(RxBus.REMOVE_MEMBER, this, new Consumer<Object>() {
+            @Override
+            public void accept(Object name) throws Exception {
+//                Log.d(TAG, "accept: "+ uid.toString());
+//                String name = adapter.getUser(adapter.getPosFromUid((String) uid)).getName();
+                toastNullable(getContext(), "「"+ (String) name + "」さんをグループから削除しました");
+            }
+        });
     }
 
     @Override
@@ -469,37 +478,41 @@ public class GroupSettingFragment extends RxFragment implements Callback, OnFail
         });
     }
 
-    /**
-     * {@link SocialFragment}と共通化できる。
-     */
-    private void onResultRegistUser(Intent data){
-        User newFriend = (User)data.getSerializableExtra(USER);
-        final FirebaseUser userMe = Util.getUserMe();
-        if (userMe == null){
-            Util.onError(this, "FirebaseAuth.getInstance().getCurrentUser() == null", R.string.error);
-            return;
-        }
-
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("/"+ userMe.getUid() +"/"+ newFriend.getUserUid() +"/name", newFriend.getName());
-        hashMap.put("/"+ userMe.getUid() +"/"+ newFriend.getUserUid() +"/photoUrl", newFriend.getPhotoUrl());
-        hashMap.put("/"+ newFriend.getUserUid() + "/" + userMe.getUid() + "/name", userMe.getDisplayName());
-        String myPhotoUrl = "null";
-        if (userMe.getPhotoUrl() != null){
-            myPhotoUrl = userMe.getPhotoUrl().toString();
-        }
-        hashMap.put("/"+ newFriend.getUserUid() + "/" + userMe.getUid() + "/photoUrl", myPhotoUrl);
-        getRef("friend").updateChildren(hashMap, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null)
-                    Util.onError(GroupSettingFragment.this, TAG+databaseError.getDetails(), R.string.error);
-                else {
-                    toastNullable(getContext(), "ユーザ登録しました");
-                }
-            }
-        });
-    }
+    //region コメントアウトにつき消さないで
+    /*---------コメントアウトにつき消さないで---------*/
+//    /**
+//     * {@link SocialFragment}と共通化できる。
+//     */
+//    private void onResultRegistUser(Intent data){
+//        User newFriend = (User)data.getSerializableExtra(USER);
+//        final FirebaseUser userMe = Util.getUserMe();
+//        if (userMe == null){
+//            Util.onError(this, "FirebaseAuth.getInstance().getCurrentUser() == null", R.string.error);
+//            return;
+//        }
+//
+//        HashMap<String, Object> hashMap = new HashMap<>();
+//        hashMap.put("/"+ userMe.getUid() +"/"+ newFriend.getUserUid() +"/name", newFriend.getName());
+//        hashMap.put("/"+ userMe.getUid() +"/"+ newFriend.getUserUid() +"/photoUrl", newFriend.getPhotoUrl());
+//        hashMap.put("/"+ newFriend.getUserUid() + "/" + userMe.getUid() + "/name", userMe.getDisplayName());
+//        String myPhotoUrl = "null";
+//        if (userMe.getPhotoUrl() != null){
+//            myPhotoUrl = userMe.getPhotoUrl().toString();
+//        }
+//        hashMap.put("/"+ newFriend.getUserUid() + "/" + userMe.getUid() + "/photoUrl", myPhotoUrl);
+//        getRef("friend").updateChildren(hashMap, new DatabaseReference.CompletionListener() {
+//            @Override
+//            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+//                if (databaseError != null)
+//                    Util.onError(GroupSettingFragment.this, TAG+databaseError.getDetails(), R.string.error);
+//                else {
+//                    toastNullable(getContext(), "ユーザ登録しました");
+//                }
+//            }
+//        });
+//    }
+    /*---------ここまで---------*/
+    //endregion
 
     private void onResultRemoveMember(Intent data){
         User user = (User) data.getSerializableExtra(USER);
@@ -516,17 +529,21 @@ public class GroupSettingFragment extends RxFragment implements Callback, OnFail
         }
 
         adapter.removeMember(pos);
-        DatabaseReference checkRef = getRef("group", group.groupKey);
-        HashMap<String, Object> children = new HashMap<>();
-        children.put(makeScheme("group", group.groupKey, "member", uid), null);
-        children.put(makeScheme("userData", uid, "group", group.groupKey), null);
-        new FbCheckAndWriter(checkRef, getRootRef(), getContext(), children) {
-            @Override
-            public void onSuccess(DatabaseReference ref) {
-                String name = adapter.getUser(adapter.getPosFromUid(uid)).getName();
-                toastNullable(getContext(), "「"+ name + "」さんをグループから削除しました");
-            }
-        }.update(CODE_UPDATE_CHILDREN);
+
+        FbIntentService_.intent(getActivity().getApplicationContext())
+                .removeMember(group.groupKey, uid, user.getName())
+                .start();
+//        DatabaseReference checkRef = getRef("group", group.groupKey);
+//        HashMap<String, Object> children = new HashMap<>();
+//        children.put(makeScheme("group", group.groupKey, "member", uid), null);
+//        children.put(makeScheme("userData", uid, "group", group.groupKey), null);
+//        new FbCheckAndWriter(checkRef, getRootRef(), getContext(), children) {
+//            @Override
+//            public void onSuccess(DatabaseReference ref) {
+//                String name = adapter.getUser(adapter.getPosFromUid(uid)).getName();
+//                toastNullable(getContext(), "「"+ name + "」さんをグループから削除しました");
+//            }
+//        }.update(CODE_UPDATE_CHILDREN);
     }
 
 //    private void updateValue(@updateCode final int code, final String value, /*UPDATE_CODE_PHOTO_URLでのみ使用*/final int ntfId){

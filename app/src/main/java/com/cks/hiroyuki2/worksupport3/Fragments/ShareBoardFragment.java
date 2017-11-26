@@ -61,6 +61,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
+import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -83,6 +84,12 @@ import java.util.Random;
 
 import icepick.Icepick;
 import icepick.State;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -119,7 +126,7 @@ import static com.example.hiroyuki3.worksupportlibw.Adapters.ShareBoardRVAdapter
 import static com.example.hiroyuki3.worksupportlibw.Adapters.ShareBoardRVAdapter.ITEM_TYPE_UPLOADED;
 
 @EFragment(R.layout.fragment_share_board)
-public class ShareBoardFragment extends Fragment implements OnFailureListener, SwipeRefreshLayout.OnRefreshListener, ValueEventListener, ShareBoardRVAdapter.IShareBoardRVAdapter {
+public class ShareBoardFragment extends RxFragment implements OnFailureListener, SwipeRefreshLayout.OnRefreshListener, /*ValueEventListener,*/ ShareBoardRVAdapter.IShareBoardRVAdapter {
 
     //region statics
     private static final String TAG = "MANUAL_TAG: " + ShareBoardFragment.class.getSimpleName();
@@ -205,37 +212,80 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
 
     private void retrieveGroup(GroupInUserDataNode groupNode){
 //        srl.setRefreshing(true);
-        getRef("group", groupNode.groupKey)
-                .addListenerForSingleValueEvent(this);
-    }
+        Single.create(new SingleOnSubscribe<DataSnapshot>() {
+            @Override
+            public void subscribe(SingleEmitter<DataSnapshot> emitter) throws Exception {
+                getRef("group", groupNode.groupKey)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                emitter.onSuccess(dataSnapshot);
+                            }
 
-    @Override
-    public void onDataChange(DataSnapshot dataSnapshot) {
-        JSONObject jo = snap2Json(dataSnapshot);
-
-        if (jo != null)
-            try {
-                group = getOneGroupFromJson(jo, groupNode.groupKey);
-                storageUtil = new FirebaseStorageUtil(getContext(), group);
-                if (group != null){
-                    if (group.contentList == null)
-                        group.contentList = new ArrayList<>();
-//                    srl.setRefreshing(false);
-                    drawUI();
-                    return;
-                }
-            } catch (JSONException e) {
-                logStackTrace(e);
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                emitter.onError(databaseError.toException());
+                            }
+                        });
             }
+        })
+        .subscribeOn(Schedulers.newThread())
+        .observeOn(AndroidSchedulers.mainThread())
+        .compose(bindToLifecycle())
+        .subscribe(new Consumer<DataSnapshot>() {
+            @Override
+            public void accept(DataSnapshot dataSnapshot) throws Exception {
+                JSONObject jo = snap2Json(dataSnapshot);
 
-//        srl.setRefreshing(false);
-        toastNullable(getContext(), R.string.error);
+                if (jo != null)
+                    try {
+                        group = getOneGroupFromJson(jo, groupNode.groupKey);
+                        storageUtil = new FirebaseStorageUtil(getContext(), group);
+                        if (group != null){
+                            if (group.contentList == null)
+                                group.contentList = new ArrayList<>();
+//                    srl.setRefreshing(false);
+                            drawUI();
+                        }
+                    } catch (JSONException e) {
+                        logStackTrace(e);
+                    }
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                toastNullable(getContext(), R.string.error);
+            }
+        });
     }
 
-    @Override
-    public void onCancelled(DatabaseError databaseError) {
-        onError(this, TAG+databaseError.getDetails(), R.string.error);
-    }
+//    @Override
+//    public void onDataChange(DataSnapshot dataSnapshot) {
+//        JSONObject jo = snap2Json(dataSnapshot);
+//
+//        if (jo != null)
+//            try {
+//                group = getOneGroupFromJson(jo, groupNode.groupKey);
+//                storageUtil = new FirebaseStorageUtil(getContext(), group);
+//                if (group != null){
+//                    if (group.contentList == null)
+//                        group.contentList = new ArrayList<>();
+////                    srl.setRefreshing(false);
+//                    drawUI();
+//                    return;
+//                }
+//            } catch (JSONException e) {
+//                logStackTrace(e);
+//            }
+//
+////        srl.setRefreshing(false);
+//        toastNullable(getContext(), R.string.error);
+//    }
+//
+//    @Override
+//    public void onCancelled(DatabaseError databaseError) {
+//        onError(this, TAG+databaseError.getDetails(), R.string.error);
+//    }
 
     @AfterViews
     void onAfterViews(){
@@ -342,44 +392,94 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
             }
         }, 3000);
 
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("group/" + group.groupKey);
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("group/" + group.groupKey);
+        Single.create(new SingleOnSubscribe<Group>() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void subscribe(SingleEmitter<Group> emitter) throws Exception {
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        srl.setRefreshing(false);
+                        if (dataSnapshot == null || !dataSnapshot.exists()){
+                            emitter.onError(new IllegalArgumentException(ref.toString()));
+                            return;
+                        }
+
+                        JSONObject jo = snap2Json(dataSnapshot);
+                        if (jo == null){
+                            emitter.onError(new IllegalArgumentException("jo == null"));
+                            return;
+                        }
+
+                        try {
+                            Group groupC = getOneGroupFromJson(jo, group.groupKey);
+                            emitter.onSuccess(groupC);
+                        } catch (JSONException e) {
+                            emitter.onError(e);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        emitter.onError(databaseError.toException());
+                    }
+                });
+            }
+        })
+        .subscribeOn(Schedulers.newThread())
+        .observeOn(AndroidSchedulers.mainThread())
+        .compose(bindToLifecycle())
+        .subscribe(new Consumer<Group>() {
+            @Override
+            public void accept(Group group) throws Exception {
                 srl.setRefreshing(false);
-                if (!dataSnapshot.exists()){
-                    onError(ShareBoardFragment.this, TAG+ref.toString(), R.string.error);
-                    return;
-                }
-
-                JSONObject jo = snap2Json(dataSnapshot);
-                if (jo == null){
-                    onError(ShareBoardFragment.this, TAG+"jo == null", R.string.error);
-                    return;
-                }
-
-                Group groupC;
-                try {
-                    groupC = getOneGroupFromJson(jo, group.groupKey);
-                } catch (JSONException e) {
-                    logStackTrace(e);
-                    toastNullable(getContext(), R.string.error);
-                    return;
-                }
-
-//                toastNullable(getContext(), R.string.success_swipe);
-                group = groupC;
                 storageUtil = new FirebaseStorageUtil(getContext(), group);
-                srl.setRefreshing(false);
                 onAfterViews();
             }
-
+        }, new Consumer<Throwable>() {
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void accept(Throwable throwable) throws Exception {
                 srl.setRefreshing(false);
-                onError(ShareBoardFragment.this, databaseError.getDetails(), R.string.error);
+                onError(ShareBoardFragment.this, throwable.getMessage(), R.string.error);
             }
         });
+
+//        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("group/" + group.groupKey);
+//        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                if (!dataSnapshot.exists()){
+//                    onError(ShareBoardFragment.this, TAG+ref.toString(), R.string.error);
+//                    return;
+//                }
+//
+//                JSONObject jo = snap2Json(dataSnapshot);
+//                if (jo == null){
+//                    onError(ShareBoardFragment.this, TAG+"jo == null", R.string.error);
+//                    return;
+//                }
+//
+//                Group groupC;
+//                try {
+//                    groupC = getOneGroupFromJson(jo, group.groupKey);
+//                } catch (JSONException e) {
+//                    logStackTrace(e);
+//                    toastNullable(getContext(), R.string.error);
+//                    return;
+//                }
+//
+////                toastNullable(getContext(), R.string.success_swipe);
+//                group = groupC;
+//                storageUtil = new FirebaseStorageUtil(getContext(), group);
+//                srl.setRefreshing(false);
+//                onAfterViews();
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                onError(ShareBoardFragment.this, databaseError.getDetails(), R.string.error);
+//            }
+//        });
     }
 
     @OnActivityResult(ShareBoardFragment.DIALOG_CODE)

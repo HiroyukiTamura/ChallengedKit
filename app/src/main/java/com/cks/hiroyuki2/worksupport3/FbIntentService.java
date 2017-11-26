@@ -27,11 +27,13 @@ import org.androidannotations.annotations.EIntentService;
 import org.androidannotations.annotations.ServiceAction;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 
 import static com.cks.hiroyuki2.worksupport3.RxBus.UPDATE_GROUP_PHOTO;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_SET_VALUE;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRootRef;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.uploadFile;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getExtension;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
@@ -104,6 +106,20 @@ public class FbIntentService extends IntentService implements OnFailureListener{
                 showUploadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, fileName, ntfId);
             }
         });
+    }
+
+    @ServiceAction
+    public void removeMember(@NonNull String groupKey, @NonNull String uid, @NonNull String name){
+        DatabaseReference checkRef = getRef("group", groupKey);
+        HashMap<String, Object> children = new HashMap<>();
+        children.put(makeScheme("group", groupKey, "member", uid), null);
+        children.put(makeScheme("userData", uid, "group", groupKey), null);
+        new FbCheckAndWriter(checkRef, getRootRef(), getApplicationContext(), children) {
+            @Override
+            public void onSuccess(DatabaseReference ref) {
+                RxBus.publish(RxBus.REMOVE_MEMBER, name);
+            }
+        }.update(CODE_UPDATE_CHILDREN);
     }
 
     @Override
