@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,6 +37,7 @@ import com.example.hiroyuki3.worksupportlibw.Adapters.GroupSettingRVAdapter;
 import com.example.hiroyuki3.worksupportlibw.AdditionalUtil;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -61,7 +63,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
@@ -74,6 +84,10 @@ import static com.cks.hiroyuki2.worksupport3.Util.OLD_GRP_NAME;
 import static com.cks.hiroyuki2.worksupprotlib.Entity.User.makeUserFromSnap;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
 import com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter;
+import com.trello.rxlifecycle2.RxLifecycle;
+import com.trello.rxlifecycle2.android.RxLifecycleAndroid;
+import com.trello.rxlifecycle2.components.support.RxFragment;
+
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRootRef;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.LIMIT_SIZE_PROF;
@@ -103,7 +117,7 @@ import static com.example.hiroyuki3.worksupportlibw.AdditionalUtil.getPosFromUid
  * それかCustomViewもいいですね。ある程度実装が固まってから、リファクタリングするかどうか検討しましょう。
  * layoutをincludeしているので、AndroidAnnotationがうまくいかない。
  */
-public class GroupSettingFragment extends Fragment implements Callback, OnFailureListener, GroupSettingRVAdapter.IGroupSettingRVAdapter {
+public class GroupSettingFragment extends RxFragment implements Callback, OnFailureListener, GroupSettingRVAdapter.IGroupSettingRVAdapter {
 
     private static final String TAG = "MANUAL_TAG: " + GroupSettingFragment.class.getSimpleName();
     public final static String GROUP = "group";
@@ -197,11 +211,38 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
         kickDialogInOnClick(TAG_EXIT_GROUP, CALLBACK_EXIT_GROUP, bundle, this);
     }
 
+    /**
+     * 即時にリスナが走ってほしいので、IntentServiceは使わない。
+     * また、画面回転等を超えてリスナが走る必要もないのでServiceにも投げない。
+     * よってfragment内でobserberパターンを走らせる。
+     */
     @OnClick(R.id.item_invite)
     public void onClickInvite(){
-        getRef("friend", getUserMe().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        String uid = FirebaseAuth.getInstance().getUid();
+
+        Single.create(new SingleOnSubscribe<DataSnapshot>() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void subscribe(SingleEmitter<DataSnapshot> emitter) throws Exception {
+                getRef("friend", getUserMe().getUid())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                emitter.onSuccess(dataSnapshot);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                emitter.onError(databaseError.toException());
+                            }
+                        });
+            }
+        })
+        .subscribeOn(Schedulers.newThread())
+        .observeOn(AndroidSchedulers.mainThread())
+        .compose(bindToLifecycle())
+        .subscribe(new Consumer<DataSnapshot>() {
+            @Override
+            public void accept(DataSnapshot dataSnapshot) throws Exception {
                 if (dataSnapshot == null || !dataSnapshot.exists()){
                     Util.onError(GroupSettingFragment.this, "dataSnapshot == null || !dataSnapshot.exists()", R.string.error);
                 } else {
@@ -229,12 +270,49 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
                             .startForResult(REQ_CODE_ADD_GROUP_MEMBER);
                 }
             }
-
+        }, new Consumer<Throwable>() {
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Util.onError(GroupSettingFragment.this, TAG+databaseError.getDetails(), R.string.error);
+            public void accept(Throwable throwable) throws Exception {
+                Util.onError(GroupSettingFragment.this, TAG+throwable.getMessage(), R.string.error);
             }
         });
+
+//        getRef("friend", getUserMe().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                if (dataSnapshot == null || !dataSnapshot.exists()){
+//                    Util.onError(GroupSettingFragment.this, "dataSnapshot == null || !dataSnapshot.exists()", R.string.error);
+//                } else {
+//                    List<User> userList = new ArrayList<>();
+//                    for (DataSnapshot child: dataSnapshot.getChildren()) {
+//                        if (child.getKey().equals(DEFAULT))
+//                            continue;
+//                        User user = makeUserFromSnap(child);
+//                        int pos = getPosFromUid(group.userList, user.getUserUid());
+//                        if (pos != Integer.MAX_VALUE)
+//                            continue;
+//
+//                        userList.add(user);
+//                    }
+//
+//                    if (userList.isEmpty()){
+//                        toastNullable(getContext(), R.string.grp_no_addable_member);
+//                        return;
+//                    }
+//
+//                    com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity_
+//                            .intent(GroupSettingFragment.this)
+//                            .userList((ArrayList<User>) userList)
+//                            .requestCode(REQ_CODE_ADD_GROUP_MEMBER)
+//                            .startForResult(REQ_CODE_ADD_GROUP_MEMBER);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Util.onError(GroupSettingFragment.this, TAG+databaseError.getDetails(), R.string.error);
+//            }
+//        });
     }
 
     @OnClick(R.id.icon_fl)
@@ -307,7 +385,9 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
             String input = data.getStringExtra(INPUT);
             group.groupName = input;
             name.setText(input);
-            updateValue(UPDATE_CODE_NAME, input, 0);
+            FbIntentService_.intent(getActivity().getApplication())
+                    .updateGroupName(group.groupKey, input)
+                    .start();
         } else if (requestCode == CALLBACK_CLICK_GROUP_MEMBER && resultCode == RESULT_OK) {
             int witch = data.getIntExtra(WITCH_CLICKED, Integer.MAX_VALUE);
             if (witch == R.id.register_user){
@@ -410,10 +490,10 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
         }.update(CODE_UPDATE_CHILDREN);
     }
 
-    private void updateValue(@updateCode final int code, final String value, /*UPDATE_CODE_PHOTO_URLでのみ使用*/final int ntfId){
-        FbIntentService_.intent(getActivity().getApplication())
-                .updateGroupName(group.groupKey, value)
-                .start();
+//    private void updateValue(@updateCode final int code, final String value, /*UPDATE_CODE_PHOTO_URLでのみ使用*/final int ntfId){
+//        FbIntentService_.intent(getActivity().getApplication())
+//                .updateGroupName(group.groupKey, value)
+//                .start();
 
 //        HashMap<String, Object> hashMap = new HashMap<>();
 //        switch (code) {
@@ -451,7 +531,7 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
 //            }
 //        };
 //        writer.update(CODE_UPDATE_CHILDREN);
-    }
+//    }
 
     @Override
     public void onFailure(@NonNull Exception e) {

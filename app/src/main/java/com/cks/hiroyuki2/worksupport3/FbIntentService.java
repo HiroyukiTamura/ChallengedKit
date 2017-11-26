@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -46,7 +47,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 @EIntentService
 public class FbIntentService extends IntentService implements OnFailureListener{
     private static final String TAG = "MANUAL_TAG: " + FbIntentService.class.getSimpleName();
-    private Handler toastHandler = new Handler(getMainLooper());
+    private Handler toastHandler = new Handler(Looper.getMainLooper());
 
     public FbIntentService(){
         // ActivityのstartService(intent);で呼び出されるコンストラクタはこちら

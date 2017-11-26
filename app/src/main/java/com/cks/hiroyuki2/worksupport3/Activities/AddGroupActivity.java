@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -57,7 +58,6 @@ public class AddGroupActivity extends AppCompatActivity implements AddGroupFragm
     @ViewById(R.id.fragment_container) FrameLayout fl;
     @State @Extra ArrayList<User> userList;//空でありうる
     @State @Extra int requestCode;
-    private AddGroupFragment fragment;
     private boolean isSavedInstance = false;
 
     @Override
@@ -116,6 +116,7 @@ public class AddGroupActivity extends AppCompatActivity implements AddGroupFragm
     @Click(R.id.fab)
     void onClickFab(){
         Intent intent = new Intent();
+        AddGroupFragment fragment = (AddGroupFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         switch (requestCode){
             case REQ_CODE_CREATE_GROUP:
                 intent.putExtra(INTENT_BUNDLE_GROUP_NAME, fragment.groupName);
@@ -139,7 +140,7 @@ public class AddGroupActivity extends AppCompatActivity implements AddGroupFragm
 
     private void addFragment(){
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        fragment = com.cks.hiroyuki2.worksupport3.Fragments.AddGroupFragment_
+        Fragment fragment = com.cks.hiroyuki2.worksupport3.Fragments.AddGroupFragment_
                 .builder()
                 .userList(userList)
                 .requestCode(requestCode)
