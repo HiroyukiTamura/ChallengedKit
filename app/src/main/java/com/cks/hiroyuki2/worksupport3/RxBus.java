@@ -17,7 +17,6 @@ import io.reactivex.subjects.PublishSubject;
  */
 
 public class RxBus {
-    public static final int UPDATE_GROUP_NAME = 0;
     private static Map<Integer, PublishSubject<Object>> sSubjectMap = new HashMap<>();
     private static Map<Object, CompositeDisposable> sSubscriptionsMap = new HashMap<>();
 
@@ -25,7 +24,10 @@ public class RxBus {
         // hidden constructor
     }
 
-    @IntDef(value = {UPDATE_GROUP_NAME, 1, 2})
+    public static final int UPDATE_GROUP_NAME = 0;
+    public static final int UPDATE_GROUP_PHOTO = 1;
+    public static final int UPDATE_GROUP_PHOTO2 = 2;
+    @IntDef(value = {UPDATE_GROUP_NAME, UPDATE_GROUP_PHOTO, UPDATE_GROUP_PHOTO2})
     @interface subject{}
 
     /**

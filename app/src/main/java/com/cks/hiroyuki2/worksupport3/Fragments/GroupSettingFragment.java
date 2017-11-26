@@ -147,7 +147,17 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
         RxBus.subscribe(RxBus.UPDATE_GROUP_NAME, this, new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
-                Log.d(TAG, "accept() called with: o = [" + o.toString() + "]");
+                toastNullable(getContext(), R.string.updated_group_name);
+            }
+        });
+        RxBus.subscribe(RxBus.UPDATE_GROUP_PHOTO, this, new Consumer<Object>() {
+            @Override
+            public void accept(Object o) throws Exception {
+                Uri photoUrlUri = (Uri)o;
+                group.photoUrl = photoUrlUri.toString();
+                Picasso.with(getContext())
+                        .load(photoUrlUri)
+                        .into(icon, GroupSettingFragment.this);
             }
         });
     }
@@ -262,28 +272,31 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
                 return;
             }
 
-            Toast.makeText(getContext(), "アップロードしています...", Toast.LENGTH_LONG).show();
-            String type = getExtension(getContext(), uri);
-            String key = getRef("keyPusher").push().getKey();
-            final String fileName = key + "." + type;
+            FbIntentService_.intent(getActivity().getApplication())
+                    .updateGroupPhotoUrl(storageUtil, group.groupName, group.groupKey, uri)
 
-            final int ntfId = (int) System.currentTimeMillis();
-            uploadFile("keyPusher/" + fileName, uri, this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri uri = taskSnapshot.getDownloadUrl();
-                    group.photoUrl = uri.toString();/*Firebaseの仕様上NPEはあり得ないので、you can ignore this warning*/
-                    Picasso.with(getContext())
-                            .load(uri)
-                            .into(icon, GroupSettingFragment.this);
-                    updateValue(UPDATE_CODE_PHOTO_URL, group.photoUrl, ntfId);
-                }
-            }, storageUtil, new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                    showUploadingNtf(MainActivity.class, getContext(), taskSnapshot, fileName, ntfId);
-                }
-            });
+//            Toast.makeText(getContext(), "アップロードしています...", Toast.LENGTH_LONG).show();
+//            String type = getExtension(getContext(), uri);
+//            String key = getRef("keyPusher").push().getKey();
+//            final String fileName = key + "." + type;
+//
+//            final int ntfId = (int) System.currentTimeMillis();
+//            uploadFile("keyPusher/" + fileName, uri, this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                    Uri uri = taskSnapshot.getDownloadUrl();
+//                    group.photoUrl = uri.toString();/*Firebaseの仕様上NPEはあり得ないので、you can ignore this warning*/
+//                    Picasso.with(getContext())
+//                            .load(uri)
+//                            .into(icon, GroupSettingFragment.this);
+//                    updateValue(UPDATE_CODE_PHOTO_URL, group.photoUrl, ntfId);
+//                }
+//            }, storageUtil, new OnProgressListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+//                    showUploadingNtf(MainActivity.class, getContext(), taskSnapshot, fileName, ntfId);
+//                }
+//            });
         } else if (requestCode == CALLBACK_EXIT_GROUP && resultCode == RESULT_OK){
             getActivity().setResult(RESULT_OK, data);
             getActivity().finish();
