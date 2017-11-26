@@ -51,6 +51,7 @@ import com.squareup.picasso.Picasso;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -150,6 +151,7 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
                 toastNullable(getContext(), R.string.updated_group_name);
             }
         });
+
         RxBus.subscribe(RxBus.UPDATE_GROUP_PHOTO, this, new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
@@ -273,7 +275,8 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
             }
 
             FbIntentService_.intent(getActivity().getApplication())
-                    .updateGroupPhotoUrl(storageUtil, group.groupName, group.groupKey, uri)
+                    .updateGroupPhotoUrl(new Group(group), uri)
+                    .start();
 
 //            Toast.makeText(getContext(), "アップロードしています...", Toast.LENGTH_LONG).show();
 //            String type = getExtension(getContext(), uri);
