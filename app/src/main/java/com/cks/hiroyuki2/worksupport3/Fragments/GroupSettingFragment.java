@@ -381,7 +381,7 @@ public class GroupSettingFragment extends Fragment implements Callback, OnFailur
 
     private void updateValue(@updateCode final int code, final String value, /*UPDATE_CODE_PHOTO_URLでのみ使用*/final int ntfId){
         FbIntentService_.intent(getActivity().getApplication())
-                .sampleAction(group.groupKey, value)
+                .updateGroupName(group.groupKey, value)
                 .start();
 
 //        HashMap<String, Object> hashMap = new HashMap<>();
