@@ -31,6 +31,7 @@ import android.view.animation.AnimationUtils;
 
 import com.cks.hiroyuki2.worksupport3.Activities.EditDocActivity;
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
+import com.cks.hiroyuki2.worksupport3.FbIntentService_;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog;
 import com.cks.hiroyuki2.worksupport3.ServiceMessage;
@@ -574,18 +575,24 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
 //        Bundle bundle = data.getExtras();
 
         final Content content = group.contentList.get(listPos);
-        DatabaseReference checkRef = getRef("group", group.groupKey, "contents", content.contentKey);
-        DatabaseReference writeRef = getRef(checkRef, "comment");
-        FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, writeRef, getContext(), newComment) {
-            @Override
-            public void onSuccess(DatabaseReference ref) {
-                toastNullable(getContext(), R.string.updated_comment_msg);
-                //リスト書き込みしてUI更新
-                content.comment = newComment;/*リスト書き込みはするが、はてローカルに書き込む？*/
-                rvAdapter.notifyDataSetChanged();
-            }
-        };
-        writer.update(CODE_SET_VALUE);
+//        DatabaseReference checkRef = getRef("group", group.groupKey, "contents", content.contentKey);
+//        DatabaseReference writeRef = getRef(checkRef, "comment");
+        content.comment = newComment;
+        rvAdapter.notifyDataSetChanged();
+
+        FbIntentService_.intent(getActivity().getApplicationContext())
+                .editNormalComment(group.groupKey, content.contentKey, newComment)
+                .start();
+//        FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, writeRef, getContext(), newComment) {
+//            @Override
+//            public void onSuccess(DatabaseReference ref) {
+//                toastNullable(getContext(), R.string.updated_comment_msg);
+//                //リスト書き込みしてUI更新
+//                content.comment = newComment;/*リスト書き込みはするが、はてローカルに書き込む？*/
+//                rvAdapter.notifyDataSetChanged();
+//            }
+//        };
+//        writer.update(CODE_SET_VALUE);
     }
 
     @OnActivityResult(EditDocActivity.REQ_INTENT_CODE)

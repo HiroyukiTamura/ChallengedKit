@@ -122,6 +122,19 @@ public class FbIntentService extends IntentService implements OnFailureListener{
         }.update(CODE_UPDATE_CHILDREN);
     }
 
+    @ServiceAction
+    public void editNormalComment(@NonNull String groupKey, @NonNull String contentKey, @Nullable String newComment){
+        DatabaseReference checkRef = getRef("group", groupKey, "contents", contentKey);
+        DatabaseReference writeRef = getRef(checkRef, "comment");
+        FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, writeRef, getApplicationContext(), newComment) {
+            @Override
+            public void onSuccess(DatabaseReference ref) {
+                Log.d(TAG, "onSuccess: succeed to edit comment"+ ref.toString());
+            }
+        };
+        writer.update(CODE_SET_VALUE);
+    }
+
     @Override
     public void onFailure(@NonNull Exception e) {
         logStackTrace(e);
