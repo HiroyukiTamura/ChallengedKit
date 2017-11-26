@@ -223,7 +223,7 @@ public class GroupSettingFragment extends RxFragment implements Callback, OnFail
         Single.create(new SingleOnSubscribe<DataSnapshot>() {
             @Override
             public void subscribe(SingleEmitter<DataSnapshot> emitter) throws Exception {
-                getRef("friend", getUserMe().getUid())
+                getRef("friend", uid)
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -405,27 +405,66 @@ public class GroupSettingFragment extends RxFragment implements Callback, OnFail
         }
     }
 
-
+    /**
+     * {@link onClickInvite()}の流れで発火する。
+     */
     private void onResultAddMember(Intent data){
         final List<User> newMembers = data.getParcelableArrayListExtra(KEY_PARCELABLE);
-        HashMap<String, Object> childMap = new HashMap<>();
-        for (User user: newMembers) {
-            GroupInUserDataNode smGroup = new GroupInUserDataNode(group.groupName, group.groupKey, group.photoUrl, false);
-            childMap.put(makeScheme("userData", user.getUserUid(), "group", group.groupKey), smGroup);
-            childMap.put(makeScheme("group", group.groupKey, "member", user.getUserUid()), user);
-        }
 
-        getRef().updateChildren(childMap, new DatabaseReference.CompletionListener() {
+        Single.create(new SingleOnSubscribe<DatabaseReference>() {
             @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null){
-                    Util.onError(GroupSettingFragment.this, TAG+databaseError.getDetails(), R.string.error);
-                    return;
-                }
+            public void subscribe(SingleEmitter<DatabaseReference> emitter) throws Exception {
+                getRef("group", group.groupKey, "member")
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (dataSnapshot == null || !dataSnapshot.exists()){
+                                    emitter.onError(new IllegalArgumentException("dataSnapshot == null || !dataSnapshot.exists()"));
+                                    return;
+                                }
 
+                                HashMap<String, Object> childMap = new HashMap<>();
+                                for (User user: newMembers) {
+                                    GroupInUserDataNode smGroup = new GroupInUserDataNode(group.groupName, group.groupKey, group.photoUrl, false);
+                                    childMap.put(makeScheme("userData", user.getUserUid(), "group", group.groupKey), smGroup);
+                                    childMap.put(makeScheme("group", group.groupKey, "member", user.getUserUid()), user);
+                                }
+
+                                getRef().updateChildren(childMap, new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                        if (databaseError != null){
+                                            emitter.onError(databaseError.toException());
+                                            return;
+                                        }
+
+                                        emitter.onSuccess(databaseReference);
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                emitter.onError(databaseError.toException());
+                            }
+                        });
+            }
+        })
+        .compose(bindToLifecycle())
+        .subscribeOn(Schedulers.newThread())
+        .observeOn(AndroidSchedulers.mainThread())
+        .compose(bindToLifecycle())
+        .subscribe(new Consumer<DatabaseReference>() {
+            @Override
+            public void accept(DatabaseReference databaseReference) throws Exception {
                 toastNullable(getContext(), R.string.invite_done);
                 group.userList.addAll(newMembers);
                 adapter.notifyDataSetChanged();
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                Util.onError(GroupSettingFragment.this, TAG+throwable.getMessage(), R.string.error);
             }
         });
     }
