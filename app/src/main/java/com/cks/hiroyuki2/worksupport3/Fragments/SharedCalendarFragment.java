@@ -12,12 +12,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
 import com.cks.hiroyuki2.worksupport3.Activities.SharedCalendarActivity;
+import com.cks.hiroyuki2.worksupport3.Util;
 import com.cks.hiroyuki2.worksupprotlib.Entity.CalendarOneEvent;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.example.hiroyuki3.worksupportlibw.Adapters.SharedCalendarVPAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
 import org.androidannotations.annotations.AfterViews;
@@ -29,6 +32,7 @@ import org.androidannotations.annotations.ViewById;
 import java.util.Calendar;
 import java.util.Observable;
 
+import static com.cks.hiroyuki2.worksupport3.Util.checkAdmittionAsMember;
 import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.ADD_SCHEDULE;
 import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.CALENDAR;
 import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.CALLBACK_ADD_SCHEDULE;
@@ -36,6 +40,7 @@ import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.INPUT;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickCalendarDialog;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_SET_VALUE;
 import com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter;
+import com.google.firebase.database.ValueEventListener;
 import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import io.reactivex.ObservableEmitter;
@@ -57,6 +62,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.COLOR_NUM;
 import static com.cks.hiroyuki2.worksupprotlib.Util.DATE_PATTERN_YM;
 import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 
 /**
  * {@link SharedCalendarActivity}のひとり子分。
@@ -147,38 +153,84 @@ public class SharedCalendarFragment extends RxFragment implements ViewPager.OnPa
 
         if (resultCode != Activity.RESULT_OK) return;
 
-        Single.create(new SingleOnSubscribe<Object>() {
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid == null){
+            onError(this, "uid == null", R.string.error);
+            return;
+        }
+
+        Single.create(new SingleOnSubscribe<CalendarOneEvent>() {
             @Override
-            public void subscribe(SingleEmitter<Object> emitter) throws Exception {
-                DatabaseReference checkRef = FirebaseConnection.getRef("calendar", group.groupKey);
-                FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, null, getContext()/*非同期でないからok*/, null) {
-                    CalendarOneEvent calEve;
-
+            public void subscribe(SingleEmitter<CalendarOneEvent> emitter) throws Exception {
+                FirebaseConnection.getRef("group", group.groupKey).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onSuccess(DatabaseReference ref) {
-                        emitter.onSuccess();
-                        adapter.addSchedule(cal, calEve);//ここ、今はこれで問題ないけど、変えるときは処理の順序を気を付けてください
-                    }
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String errMsg = checkAdmittionAsMember(dataSnapshot, uid);
+                        if (errMsg != null){
+                            emitter.onError(new IllegalArgumentException(errMsg));
+                            return;
+                        }
 
-                    @Override
-                    protected void onNodeExist(@NonNull DataSnapshot dataSnapshot) {
-                        DatabaseReference ref = dataSnapshot.getRef().push();
-                        calEve = new CalendarOneEvent(ref.getKey(), input, colorNum);
-                        setObj(calEve);
+                        String calEveKey = FirebaseConnection.getRef("keyPusher").push().getKey();
+                        CalendarOneEvent calEve = new CalendarOneEvent(calEveKey, input, colorNum);
                         String ym = cal2date(cal, DATE_PATTERN_YM);
                         String d = Integer.toString(cal.get(Calendar.DATE));
-                        DatabaseReference writeRef = FirebaseConnection.getRef("calendar", group.groupKey, ym, d, ref.getKey());
-                        setWriteRef(writeRef);
-                        super.onNodeExist(dataSnapshot);
+                        FirebaseConnection.getRef("calendar", group.groupKey, ym, d, calEveKey)
+                                .setValue(calEve, new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                        if (databaseError == null){
+                                            emitter.onSuccess(calEve);
+                                        } else {
+                                            emitter.onError(new IllegalArgumentException(databaseError.getMessage()));
+                                        }
+                                    }
+                                });
                     }
-                };
-                writer.update(CODE_SET_VALUE);
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        emitter.onError(new IllegalArgumentException(databaseError.getMessage()));
+                    }
+                });
+//                DatabaseReference checkRef = FirebaseConnection.getRef("calendar", group.groupKey);
+//                FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, null, getContext()/*非同期でないからok*/, null) {
+//                    CalendarOneEvent calEve;
+//
+//                    @Override
+//                    public void onSuccess(DatabaseReference ref) {
+//                        emitter.onSuccess();
+//                        adapter.addSchedule(cal, calEve);//ここ、今はこれで問題ないけど、変えるときは処理の順序を気を付けてください
+//                    }
+//
+//                    @Override
+//                    protected void onNodeExist(@NonNull DataSnapshot dataSnapshot) {
+//                        DatabaseReference ref = dataSnapshot.getRef().push();
+//                        calEve = new CalendarOneEvent(ref.getKey(), input, colorNum);
+//                        setObj(calEve);
+//                        String ym = cal2date(cal, DATE_PATTERN_YM);
+//                        String d = Integer.toString(cal.get(Calendar.DATE));
+//                        DatabaseReference writeRef = FirebaseConnection.getRef("calendar", group.groupKey, ym, d, ref.getKey());
+//                        setWriteRef(writeRef);
+//                        super.onNodeExist(dataSnapshot);
+//                    }
+//                };
+//                writer.update(CODE_SET_VALUE);
             }
         })
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.newThread())
         .compose(bindToLifecycle())
-        .subscribe(new Consumer<Object>() {
-        })
+        .subscribe(new Consumer<CalendarOneEvent>() {
+            @Override
+            public void accept(CalendarOneEvent calEve) throws Exception {
+                adapter.addSchedule(cal, calEve);
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                onError(SharedCalendarFragment.this, throwable.getMessage(), R.string.error);
+            }
+        });
     }
 }
