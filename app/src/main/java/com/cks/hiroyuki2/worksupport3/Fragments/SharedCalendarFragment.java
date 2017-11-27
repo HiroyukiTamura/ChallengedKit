@@ -27,6 +27,7 @@ import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.Calendar;
+import java.util.Observable;
 
 import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.ADD_SCHEDULE;
 import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.CALENDAR;
@@ -35,6 +36,22 @@ import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.INPUT;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickCalendarDialog;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_SET_VALUE;
 import com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter;
+import com.trello.rxlifecycle2.components.support.RxFragment;
+
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleObserver;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.Subject;
+
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRootRef;
 import static com.cks.hiroyuki2.worksupprotlib.Util.COLOR_NUM;
 import static com.cks.hiroyuki2.worksupprotlib.Util.DATE_PATTERN_YM;
@@ -46,7 +63,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
  * {@link SharedCalendarVPAdapter}を従える。子孫は多い！
  */
 @EFragment(R.layout.fragment_shared_calendar)
-public class SharedCalendarFragment extends Fragment implements ViewPager.OnPageChangeListener{
+public class SharedCalendarFragment extends RxFragment implements ViewPager.OnPageChangeListener{
 
     @FragmentArg("group") Group group;
     private DatabaseReference ref;
@@ -58,6 +75,7 @@ public class SharedCalendarFragment extends Fragment implements ViewPager.OnPage
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ref = FirebaseConnection.getRef(getRootRef(), makeScheme("calendar", group.groupKey));
+        adapter = new SharedCalendarVPAdapter(this, Calendar.getInstance(), ref);
     }
 
     @Override
@@ -75,7 +93,6 @@ public class SharedCalendarFragment extends Fragment implements ViewPager.OnPage
 
     @AfterViews
     void afterViews(){
-        adapter = new SharedCalendarVPAdapter(this, Calendar.getInstance(), ref);
         vp.setAdapter(adapter);
         vp.setCurrentItem(adapter.getCount()/2);
         vp.addOnPageChangeListener(this);
@@ -127,29 +144,41 @@ public class SharedCalendarFragment extends Fragment implements ViewPager.OnPage
                              @OnActivityResult.Extra(INPUT) final String input,
                              @OnActivityResult.Extra(CALENDAR) final Calendar cal,
                              @OnActivityResult.Extra(COLOR_NUM) final int colorNum){
+
         if (resultCode != Activity.RESULT_OK) return;
 
-        DatabaseReference checkRef = FirebaseConnection.getRef("calendar", group.groupKey);
-        FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, null, getContext()/*非同期でないからok*/, null) {
-            CalendarOneEvent calEve;
-
+        Single.create(new SingleOnSubscribe<Object>() {
             @Override
-            public void onSuccess(DatabaseReference ref) {
-                adapter.addSchedule(cal, calEve);//ここ、今はこれで問題ないけど、変えるときは処理の順序を気を付けてください
-            }
+            public void subscribe(SingleEmitter<Object> emitter) throws Exception {
+                DatabaseReference checkRef = FirebaseConnection.getRef("calendar", group.groupKey);
+                FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, null, getContext()/*非同期でないからok*/, null) {
+                    CalendarOneEvent calEve;
 
-            @Override
-            protected void onNodeExist(@NonNull DataSnapshot dataSnapshot) {
-                DatabaseReference ref = dataSnapshot.getRef().push();
-                calEve = new CalendarOneEvent(ref.getKey(), input, colorNum);
-                setObj(calEve);
-                String ym = cal2date(cal, DATE_PATTERN_YM);
-                String d = Integer.toString(cal.get(Calendar.DATE));
-                DatabaseReference writeRef = FirebaseConnection.getRef("calendar", group.groupKey, ym, d, ref.getKey());
-                setWriteRef(writeRef);
-                super.onNodeExist(dataSnapshot);
+                    @Override
+                    public void onSuccess(DatabaseReference ref) {
+                        emitter.onSuccess();
+                        adapter.addSchedule(cal, calEve);//ここ、今はこれで問題ないけど、変えるときは処理の順序を気を付けてください
+                    }
+
+                    @Override
+                    protected void onNodeExist(@NonNull DataSnapshot dataSnapshot) {
+                        DatabaseReference ref = dataSnapshot.getRef().push();
+                        calEve = new CalendarOneEvent(ref.getKey(), input, colorNum);
+                        setObj(calEve);
+                        String ym = cal2date(cal, DATE_PATTERN_YM);
+                        String d = Integer.toString(cal.get(Calendar.DATE));
+                        DatabaseReference writeRef = FirebaseConnection.getRef("calendar", group.groupKey, ym, d, ref.getKey());
+                        setWriteRef(writeRef);
+                        super.onNodeExist(dataSnapshot);
+                    }
+                };
+                writer.update(CODE_SET_VALUE);
             }
-        };
-        writer.update(CODE_SET_VALUE);
+        })
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeOn(Schedulers.newThread())
+        .compose(bindToLifecycle())
+        .subscribe(new Consumer<Object>() {
+        })
     }
 }

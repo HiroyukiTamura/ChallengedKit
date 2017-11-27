@@ -29,7 +29,8 @@ public class RxBus {
     public static final int UPDATE_GROUP_PHOTO2 = 2;
     public static final int REMOVE_MEMBER = 3;
     public static final int REMOVE_STORAGE_FILE = 4;
-    @IntDef(value = {UPDATE_GROUP_NAME, UPDATE_GROUP_PHOTO, UPDATE_GROUP_PHOTO2, REMOVE_MEMBER, REMOVE_STORAGE_FILE})
+    public static final int CREATE_GROUP_NEW_IMG = 5;
+    @IntDef(value = {UPDATE_GROUP_NAME, UPDATE_GROUP_PHOTO, UPDATE_GROUP_PHOTO2, REMOVE_MEMBER, REMOVE_STORAGE_FILE, CREATE_GROUP_NEW_IMG})
     @interface subject{}
 
     /**

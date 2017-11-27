@@ -12,6 +12,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
+import com.cks.hiroyuki2.worksupport3.Fragments.AddGroupFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import com.cks.hiroyuki2.worksupprotlib.*;
@@ -23,6 +24,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.common.eventbus.Subscribe;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -109,16 +111,28 @@ public class FbIntentService extends IntentService implements OnFailureListener,
         new isMeGroupMemberChecker(){
             @Override
             protected void onSuccess(DataSnapshot dataSnapshot) {
-                toastHandler.post(new DisplayToast(R.string.msg_start_upload));
-                String type = getExtension(getApplicationContext(), uri);
-                String key = getRef("keyPusher").push().getKey();
-                final String fileName = key + "." + type;
+                uploadGroupIcon(groupKey, groupName, uri, UPDATE_GROUP_PHOTO);
+            }
 
-                final int ntfId = (int) System.currentTimeMillis();
+            @Override
+            protected void onError(@NonNull String errMsg) {
+                onErrorForService(errMsg, R.string.error);
+            }
+        }.check(uid, groupKey);
+    }
 
-                uploadFile("group_icon/" + fileName, uri, FbIntentService.this, taskSnapshot -> {
+    @ServiceAction
+    void uploadGroupIcon(@NonNull String groupKey, @NonNull String groupName, /*このuriは、ローカルファイルのuri*/ @NonNull Uri uri, @RxBus.subject int subject){
+        toastHandler.post(new DisplayToast(R.string.msg_start_upload));
+        String type = getExtension(getApplicationContext(), uri);
+        String key = getRef("keyPusher").push().getKey();
+        final String fileName = key + "." + type;
+
+        final int ntfId = (int) System.currentTimeMillis();
+
+        uploadFile("group_icon/" + fileName, uri, FbIntentService.this, taskSnapshot -> {
                     Uri uri1 = taskSnapshot.getDownloadUrl();
-                    RxBus.publish(UPDATE_GROUP_PHOTO, uri1);/*Firebaseの仕様上NPEはあり得ないので、you can ignore this warning*/
+                    RxBus.publish(subject, uri1);/*Firebaseの仕様上NPEはあり得ないので、you can ignore this warning*/
 
                     DatabaseReference ref = getRef("group", groupKey, "photoUrl");
                     FbCheckAndWriter writer = new FbCheckAndWriter(ref, ref, getApplicationContext(), uri1.toString()) {
@@ -130,16 +144,8 @@ public class FbIntentService extends IntentService implements OnFailureListener,
                     writer.update(CODE_SET_VALUE);
                 },
                 FbIntentService.this,
-                        taskSnapshot -> showUploadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, fileName, ntfId));
-            }
-
-            @Override
-            protected void onError(@NonNull String errMsg) {
-                onErrorForService(errMsg, R.string.error);
-            }
-        }.check(uid, groupKey);
+                taskSnapshot -> showUploadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, fileName, ntfId));
     }
-
 
     @ServiceAction
     public void removeMember(@NonNull String groupKey, @NonNull String uid, @NonNull String name){

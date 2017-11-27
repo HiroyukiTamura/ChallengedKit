@@ -238,26 +238,26 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
     @OnActivityResult(REQ_CODE_CREATE_GROUP)
     void onResultCreateGroup(Intent data, int resultCode,
                              @OnActivityResult.Extra(AddGroupActivity.INTENT_BUNDLE_GROUP_NAME) final String groupName,
-                             @OnActivityResult.Extra(AddGroupActivity.INTENT_BUNDLE_GROUP_PHOTO_URL) @Nullable String photoUrl){
+                             @OnActivityResult.Extra(AddGroupActivity.INTENT_BUNDLE_GROUP_PHOTO_URL) @Nullable String photoUrl,
+                             @OnActivityResult.Extra String groupKey){
 
         if (resultCode != RESULT_OK) return;
-        final String key = getRootRef().child("group").push().getKey();
 
         List<User> userListOpe = new ArrayList<>(userList);
         me.setChecked(true);
         userListOpe.add(me);
         userListOpe.remove(0);/*DEFAULT値を取り除く DEFAULT値をどうするかは後で考えましょう*/
 
-        HashMap<String, Object> childMap = makeMap(me.getUserUid(), key, groupName, userListOpe, photoUrl);
+        HashMap<String, Object> childMap = makeMap(me.getUserUid(), groupKey, groupName, userListOpe, photoUrl);
 
         for (User user: userListOpe) {
-            GroupInUserDataNode smGroup = new GroupInUserDataNode(groupName, key, photoUrl, user.equals(me));
-            childMap.put(makeScheme("userData", user.getUserUid(), "group", key), smGroup);
+            GroupInUserDataNode smGroup = new GroupInUserDataNode(groupName, groupKey, photoUrl, user.equals(me));
+            childMap.put(makeScheme("userData", user.getUserUid(), "group", groupKey), smGroup);
         }
 
-        childMap.put(makeScheme("calendar", key, DEFAULT), DEFAULT);
+        childMap.put(makeScheme("calendar", groupKey, DEFAULT), DEFAULT);
 
-        final Group group = new Group(userListOpe, groupName, key, null, me.getUserUid(), photoUrl);//groupインスタンスを作成。
+        final Group group = new Group(userListOpe, groupName, groupKey, null, me.getUserUid(), photoUrl);//groupインスタンスを作成。
         getRootRef().updateChildren(childMap, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {

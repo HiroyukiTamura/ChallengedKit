@@ -18,7 +18,9 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.AddGroupFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.SocialFragment;
 import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupport3.RxBus;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 
 import org.androidannotations.annotations.AfterViews;
@@ -31,9 +33,11 @@ import java.util.ArrayList;
 
 import icepick.Icepick;
 import icepick.State;
+import io.reactivex.functions.Consumer;
 
 import static com.cks.hiroyuki2.worksupport3.Fragments.SocialFragment.REQ_CODE_CREATE_GROUP;
 import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 import static com.cks.hiroyuki2.worksupprotlib.UtilSpec.getFabLp;
 
@@ -53,6 +57,7 @@ public class AddGroupActivity extends AppCompatActivity implements AddGroupFragm
     public static final String KEY_PARCELABLE = "KEY_PARCELABLE";
     public static final int REQ_CODE_ADD_GROUP_MEMBER = 5438;
 
+    @State String groupKey;
     @ViewById(R.id.toolbar) Toolbar toolbar;
     @ViewById(R.id.fab) FloatingActionButton fab;
     @ViewById(R.id.fragment_container) FrameLayout fl;
@@ -60,13 +65,27 @@ public class AddGroupActivity extends AppCompatActivity implements AddGroupFragm
     @State @Extra int requestCode;
     private boolean isSavedInstance = false;
 
+    /**
+     * groupKeyを、あらかじめここで作る。これは、groupIconのupload時にgroupKeyが必要なため。
+     * {@link SocialFragment#onResultCreateGroup(Intent, int, String, String, String)}を待っていられない。
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Icepick.restoreInstanceState(this, savedInstanceState);
         if (savedInstanceState != null){
             isSavedInstance = true;
+            groupKey = getRef("keyPusher").push().getKey();
         }
+
+        //subscribeするのは、ここだけ。
+        RxBus.subscribe(RxBus.CREATE_GROUP_NEW_IMG, this, new Consumer<Object>() {
+            @Override
+            public void accept(Object o) throws Exception {
+                AddGroupFragment fragment = (AddGroupFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                fragment.dlIconUri = (String) o;
+            }
+        });
     }
 
     @Override
@@ -121,6 +140,7 @@ public class AddGroupActivity extends AppCompatActivity implements AddGroupFragm
             case REQ_CODE_CREATE_GROUP:
                 intent.putExtra(INTENT_BUNDLE_GROUP_NAME, fragment.groupName);
                 intent.putExtra(INTENT_BUNDLE_GROUP_PHOTO_URL, fragment.dlIconUri);
+                intent.putExtra("groupKey", groupKey);
                 break;
             case REQ_CODE_ADD_GROUP_MEMBER:
                 break;
@@ -143,6 +163,7 @@ public class AddGroupActivity extends AppCompatActivity implements AddGroupFragm
         Fragment fragment = com.cks.hiroyuki2.worksupport3.Fragments.AddGroupFragment_
                 .builder()
                 .userList(userList)
+                .groupKey(groupKey)
                 .requestCode(requestCode)
                 .build();//要パッケージ名指定。importするとコンパイル通らず @see https://goo.gl/ru1n1x
         ft.add(R.id.fragment_container, fragment).commit();
