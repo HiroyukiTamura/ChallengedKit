@@ -246,7 +246,7 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
                     try {
                         group = getOneGroupFromJson(jo, groupNode.groupKey);
                         storageUtil = new FirebaseStorageUtil(getContext(), group);
-                        if (group != null){
+                        if (group != null){//todo これエラー吐かなきゃだめじゃね？
                             if (group.contentList == null)
                                 group.contentList = new ArrayList<>();
 //                    srl.setRefreshing(false);
