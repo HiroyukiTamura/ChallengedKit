@@ -242,24 +242,27 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
             public void accept(DataSnapshot dataSnapshot) throws Exception {
                 JSONObject jo = snap2Json(dataSnapshot);
 
-                if (jo != null)
-                    try {
-                        group = getOneGroupFromJson(jo, groupNode.groupKey);
-                        storageUtil = new FirebaseStorageUtil(getContext(), group);
-                        if (group != null){//todo これエラー吐かなきゃだめじゃね？
-                            if (group.contentList == null)
-                                group.contentList = new ArrayList<>();
+                if (jo == null){
+                    onError(ShareBoardFragment.this, TAG+"jo == null", R.string.error);
+                    return;
+                }
+
+                try {
+                    group = getOneGroupFromJson(jo, groupNode.groupKey);//ここで、jo != null -> group != nullである
+                    storageUtil = new FirebaseStorageUtil(getContext(), group);
+                    if (group.contentList == null)
+                        group.contentList = new ArrayList<>();
 //                    srl.setRefreshing(false);
-                            drawUI();
-                        }
-                    } catch (JSONException e) {
-                        logStackTrace(e);
-                    }
+                    drawUI();
+                } catch (JSONException e) {
+                    logStackTrace(e);
+                    toastNullable(getContext(), R.string.error);
+                }
             }
         }, new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
-                toastNullable(getContext(), R.string.error);
+                onError(ShareBoardFragment.this, throwable.getMessage(), R.string.error);
             }
         });
     }
