@@ -33,7 +33,8 @@ public class RxBus {
     public static final int CREATE_GROUP_NEW_IMG = 5;
     public static final int UPDATE_PROF_NAME_SUCCESS = 6;
     public static final int UPDATE_PROF_NAME_FAILURE = 7;
-    @IntRange(from = 0, to = 7)
+    public static final int UPDATE_PROF_ICON = 8;
+    @IntRange(from = 0, to = 8)
     @interface subject{}
 
     /**

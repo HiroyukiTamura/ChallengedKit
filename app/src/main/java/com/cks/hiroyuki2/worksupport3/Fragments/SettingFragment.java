@@ -106,6 +106,15 @@ public class SettingFragment extends RxFragment implements OnFailureListener, Ca
                 nameTv.setText((String) newName);
             }
         });
+
+        RxBus.subscribe(RxBus.UPDATE_PROF_NAME_SUCCESS, this, new Consumer<Object>() {
+            @Override
+            public void accept(Object uri) throws Exception {
+                Picasso.with(getContext())
+                    .load((Uri)uri)
+                    .into(iconIv, SettingFragment.this);
+            }
+        });
     }
 
     @Override
@@ -155,29 +164,34 @@ public class SettingFragment extends RxFragment implements OnFailureListener, Ca
 
     @OnActivityResult(REQ_CODE_MY_ICON_CHANGE)
     void onResultChangeIcon(Intent data, int resultCode){
-        if (resultCode != Activity.RESULT_OK) return;
+        if (resultCode != Activity.RESULT_OK)
+            return;
 
-        new SettingFbCommunicator(this, data, SCHEME_PHOTO_URL) {
-            @Override
-            public void onSuccess(String uri) {
-                Picasso.with(getContext())
-                        .load(uri)
-                        .into(iconIv, new Callback() {
-                            @Override
-                            public void onSuccess() {
-                                toastNullable(getContext(), R.string.update_success_msg);
-                            }
+        FbIntentService_.intent(getContext().getApplicationContext())
+                .updateProfIcon(data.getData())
+                .start();
 
-                            @Override
-                            public void onError() {
-                                Log.d(TAG, "onError: picasso");
-                            }
-                        });
-
-                if (mainActivity != null)
-                    mainActivity.getLoginCheck().writeLocalProf();
-            }
-        }.uploadIcon();
+//        new SettingFbCommunicator(this, data, SCHEME_PHOTO_URL) {
+//            @Override
+//            public void onSuccess(String uri) {
+//                Picasso.with(getContext())
+//                        .load(uri)
+//                        .into(iconIv, new Callback() {
+//                            @Override
+//                            public void onSuccess() {
+//                                toastNullable(getContext(), R.string.update_success_msg);
+//                            }
+//
+//                            @Override
+//                            public void onError() {
+//                                Log.d(TAG, "onError: picasso");
+//                            }
+//                        });
+//
+//                if (mainActivity != null)
+//                    mainActivity.getLoginCheck().writeLocalProf();
+//            }
+//        }.uploadIcon();
     }
 
     @OnActivityResult(SettingDialogFragment.DIALOG_CALLBACK)

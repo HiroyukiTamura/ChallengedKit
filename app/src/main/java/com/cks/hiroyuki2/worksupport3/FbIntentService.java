@@ -375,8 +375,10 @@ public class FbIntentService extends IntentService implements OnFailureListener,
                                             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                                 if (databaseError != null)
                                                     showCompleteNtf(MainActivity.class, getApplicationContext(), ntfTitle, ntfId, R.string.msg_failed_upload);
-                                                else
+                                                else {
                                                     showCompleteNtf(MainActivity.class, getApplicationContext(), ntfTitle, ntfId, R.string.msg_succeed_upload);
+                                                    RxBus.publish(RxBus.UPDATE_PROF_ICON, uri);
+                                                }
                                             }
                                         });
                             }
