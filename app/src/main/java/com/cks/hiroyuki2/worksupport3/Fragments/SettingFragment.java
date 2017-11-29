@@ -18,6 +18,7 @@ import com.cks.hiroyuki2.worksupport3.DialogFragments.SettingDialogFragment;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupprotlib.SettingFbCommunicator;
 import com.cks.hiroyuki2.worksupprotlib.Util;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -25,8 +26,12 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -35,12 +40,22 @@ import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
 import static com.cks.hiroyuki2.worksupprotlib.SettingFbCommunicator.SCHEME_PHOTO_URL;
+import static com.cks.hiroyuki2.worksupprotlib.Util.INTENT_KEY_NEW_PARAM;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getTextNullable;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
 import static com.cks.hiroyuki2.worksupprotlib.Util.kickIntentIcon;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
+import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.setImgFromStorage;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickSettingDialog;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
@@ -49,7 +64,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
  * プロフィールクリックで発動するよ！
  */
 @EFragment(R.layout.fragment_setting_fragment2)
-public class SettingFragment extends Fragment implements OnFailureListener, Callback {
+public class SettingFragment extends RxFragment implements OnFailureListener, Callback {
 
     //region Dialog周りの定数
     public static final String INTENT_KEY_ISSUCCESS = "IKI";
@@ -156,21 +171,80 @@ public class SettingFragment extends Fragment implements OnFailureListener, Call
                 updatePassWord(user, newParam);
                 break;
             case SettingDialogFragment.METHOD_ACCOUNT_NAME:
-                new SettingFbCommunicator(this, data, SettingFbCommunicator.SCHEME_NAME){
-                    @Override
-                    public void onSuccess(String param) {
-                        //ここでUriはnullである
-                        toastNullable(getContext(), R.string.success_name);
-                        nameTv.setText(param);
-                        if (mainActivity != null)
-                            mainActivity.getLoginCheck().writeLocalProf();
-                    }
-                }.updateProfName();
+                String newMyName = data.getStringExtra(INTENT_KEY_NEW_PARAM);
+                updateProfName(newMyName);
+//                new SettingFbCommunicator(this, data, SettingFbCommunicator.SCHEME_NAME){
+//                    @Override
+//                    public void onSuccess(String param) {
+//                        //ここでUriはnullである
+//                        toastNullable(getContext(), R.string.success_name);
+//                        nameTv.setText(param);
+//                        if (mainActivity != null)
+//                            mainActivity.getLoginCheck().writeLocalProf();
+//                    }
+//                }.updateProfName();
                 break;
             case SettingDialogFragment.METHOD_UPDATE_EMAIL:
                 upDateEmail(user, newParam);
                 break;
         }
+    }
+
+    /**
+     * Db修正が行われると、今度はCloudFunctionでリスナが走り、必要箇所に対してDB更新を行います。
+     */
+    private void updateProfName(String newMyName){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null){
+            Util.onError(this, TAG+"user == null", R.string.error);
+            return;
+        }
+
+        Single.create(new SingleOnSubscribe<DatabaseReference>() {
+            @Override
+            public void subscribe(SingleEmitter<DatabaseReference> emitter) throws Exception {
+                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                        .setDisplayName(newMyName)
+                        .build();
+
+                user.updateProfile(profileUpdates)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (!task.isSuccessful()){
+                                    emitter.onError(task.getException());
+                                    return;
+                                }
+
+                                getRef(makeScheme("userData", user.getUid(), "displayName"))
+                                        .setValue(newMyName, new DatabaseReference.CompletionListener() {
+                                            @Override
+                                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                                if (databaseError != null){
+                                                    emitter.onError(databaseError.toException());
+                                                } else {
+                                                    emitter.onSuccess(databaseReference);
+                                                }
+                                            }
+                                        });
+                            }
+                        });
+            }
+        })
+        .subscribeOn(Schedulers.newThread())
+        .observeOn(AndroidSchedulers.mainThread())
+        .compose(bindToLifecycle())
+        .subscribe(new Consumer<DatabaseReference>() {
+            @Override
+            public void accept(DatabaseReference ref) throws Exception {
+                toastNullable(getContext(), R.string.success_name);
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                Util.onError(SettingFragment.this, throwable.getMessage(), R.string.error);
+            }
+        });
     }
 
     @Override
@@ -201,7 +275,8 @@ public class SettingFragment extends Fragment implements OnFailureListener, Call
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Log.d(TAG, "User re-authenticated.");
-                        kickSettingDialog(SettingDialogFragment.DIALOG_TAG_PW, SettingDialogFragment.METHOD_UPDATE_PW, SettingFragment.this);
+                        if (getActivity() != null)
+                            kickSettingDialog(SettingDialogFragment.DIALOG_TAG_PW, SettingDialogFragment.METHOD_UPDATE_PW, SettingFragment.this);
                     }
                 });
     }
@@ -223,8 +298,10 @@ public class SettingFragment extends Fragment implements OnFailureListener, Call
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        mailTv.setText(email);
-                        toastNullable(getContext(), R.string.update_success_mail);
+                        if (getContext() != null){
+                            mailTv.setText(email);
+                            toastNullable(getContext(), R.string.update_success_mail);
+                        }
                     }
                 });
     }
