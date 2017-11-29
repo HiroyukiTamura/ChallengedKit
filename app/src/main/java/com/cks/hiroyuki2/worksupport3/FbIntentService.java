@@ -331,6 +331,67 @@ public class FbIntentService extends IntentService implements OnFailureListener,
                 });
     }
 
+    @ServiceAction
+    void updateProfIcon(Uri uri){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null){
+            onErrorForService(TAG+ "user == null", R.string.error);
+            return;
+        }
+
+        if(FirebaseStorageUtil.isOverSize(uri, 5 * 1000 * 1000)) {
+            toastHandler.post(new DisplayToast(R.string.over_size_err));
+        } else {
+            toastHandler.post(new DisplayToast(R.string.msg_start_upload));
+            String type = getExtension(getApplicationContext(), uri);
+            String fileName = user.getUid() + "." + type;
+            final int ntfId = (int)System.currentTimeMillis();
+            String ntfTitle = "プロフィール画像";
+
+            uploadFile("profile_icon/" + fileName, uri, new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    logStackTrace(e);
+                    toastHandler.post(new DisplayToast(R.string.error));
+                    showCompleteNtf(MainActivity.class, getApplicationContext(), ntfTitle, ntfId, R.string.msg_failed_upload);
+                }
+            }, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Uri uri = taskSnapshot.getDownloadUrl();
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setPhotoUri(uri)
+                            .build();
+
+                    user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (!task.isSuccessful()){
+                                showCompleteNtf(MainActivity.class, getApplicationContext(), ntfTitle, ntfId, R.string.msg_failed_upload);
+                            } else {
+                                getRef(makeScheme("userData", user.getUid(), "photoUrl"))
+                                        .setValue(uri.toString(), new DatabaseReference.CompletionListener() {
+                                            @Override
+                                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                                if (databaseError != null)
+                                                    showCompleteNtf(MainActivity.class, getApplicationContext(), ntfTitle, ntfId, R.string.msg_failed_upload);
+                                                else
+                                                    showCompleteNtf(MainActivity.class, getApplicationContext(), ntfTitle, ntfId, R.string.msg_succeed_upload);
+                                            }
+                                        });
+                            }
+                        }
+                    });
+                }
+            }, this, new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    showUploadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, ntfTitle, ntfId);
+                }
+            });
+        }
+    }
+
     @Override
     public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
 

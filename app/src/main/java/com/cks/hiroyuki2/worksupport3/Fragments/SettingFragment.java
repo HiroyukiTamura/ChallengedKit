@@ -162,7 +162,17 @@ public class SettingFragment extends RxFragment implements OnFailureListener, Ca
             public void onSuccess(String uri) {
                 Picasso.with(getContext())
                         .load(uri)
-                        .into(iconIv, SettingFragment.this);
+                        .into(iconIv, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                toastNullable(getContext(), R.string.update_success_msg);
+                            }
+
+                            @Override
+                            public void onError() {
+                                Log.d(TAG, "onError: picasso");
+                            }
+                        });
 
                 if (mainActivity != null)
                     mainActivity.getLoginCheck().writeLocalProf();
@@ -218,38 +228,9 @@ public class SettingFragment extends RxFragment implements OnFailureListener, Ca
      * Db修正が行われると、今度はCloudFunctionでリスナが走り、必要箇所に対してDB更新を行います。
      */
     private void updateProfName(String newMyName){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null){
-            Util.onError(this, TAG+"user == null", R.string.error);
-            return;
-        }
-
         FbIntentService_.intent(getContext().getApplicationContext())
                 .updateProfName(newMyName)
                 .start();
-    }
-
-    private void updateProfIcon(Intent intent){
-        Uri uri = intent.getData();
-        if (uri == null){
-            Util.onError(this, "uri == null", R.string.error);
-            return;
-        }
-
-        String myUid = FirebaseAuth.getInstance().getUid();
-        if (myUid == null){
-            Util.onError(this, "string == null", R.string.error);
-            return;
-        }
-
-//        if(isOverSize(uri, 5 * 1000 * 1000)) {
-//            Toast.makeText(getContext(), R.string.over_size_err, LENGTH_LONG).show();
-//        } else {
-//            Toast.makeText(getContext(), getString(R.string.msg_start_upload), LENGTH_LONG).show();
-//            String type = getExtension(getContext(), uri);
-//            String fileName = myUid + "." + type;
-//            FirebaseStorageUtil.uploadFile("profile_icon/" + fileName, uri, \, this, this, this);
-//        }
     }
 
     @Override
@@ -303,10 +284,9 @@ public class SettingFragment extends RxFragment implements OnFailureListener, Ca
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if (getContext() != null){
+                        if (mailTv != null)
                             mailTv.setText(email);
-                            toastNullable(getContext(), R.string.update_success_mail);
-                        }
+                        toastNullable(getContext(), R.string.update_success_mail);
                     }
                 });
     }
