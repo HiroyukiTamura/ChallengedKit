@@ -1,6 +1,7 @@
 package com.cks.hiroyuki2.worksupport3;
 
 import android.support.annotation.IntDef;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
 import java.util.HashMap;
@@ -30,7 +31,9 @@ public class RxBus {
     public static final int REMOVE_MEMBER = 3;
     public static final int REMOVE_STORAGE_FILE = 4;
     public static final int CREATE_GROUP_NEW_IMG = 5;
-    @IntDef(value = {UPDATE_GROUP_NAME, UPDATE_GROUP_PHOTO, UPDATE_GROUP_PHOTO2, REMOVE_MEMBER, REMOVE_STORAGE_FILE, CREATE_GROUP_NEW_IMG})
+    public static final int UPDATE_PROF_NAME_SUCCESS = 6;
+    public static final int UPDATE_PROF_NAME_FAILURE = 7;
+    @IntRange(from = 0, to = 7)
     @interface subject{}
 
     /**

@@ -14,10 +14,12 @@ import android.widget.Toast;
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupport3.Fragments.AddGroupFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment;
+import com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import com.cks.hiroyuki2.worksupprotlib.*;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
+import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.CustomEvent;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,6 +27,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.common.eventbus.Subscribe;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,6 +52,8 @@ import java.util.HashMap;
 import java.util.Random;
 
 import static com.cks.hiroyuki2.worksupport3.RxBus.UPDATE_GROUP_PHOTO;
+import static com.cks.hiroyuki2.worksupport3.RxBus.UPDATE_PROF_NAME_FAILURE;
+import static com.cks.hiroyuki2.worksupport3.RxBus.UPDATE_PROF_NAME_SUCCESS;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_SET_VALUE;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
@@ -287,6 +294,41 @@ public class FbIntentService extends IntentService implements OnFailureListener,
                         });
             }
         }.check(uid, groupKey);
+    }
+
+    @ServiceAction
+    public void updateProfName(@NonNull String newMyName){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null){
+            onErrorForService(TAG+ "user == null", R.string.error);
+            return;
+        }
+
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(newMyName)
+                .build();
+
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (!task.isSuccessful()){
+                            onErrorForService(task.getResult().toString(), R.string.error);
+                            return;
+                        }
+
+                        getRef(makeScheme("userData", user.getUid(), "displayName"))
+                                .setValue(newMyName, new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                        if (databaseError != null)
+                                            onErrorForService(task.getResult().toString(), R.string.error);
+                                        else
+                                            RxBus.publish(UPDATE_PROF_NAME_SUCCESS, newMyName);
+                                    }
+                                });
+                    }
+                });
     }
 
     @Override

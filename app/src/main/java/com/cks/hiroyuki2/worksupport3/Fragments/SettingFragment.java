@@ -7,15 +7,23 @@ package com.cks.hiroyuki2.worksupport3.Fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.SettingDialogFragment;
+import com.cks.hiroyuki2.worksupport3.FbIntentService_;
 import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupport3.RxBus;
+import com.cks.hiroyuki2.worksupprotlib.FirebaseEventHandler;
+import com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil;
 import com.cks.hiroyuki2.worksupprotlib.SettingFbCommunicator;
 import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.google.android.gms.tasks.Continuation;
@@ -47,9 +55,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
+import static android.widget.Toast.LENGTH_LONG;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.isOverSize;
 import static com.cks.hiroyuki2.worksupprotlib.SettingFbCommunicator.SCHEME_PHOTO_URL;
 import static com.cks.hiroyuki2.worksupprotlib.Util.INTENT_KEY_NEW_PARAM;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getExtension;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getTextNullable;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
 import static com.cks.hiroyuki2.worksupprotlib.Util.kickIntentIcon;
@@ -83,6 +94,19 @@ public class SettingFragment extends RxFragment implements OnFailureListener, Ca
     @ViewById(R.id.icon_fl) FrameLayout fl;
     @ViewById(R.id.password) TextView pwTv;
     @org.androidannotations.annotations.res.StringRes(R.string.non_set) String errMsg;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        RxBus.subscribe(RxBus.UPDATE_PROF_NAME_SUCCESS, this, new Consumer<Object>() {
+            @Override
+            public void accept(Object newName) throws Exception {
+                toastNullable(getContext(), R.string.success_name);
+                nameTv.setText((String) newName);
+            }
+        });
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -200,51 +224,32 @@ public class SettingFragment extends RxFragment implements OnFailureListener, Ca
             return;
         }
 
-        Single.create(new SingleOnSubscribe<DatabaseReference>() {
-            @Override
-            public void subscribe(SingleEmitter<DatabaseReference> emitter) throws Exception {
-                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                        .setDisplayName(newMyName)
-                        .build();
+        FbIntentService_.intent(getContext().getApplicationContext())
+                .updateProfName(newMyName)
+                .start();
+    }
 
-                user.updateProfile(profileUpdates)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (!task.isSuccessful()){
-                                    emitter.onError(task.getException());
-                                    return;
-                                }
+    private void updateProfIcon(Intent intent){
+        Uri uri = intent.getData();
+        if (uri == null){
+            Util.onError(this, "uri == null", R.string.error);
+            return;
+        }
 
-                                getRef(makeScheme("userData", user.getUid(), "displayName"))
-                                        .setValue(newMyName, new DatabaseReference.CompletionListener() {
-                                            @Override
-                                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                                if (databaseError != null){
-                                                    emitter.onError(databaseError.toException());
-                                                } else {
-                                                    emitter.onSuccess(databaseReference);
-                                                }
-                                            }
-                                        });
-                            }
-                        });
-            }
-        })
-        .subscribeOn(Schedulers.newThread())
-        .observeOn(AndroidSchedulers.mainThread())
-        .compose(bindToLifecycle())
-        .subscribe(new Consumer<DatabaseReference>() {
-            @Override
-            public void accept(DatabaseReference ref) throws Exception {
-                toastNullable(getContext(), R.string.success_name);
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                Util.onError(SettingFragment.this, throwable.getMessage(), R.string.error);
-            }
-        });
+        String myUid = FirebaseAuth.getInstance().getUid();
+        if (myUid == null){
+            Util.onError(this, "string == null", R.string.error);
+            return;
+        }
+
+//        if(isOverSize(uri, 5 * 1000 * 1000)) {
+//            Toast.makeText(getContext(), R.string.over_size_err, LENGTH_LONG).show();
+//        } else {
+//            Toast.makeText(getContext(), getString(R.string.msg_start_upload), LENGTH_LONG).show();
+//            String type = getExtension(getContext(), uri);
+//            String fileName = myUid + "." + type;
+//            FirebaseStorageUtil.uploadFile("profile_icon/" + fileName, uri, \, this, this, this);
+//        }
     }
 
     @Override
