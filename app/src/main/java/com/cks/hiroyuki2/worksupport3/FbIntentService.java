@@ -58,6 +58,7 @@ import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_SET_VALUE;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRootRef;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.isOverSize;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.uploadFile;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getExtension;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
@@ -283,12 +284,7 @@ public class FbIntentService extends IntentService implements OnFailureListener,
                                     FirebaseStorage.getInstance().getReference()
                                             .child(makeScheme("shareFile", groupKey, contentKey))
                                             .delete()
-                                            .addOnFailureListener(com.cks.hiroyuki2.worksupprotlib.Util::logStackTrace).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Log.d(TAG, "onSuccess: addOnSuccessListener");
-                                        }
-                                    });
+                                            .addOnFailureListener(com.cks.hiroyuki2.worksupprotlib.Util::logStackTrace).addOnSuccessListener(aVoid -> Log.d(TAG, "onSuccess: addOnSuccessListener"));
                                 }
                             }
                         });
@@ -309,25 +305,19 @@ public class FbIntentService extends IntentService implements OnFailureListener,
                 .build();
 
         user.updateProfile(profileUpdates)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (!task.isSuccessful()){
-                            onErrorForService(task.getResult().toString(), R.string.error);
-                            return;
-                        }
-
-                        getRef(makeScheme("userData", user.getUid(), "displayName"))
-                                .setValue(newMyName, new DatabaseReference.CompletionListener() {
-                                    @Override
-                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                        if (databaseError != null)
-                                            onErrorForService(task.getResult().toString(), R.string.error);
-                                        else
-                                            RxBus.publish(UPDATE_PROF_NAME_SUCCESS, newMyName);
-                                    }
-                                });
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()){
+                        onErrorForService(task.getResult().toString(), R.string.error);
+                        return;
                     }
+
+                    getRef(makeScheme("userData", user.getUid(), "displayName"))
+                            .setValue(newMyName, (databaseError, databaseReference) -> {
+                                if (databaseError != null)
+                                    onErrorForService(task.getResult().toString(), R.string.error);
+                                else
+                                    RxBus.publish(UPDATE_PROF_NAME_SUCCESS, newMyName);
+                            });
                 });
     }
 
@@ -339,7 +329,7 @@ public class FbIntentService extends IntentService implements OnFailureListener,
             return;
         }
 
-        if(FirebaseStorageUtil.isOverSize(uri, 5 * 1000 * 1000)) {
+        if(isOverSize(uri, 5 * 1000 * 1000)) {
             toastHandler.post(new DisplayToast(R.string.over_size_err));
         } else {
             toastHandler.post(new DisplayToast(R.string.msg_start_upload));
@@ -348,49 +338,32 @@ public class FbIntentService extends IntentService implements OnFailureListener,
             final int ntfId = (int)System.currentTimeMillis();
             String ntfTitle = "プロフィール画像";
 
-            uploadFile("profile_icon/" + fileName, uri, new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    logStackTrace(e);
-                    toastHandler.post(new DisplayToast(R.string.error));
-                    showCompleteNtf(MainActivity.class, getApplicationContext(), ntfTitle, ntfId, R.string.msg_failed_upload);
-                }
-            }, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri uri = taskSnapshot.getDownloadUrl();
-                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                            .setPhotoUri(uri)
-                            .build();
+            uploadFile("profile_icon/" + fileName, uri, e -> {
+                logStackTrace(e);
+                toastHandler.post(new DisplayToast(R.string.error));
+                showCompleteNtf(MainActivity.class, getApplicationContext(), ntfTitle, ntfId, R.string.msg_failed_upload);
+            }, taskSnapshot -> {
+                Uri uri1 = taskSnapshot.getDownloadUrl();
+                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                        .setPhotoUri(uri1)
+                        .build();
 
-                    user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (!task.isSuccessful()){
-                                showCompleteNtf(MainActivity.class, getApplicationContext(), ntfTitle, ntfId, R.string.msg_failed_upload);
-                            } else {
-                                getRef(makeScheme("userData", user.getUid(), "photoUrl"))
-                                        .setValue(uri.toString(), new DatabaseReference.CompletionListener() {
-                                            @Override
-                                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                                if (databaseError != null)
-                                                    showCompleteNtf(MainActivity.class, getApplicationContext(), ntfTitle, ntfId, R.string.msg_failed_upload);
-                                                else {
-                                                    showCompleteNtf(MainActivity.class, getApplicationContext(), ntfTitle, ntfId, R.string.msg_succeed_upload);
-                                                    RxBus.publish(RxBus.UPDATE_PROF_ICON, uri);
-                                                }
-                                            }
-                                        });
-                            }
-                        }
-                    });
-                }
-            }, this, new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                    showUploadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, ntfTitle, ntfId);
-                }
-            });
+                user.updateProfile(profileUpdates).addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()){
+                        showCompleteNtf(MainActivity.class, getApplicationContext(), ntfTitle, ntfId, R.string.msg_failed_upload);
+                    } else {
+                        getRef(makeScheme("userData", user.getUid(), "photoUrl"))
+                                .setValue(uri1.toString(), (databaseError, databaseReference) -> {
+                                    if (databaseError != null)
+                                        showCompleteNtf(MainActivity.class, getApplicationContext(), ntfTitle, ntfId, R.string.msg_failed_upload);
+                                    else {
+                                        showCompleteNtf(MainActivity.class, getApplicationContext(), ntfTitle, ntfId, R.string.msg_succeed_upload);
+                                        RxBus.publish(RxBus.UPDATE_PROF_ICON, uri1);
+                                    }
+                                });
+                    }
+                });
+            }, this, taskSnapshot -> showUploadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, ntfTitle, ntfId));
         }
     }
 
