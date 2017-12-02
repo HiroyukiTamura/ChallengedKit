@@ -20,3 +20,6 @@ proguard-rules.pro
 #fabric
 fabric.properties
 /doc/book/
+/app/.gitignore
+/app/src/main/res/values/keys.xml
+/.gitignore

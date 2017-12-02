@@ -660,7 +660,7 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
                                 hashMap.put("longUrl", task.getResult().toString());
 
                                 getRetroFit().create(Util.urlShortenApi.class)
-                                        .getData(hashMap, Util.API_KEY)
+                                        .getData(hashMap, getString(R.string.shorten_url_key))
                                         .subscribeOn(Schedulers.newThread())
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .compose(bindToLifecycle())

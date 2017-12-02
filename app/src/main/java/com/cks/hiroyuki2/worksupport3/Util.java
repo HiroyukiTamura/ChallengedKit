@@ -84,6 +84,8 @@ public class Util {
     public static final String OLD_GRP_NAME = "OLD_GRP_NAME";
     private static final int TIMEOUT_SEC = 7;
 
+    public final static String BASE_URL = "https://www.googleapis.com/urlshortener/v1/url/";
+
     public static void initAdMob(Context context){
         MobileAds.initialize(context.getApplicationContext(), "ca-app-pub-3940256099942544~3347511713");
         AdView adView = new AdView(context);
@@ -156,9 +158,6 @@ public class Util {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
     }
-
-    public final static String BASE_URL = "https://www.googleapis.com/urlshortener/v1/url/";
-    public final static String API_KEY = "AIzaSyDDrs60sI8h7JeNjR-VTAJcbdnwRB5bVrk";
 
     public interface urlShortenApi {
         @POST(".")

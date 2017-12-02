@@ -26,7 +26,7 @@
         <!--fabric-->
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="6c1528b3bbc66a9d925a39b9982d20e328e8e509"
+            android:value="@string/fabric_key"
             tools:replace="android:value" />
 
         <!--facebook-->
