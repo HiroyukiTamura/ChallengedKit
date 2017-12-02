@@ -23,10 +23,10 @@
         android:theme="@style/AppTheme"
         tools:replace="android:name,android:label">
 
-        <!--fabric-->
+        <!--fabric valueのkeyはリソースファイルなどに切り出すとビルドが通りません-->
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="@string/fabric_key"
+            android:value="6c1528b3bbc66a9d925a39b9982d20e328e8e509"
             tools:replace="android:value" />
 
         <!--facebook-->
@@ -95,42 +95,56 @@
         <activity
             android:name=".Activities.EditDocActivity_"
             android:parentActivityName=".Activities.MainActivity_"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false"/>
+
         <activity
             android:name=".Activities.AddGroupActivity_"
             android:parentActivityName=".Activities.MainActivity_"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="Activities.MainActivity_" />
         </activity>
+
         <activity
             android:name=".Activities.SharedDataViewActivity_"
             android:parentActivityName=".Activities.MainActivity_"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="Activities.MainActivity_" />
         </activity>
+
         <activity
             android:name=".Activities.SharedCalendarActivity_"
             android:parentActivityName=".Activities.MainActivity_"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false"/>
+
         <activity
             android:name=".Activities.GroupSettingActivity_"
             android:parentActivityName=".Activities.MainActivity_"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false">
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="Activities.MainActivity_" />
         </activity>
+
         <activity
             android:name=".Activities.TutorialActivity_"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".Activities.HelpActivity_"
             android:parentActivityName=".Activities.MainActivity_"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false">
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="Activities.MainActivity_" />

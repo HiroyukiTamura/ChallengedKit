@@ -32,18 +32,18 @@ import com.cks.hiroyuki2.worksupport3.FbIntentService_;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog;
 import com.cks.hiroyuki2.worksupport3.RxBus;
-import com.cks.hiroyuki2.worksupport3.ShortenUrlResponse;
 import com.cks.hiroyuki2.worksupport3.Util;
-import com.cks.hiroyuki2.worksupport3.isMeGroupMemberChecker;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Document;
 import com.cks.hiroyuki2.worksupprotlib.Entity.DocumentEle;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
+import com.cks.hiroyuki2.worksupprotlib.Entity.ShortenUrlResponse;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 import com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil;
 import com.cks.hiroyuki2.worksupprotlib.PreventableAnimator;
+import com.cks.hiroyuki2.worksupprotlib.isMeGroupMemberChecker;
 import com.example.hiroyuki3.worksupportlibw.Adapters.ShareBoardRVAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -60,7 +60,6 @@ import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.trello.rxlifecycle2.components.support.RxFragment;
@@ -92,7 +91,6 @@ import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog.ADD_ITEM_DIALOG;
-import static com.cks.hiroyuki2.worksupport3.Util.checkAdmittionAsMember;
 import static com.cks.hiroyuki2.worksupport3.Util.getContentByKey;
 import static com.cks.hiroyuki2.worksupport3.Util.getRetroFit;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
@@ -103,6 +101,7 @@ import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.uploadFile;
 import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.getOneGroupFromJson;
 import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.snap2Json;
 import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
+import static com.cks.hiroyuki2.worksupprotlib.Util.checkAdmittionAsMember;
 import static com.cks.hiroyuki2.worksupprotlib.Util.datePattern;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getFileName;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getMimeType;
@@ -640,7 +639,7 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
 
     // TODO: 2017/11/26 ストレージのファイル構造、どうするか決めて整合性とれるようにせよ
     /**
-     * ここでは、{@link isMeGroupMemberChecker}でのチェックは行わない。
+     * ここでは、isMeGroupMemberCheckerでのチェックは行わない。
      * なぜなら、1.この動作はDb書き込みでないから許容でき、2.どのみち更新動作時には{@link #onRefresh()}でDBへのアクセスが拒否されるから。
      */
     private void onChoose2ndItem(final int listPos){
@@ -947,7 +946,7 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
 
     /**
      * firebaseに上げているファイル名は、表示されているファイル名とは別物であることに注意してください。
-     * ここでは、{@link isMeGroupMemberChecker}でのチェックは行わない。
+     * ここでは、isMeGroupMemberCheckerでのチェックは行わない。
      * なぜなら、1.この動作はDb書き込みでないから許容でき、2.どのみち更新動作時には{@link #onRefresh()}でDBへのアクセスが拒否されるから。
      */
     @Override
@@ -995,7 +994,7 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
 
     /**
      * pdfをブラウザから開く！ダウンロードの必要なし！
-     * ここでは、{@link isMeGroupMemberChecker}でのチェックは行わない。
+     * ここでは、isMeGroupMemberCheckerでのチェックは行わない。
      * なぜなら、1.この動作はDb書き込みでないから許容でき、2.どのみち更新動作時には{@link #onRefresh()}でDBへのアクセスが拒否されるから。
      */
     private void showUrlPdf(int listPos){

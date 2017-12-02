@@ -1,5 +1,6 @@
 package com.cks.hiroyuki2.worksupport3;
 
+import android.annotation.SuppressLint;
 import android.app.IntentService;
 import android.content.Intent;
 import android.net.Uri;
@@ -74,6 +75,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
  * Fbにぶん投げる系
  */
 
+@SuppressLint("Registered")
 @EIntentService
 public class FbIntentService extends IntentService implements OnFailureListener, OnPausedListener<UploadTask.TaskSnapshot>{
     private static final String TAG = "MANUAL_TAG: " + FbIntentService.class.getSimpleName();

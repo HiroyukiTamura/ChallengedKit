@@ -25,6 +25,7 @@ import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SharedCalendarFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SocialFragment;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
+import com.cks.hiroyuki2.worksupprotlib.Entity.ShortenUrlResponse;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
@@ -175,43 +176,4 @@ public class Util {
                 return content;
         return null;
     }
-
-    @Nullable @Contract(pure = true)
-    public static String checkAdmittionAsMember(@Nullable DataSnapshot dataSnapshot, @NonNull String uid){
-        if (dataSnapshot == null)
-            return "dataSnapshot == null";
-        if (!dataSnapshot.exists())
-            return "!dataSnapshot.exists() グループ消滅？";
-        if (!dataSnapshot.hasChild("member")){
-            return "!dataSnapshot.hasChild(\"member\")　グループ消滅？";
-        }
-
-        DataSnapshot memberSnap = dataSnapshot.child("member");
-        if (!memberSnap.hasChild(uid)){
-            return "!dataSnapshot.hasChild(uid) グループを既に退会？";
-        }
-        if (!memberSnap.child(uid).child("isChecked").getValue(Boolean.class)){
-            return "グループ未加入？";
-        }
-        return null;
-    }
-
-//    public static void showFcmMsg(String messageBody, Context context) {
-//        final int ntfId = (int)System.currentTimeMillis();
-//        String title = context.getString(R.string.app_name);
-//
-//        NotificationCompat.Builder notificationBuilder =
-//                new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_SECOND)
-//                        .setSmallIcon(R.drawable.ic_info_white_24dp)
-//                        .setContentTitle(title)
-//                        .setContentText(messageBody)
-//                        .setAutoCancel(true)
-//                        .setTicker(title)
-//                        .setContentIntent(createPendingIntent(context, ntfId));
-//
-//        if (SDK_INT >= 21)
-//            notificationBuilder.setCategory(Notification.CATEGORY_MESSAGE);
-//
-//        showNtf(context, ntfId, notificationBuilder.build());
-//    }
 }

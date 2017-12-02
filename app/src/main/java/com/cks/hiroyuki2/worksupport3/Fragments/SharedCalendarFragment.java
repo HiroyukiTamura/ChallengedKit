@@ -32,7 +32,6 @@ import org.androidannotations.annotations.ViewById;
 import java.util.Calendar;
 import java.util.Observable;
 
-import static com.cks.hiroyuki2.worksupport3.Util.checkAdmittionAsMember;
 import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.ADD_SCHEDULE;
 import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.CALENDAR;
 import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.CALLBACK_ADD_SCHEDULE;
@@ -61,6 +60,7 @@ import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRootRef;
 import static com.cks.hiroyuki2.worksupprotlib.Util.COLOR_NUM;
 import static com.cks.hiroyuki2.worksupprotlib.Util.DATE_PATTERN_YM;
 import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
+import static com.cks.hiroyuki2.worksupprotlib.Util.checkAdmittionAsMember;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 
