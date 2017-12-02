@@ -1,8 +1,6 @@
 *.iml
 .gradle
 /local.properties
-/.idea/workspace.xml
-/.idea/libraries
 .DS_Store
 /build
 /captures
@@ -23,3 +21,4 @@ fabric.properties
 /app/.gitignore
 /app/src/main/res/values/keys.xml
 /.gitignore
+/.idea/
