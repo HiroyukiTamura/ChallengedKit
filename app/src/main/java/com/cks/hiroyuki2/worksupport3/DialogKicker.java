@@ -39,7 +39,6 @@ import com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter;
 /**
  * RecordDialogFragmentを呼ぶのおじさん！シンプル！
  */
-
 public class DialogKicker {
     public static void kickDialogInOnClick(@NonNull String from, int callback, @NonNull Bundle bundle, @NonNull Fragment fragment){
         RecordDialogFragment dialog = RecordDialogFragment.newInstance(bundle);
