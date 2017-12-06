@@ -1,4 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?><!-- ~ Copyright (c) $year. Hiroyuki Tamura All rights reserved. -->
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright 2017 Hiroyuki Tamura
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cks.hiroyuki2.worksupport3">
@@ -23,7 +37,7 @@
         android:theme="@style/AppTheme"
         tools:replace="android:name,android:label">
 
-        <!--fabric-->
+        <!--fabric valueのkeyはリソースファイルなどに切り出すとビルドが通りません-->
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="6c1528b3bbc66a9d925a39b9982d20e328e8e509"
@@ -57,7 +71,6 @@
 
         <activity
             android:name=".Activities.MainActivity_"
-            android:label=""
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -68,7 +81,6 @@
 
         <activity
             android:name=".Activities.AddFriendActivity_"
-            android:label=""
             android:parentActivityName=".Activities.MainActivity_"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -96,50 +108,63 @@
 
         <activity
             android:name=".Activities.EditDocActivity_"
-            android:label="@string/edit_doc_act_name"
             android:parentActivityName=".Activities.MainActivity_"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false"/>
+
         <activity
             android:name=".Activities.AddGroupActivity_"
-            android:label="@string/title_add_group"
             android:parentActivityName=".Activities.MainActivity_"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="Activities.MainActivity_" />
         </activity>
+
         <activity
             android:name=".Activities.SharedDataViewActivity_"
             android:parentActivityName=".Activities.MainActivity_"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="Activities.MainActivity_" />
         </activity>
+
         <activity
             android:name=".Activities.SharedCalendarActivity_"
             android:parentActivityName=".Activities.MainActivity_"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false"/>
+
         <activity
             android:name=".Activities.GroupSettingActivity_"
-            android:label="@string/toolbar_title_setting_group"
             android:parentActivityName=".Activities.MainActivity_"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false">
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="Activities.MainActivity_" />
         </activity>
+
         <activity
             android:name=".Activities.TutorialActivity_"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".Activities.HelpActivity_"
             android:parentActivityName=".Activities.MainActivity_"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false">
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="Activities.MainActivity_" />
         </activity>
+
+        <service android:name=".FbIntentService_"/>
     </application>
 
 </manifest>

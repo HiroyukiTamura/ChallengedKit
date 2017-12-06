@@ -1,5 +1,17 @@
 /*
- * Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+ * Copyright 2017 Hiroyuki Tamura
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.cks.hiroyuki2.worksupport3;
@@ -16,11 +28,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.androidannotations.annotations.EService;
 import org.jetbrains.annotations.Contract;
@@ -33,7 +50,19 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
 import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.readFriendPref;
 import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.snap2Json;
@@ -56,9 +85,13 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
     static final String INTENT_KEY_2 = "INTENT_KEY_2";
     private String uid;
     private static final String urlStart = "https://wordsupport3.firebaseio.com";/*まさかのwor"D"support*/
+    public static final String API_URL = "https://us-central1-wordsupport3.cloudfunctions.net/";
     private List<String> groupKeys = new ArrayList<>();
     private Messenger mServiceMessenger;
+
     public static final int SEND_CODE_SOCIAL_STATE = 1;
+
+    public static final int SEND_CODE_ADD_COMMENT = 20;
 
     static final String SEND_CODE = "SEND_CODE";
     static final int SEND_CODE_FRIEND_CHANGED = 10;
@@ -67,7 +100,6 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
     public static final int REJECT_SOCIAL = 1;
     public static final int ACCEPT_SOCIAL = 0;
     public static final int UNKNOWN_STATE = -1;
-
     public @Retention(RetentionPolicy.SOURCE)
     @IntDef(value = {REJECT_SOCIAL, ACCEPT_SOCIAL, UNKNOWN_STATE})
     @interface socialState{}
@@ -86,13 +118,15 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
 
         @Override
         public void handleMessage(Message msg) {
-//            switch (msg.what){
-//                case MSG_CODE_SOCIAL_STATE:
-//                    break;
-//                default:
-//                    super.handleMessage(msg);
-//                    break;
-//            }
+            switch (msg.what){
+                case SEND_CODE_ADD_COMMENT:
+                    ServiceMessage sm = (ServiceMessage) msg.obj;
+                    addComment(sm);
+                    break;
+                default:
+                    super.handleMessage(msg);
+                    break;
+            }
         }
     }
 
@@ -134,6 +168,7 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
         FirebaseUser user = firebaseAuth.getCurrentUser();
+
         if (user != null) {
             uid = user.getUid();
 //            writeLocalProf(user);
@@ -335,5 +370,60 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
                 }
             }
         }
+    }
+
+    private void addComment(@NonNull ServiceMessage sm){
+        sm.getUser().getIdToken(false).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                onError(getApplicationContext(), TAG + task.toString(), R.string.error);
+                return;
+            }
+
+            String token = task.getResult().getToken();
+            ApiService apiService = getRetroFit().create(ApiService.class);
+            apiService.getData("Bearer " + token, sm.getGroupKey(), sm.getContentsKey())
+                    .enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                    Log.d(TAG, "onResponse: code " + response.code() +"message "+ response.message());
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                    onError(getApplicationContext(), t.getMessage(), R.string.error);
+                }
+            });
+        });
+    }
+
+    @NonNull
+    private Retrofit getRetroFit(){
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .retryOnConnectionFailure(true)
+                .connectTimeout(7, TimeUnit.SECONDS)
+                .build();
+
+        return new Retrofit.Builder()
+                .baseUrl(API_URL)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+    }
+
+    public interface ApiService {
+        @GET("helloWorld/api/")
+        @Headers({
+                "User-Agent: Retrofit-Sample-App"
+        })
+        Call<ResponseBody> getData(@Header("Authorization") String authorization,
+                                   @Header("groupKey") String groupKey,
+                                   @Header("contentsKey") String contentsKey);
     }
 }

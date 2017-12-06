@@ -1,5 +1,17 @@
 /*
- * Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+ * Copyright 2017 Hiroyuki Tamura
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.cks.hiroyuki2.worksupport3.Fragments;
@@ -238,26 +250,26 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
     @OnActivityResult(REQ_CODE_CREATE_GROUP)
     void onResultCreateGroup(Intent data, int resultCode,
                              @OnActivityResult.Extra(AddGroupActivity.INTENT_BUNDLE_GROUP_NAME) final String groupName,
-                             @OnActivityResult.Extra(AddGroupActivity.INTENT_BUNDLE_GROUP_PHOTO_URL) @Nullable String photoUrl){
+                             @OnActivityResult.Extra(AddGroupActivity.INTENT_BUNDLE_GROUP_PHOTO_URL) @Nullable String photoUrl,
+                             @OnActivityResult.Extra String groupKey){
 
         if (resultCode != RESULT_OK) return;
-        final String key = getRootRef().child("group").push().getKey();
 
         List<User> userListOpe = new ArrayList<>(userList);
         me.setChecked(true);
         userListOpe.add(me);
         userListOpe.remove(0);/*DEFAULT値を取り除く DEFAULT値をどうするかは後で考えましょう*/
 
-        HashMap<String, Object> childMap = makeMap(me.getUserUid(), key, groupName, userListOpe, photoUrl);
+        HashMap<String, Object> childMap = makeMap(me.getUserUid(), groupKey, groupName, userListOpe, photoUrl);
 
         for (User user: userListOpe) {
-            GroupInUserDataNode smGroup = new GroupInUserDataNode(groupName, key, photoUrl, user.equals(me));
-            childMap.put(makeScheme("userData", user.getUserUid(), "group", key), smGroup);
+            GroupInUserDataNode smGroup = new GroupInUserDataNode(groupName, groupKey, photoUrl, user.equals(me));
+            childMap.put(makeScheme("userData", user.getUserUid(), "group", groupKey), smGroup);
         }
 
-        childMap.put(makeScheme("calendar", key, DEFAULT), DEFAULT);
+        childMap.put(makeScheme("calendar", groupKey, DEFAULT), DEFAULT);
 
-        final Group group = new Group(userListOpe, groupName, key, null, me.getUserUid(), photoUrl);//groupインスタンスを作成。
+        final Group group = new Group(userListOpe, groupName, groupKey, null, me.getUserUid(), photoUrl);//groupインスタンスを作成。
         getRootRef().updateChildren(childMap, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {

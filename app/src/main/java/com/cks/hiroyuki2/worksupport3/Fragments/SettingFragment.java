@@ -1,5 +1,17 @@
 /*
- * Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+ * Copyright 2017 Hiroyuki Tamura
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.cks.hiroyuki2.worksupport3.Fragments;
@@ -7,17 +19,26 @@ package com.cks.hiroyuki2.worksupport3.Fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.SettingDialogFragment;
+import com.cks.hiroyuki2.worksupport3.FbIntentService_;
 import com.cks.hiroyuki2.worksupport3.R;
+import com.cks.hiroyuki2.worksupport3.RxBus;
+import com.cks.hiroyuki2.worksupprotlib.FirebaseEventHandler;
+import com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil;
 import com.cks.hiroyuki2.worksupprotlib.SettingFbCommunicator;
 import com.cks.hiroyuki2.worksupprotlib.Util;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -25,8 +46,12 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -35,12 +60,25 @@ import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
+import static android.widget.Toast.LENGTH_LONG;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.isOverSize;
 import static com.cks.hiroyuki2.worksupprotlib.SettingFbCommunicator.SCHEME_PHOTO_URL;
+import static com.cks.hiroyuki2.worksupprotlib.Util.INTENT_KEY_NEW_PARAM;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getExtension;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getTextNullable;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
 import static com.cks.hiroyuki2.worksupprotlib.Util.kickIntentIcon;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
+import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.setImgFromStorage;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickSettingDialog;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
@@ -49,7 +87,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
  * プロフィールクリックで発動するよ！
  */
 @EFragment(R.layout.fragment_setting_fragment2)
-public class SettingFragment extends Fragment implements OnFailureListener, Callback {
+public class SettingFragment extends RxFragment implements OnFailureListener, Callback {
 
     //region Dialog周りの定数
     public static final String INTENT_KEY_ISSUCCESS = "IKI";
@@ -68,6 +106,28 @@ public class SettingFragment extends Fragment implements OnFailureListener, Call
     @ViewById(R.id.icon_fl) FrameLayout fl;
     @ViewById(R.id.password) TextView pwTv;
     @org.androidannotations.annotations.res.StringRes(R.string.non_set) String errMsg;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        RxBus.subscribe(RxBus.UPDATE_PROF_NAME_SUCCESS, this, new Consumer<Object>() {
+            @Override
+            public void accept(Object newName) throws Exception {
+                toastNullable(getContext(), R.string.success_name);
+                nameTv.setText((String) newName);
+            }
+        });
+
+        RxBus.subscribe(RxBus.UPDATE_PROF_NAME_SUCCESS, this, new Consumer<Object>() {
+            @Override
+            public void accept(Object uri) throws Exception {
+                Picasso.with(getContext())
+                    .load((Uri)uri)
+                    .into(iconIv, SettingFragment.this);
+            }
+        });
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -116,19 +176,34 @@ public class SettingFragment extends Fragment implements OnFailureListener, Call
 
     @OnActivityResult(REQ_CODE_MY_ICON_CHANGE)
     void onResultChangeIcon(Intent data, int resultCode){
-        if (resultCode != Activity.RESULT_OK) return;
+        if (resultCode != Activity.RESULT_OK)
+            return;
 
-        new SettingFbCommunicator(this, data, SCHEME_PHOTO_URL) {
-            @Override
-            public void onSuccess(String uri) {
-                Picasso.with(getContext())
-                        .load(uri)
-                        .into(iconIv, SettingFragment.this);
+        FbIntentService_.intent(getContext().getApplicationContext())
+                .updateProfIcon(data.getData())
+                .start();
 
-                if (mainActivity != null)
-                    mainActivity.getLoginCheck().writeLocalProf();
-            }
-        }.uploadIcon();
+//        new SettingFbCommunicator(this, data, SCHEME_PHOTO_URL) {
+//            @Override
+//            public void onSuccess(String uri) {
+//                Picasso.with(getContext())
+//                        .load(uri)
+//                        .into(iconIv, new Callback() {
+//                            @Override
+//                            public void onSuccess() {
+//                                toastNullable(getContext(), R.string.update_success_msg);
+//                            }
+//
+//                            @Override
+//                            public void onError() {
+//                                Log.d(TAG, "onError: picasso");
+//                            }
+//                        });
+//
+//                if (mainActivity != null)
+//                    mainActivity.getLoginCheck().writeLocalProf();
+//            }
+//        }.uploadIcon();
     }
 
     @OnActivityResult(SettingDialogFragment.DIALOG_CALLBACK)
@@ -156,21 +231,32 @@ public class SettingFragment extends Fragment implements OnFailureListener, Call
                 updatePassWord(user, newParam);
                 break;
             case SettingDialogFragment.METHOD_ACCOUNT_NAME:
-                new SettingFbCommunicator(this, data, SettingFbCommunicator.SCHEME_NAME){
-                    @Override
-                    public void onSuccess(String param) {
-                        //ここでUriはnullである
-                        toastNullable(getContext(), R.string.success_name);
-                        nameTv.setText(param);
-                        if (mainActivity != null)
-                            mainActivity.getLoginCheck().writeLocalProf();
-                    }
-                }.updateProfName();
+                String newMyName = data.getStringExtra(INTENT_KEY_NEW_PARAM);
+                updateProfName(newMyName);
+//                new SettingFbCommunicator(this, data, SettingFbCommunicator.SCHEME_NAME){
+//                    @Override
+//                    public void onSuccess(String param) {
+//                        //ここでUriはnullである
+//                        toastNullable(getContext(), R.string.success_name);
+//                        nameTv.setText(param);
+//                        if (mainActivity != null)
+//                            mainActivity.getLoginCheck().writeLocalProf();
+//                    }
+//                }.updateProfName();
                 break;
             case SettingDialogFragment.METHOD_UPDATE_EMAIL:
                 upDateEmail(user, newParam);
                 break;
         }
+    }
+
+    /**
+     * Db修正が行われると、今度はCloudFunctionでリスナが走り、必要箇所に対してDB更新を行います。
+     */
+    private void updateProfName(String newMyName){
+        FbIntentService_.intent(getContext().getApplicationContext())
+                .updateProfName(newMyName)
+                .start();
     }
 
     @Override
@@ -201,7 +287,8 @@ public class SettingFragment extends Fragment implements OnFailureListener, Call
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Log.d(TAG, "User re-authenticated.");
-                        kickSettingDialog(SettingDialogFragment.DIALOG_TAG_PW, SettingDialogFragment.METHOD_UPDATE_PW, SettingFragment.this);
+                        if (getActivity() != null)
+                            kickSettingDialog(SettingDialogFragment.DIALOG_TAG_PW, SettingDialogFragment.METHOD_UPDATE_PW, SettingFragment.this);
                     }
                 });
     }
@@ -223,7 +310,8 @@ public class SettingFragment extends Fragment implements OnFailureListener, Call
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        mailTv.setText(email);
+                        if (mailTv != null)
+                            mailTv.setText(email);
                         toastNullable(getContext(), R.string.update_success_mail);
                     }
                 });

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Hiroyuki Tamura
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.cks.hiroyuki2.worksupport3;
 
 import android.Manifest;
@@ -24,15 +40,48 @@ import com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SharedCalendarFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.SocialFragment;
+import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
+import com.cks.hiroyuki2.worksupprotlib.Entity.ShortenUrlResponse;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+import org.jetbrains.annotations.Contract;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.Single;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
+
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
+import static com.cks.hiroyuki2.worksupprotlib.Util.URL_SHORTEN_API;
+import static com.cks.hiroyuki2.worksupprotlib.Util.data2Bundle;
+import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
 
 /**
  * 特段の理由がない限り、Util系のメソッドはlibに移管してください。
@@ -50,63 +99,9 @@ public class Util {
     public static final int CODE_READ_STORAGE = 1;
     public static final int CODE_CAMERA = 2;
     public static final String OLD_GRP_NAME = "OLD_GRP_NAME";
+    private static final int TIMEOUT_SEC = 7;
 
-//    public static void showUploadingNtf(Context context, UploadTask.TaskSnapshot taskSnapshot, String fileName, int id){
-//        String text = context.getString(R.string.msg_start_upload);
-//        NotificationCompat.Builder builder = createNtfBase(context, fileName, text, id)
-//                .setAutoCancel(false)
-//                .setProgress((int) taskSnapshot.getTotalByteCount(), (int) taskSnapshot.getBytesTransferred(), false);
-//        if (SDK_INT >= 21)
-//            builder.setCategory(Notification.CATEGORY_PROGRESS);
-//        Notification notification = builder.build();
-//        notification.flags = Notification.FLAG_NO_CLEAR;
-//        showNtf(context, id, notification);
-//    }
-
-//    public static void showDownloadingNtf(Context context, FileDownloadTask.TaskSnapshot taskSnapshot, String fileName, int id){
-//        String text = context.getString(R.string.msg_succeed_download);
-//        NotificationCompat.Builder builder = createNtfBase(context, fileName, text, id)
-//                .setAutoCancel(false)
-//                .setProgress((int) taskSnapshot.getTotalByteCount(), (int) taskSnapshot.getBytesTransferred(), false);
-//        if (SDK_INT >= 21)
-//            builder.setCategory(Notification.CATEGORY_PROGRESS);
-//        Notification notification = builder.build();
-//        notification.flags = Notification.FLAG_NO_CLEAR;
-//        showNtf(context, id, notification);
-//    }
-//
-//    public static void showCompleteNtf(Context context, String fileName, int id, @StringRes int textRes){
-//        String text = context.getString(textRes);
-//        NotificationCompat.Builder builder = createNtfBase(context, fileName, text, id);
-//        if (SDK_INT >= 21)
-//            builder.setCategory(Notification.CATEGORY_STATUS);
-//        showNtf(context, id, builder.build());
-//    }
-//
-//    private static PendingIntent createPendingIntent(Context context, int id){
-//        Intent intent = new Intent(context, MainActivity.class);
-//        intent.setFlags(
-//                Intent.FLAG_ACTIVITY_CLEAR_TOP  // 起動中のアプリがあってもこちらを優先する
-//                        | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED  // 起動中のアプリがあってもこちらを優先する
-//                        | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS  // 「最近利用したアプリ」に表示させない
-//        );
-//        return PendingIntent.getActivity(context, id, intent,
-//                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-//    }
-//
-//    private static NotificationCompat.Builder createNtfBase(Context context, String fileName, String text, int id){
-//        return new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL)
-//                .setSmallIcon(R.drawable.ic_cloud_upload_white_24dp)// TODO: 2017/11/19 これ直すこと
-//                .setContentTitle(fileName)
-//                .setContentText(text)
-//                .setTicker(text)
-//                .setContentIntent(createPendingIntent(context, id));
-//    }
-//
-//    private static void showNtf(Context context, int id, Notification ntf){
-//        NotificationManagerCompat manager = NotificationManagerCompat.from(context);
-//        manager.notify(id, ntf);
-//    }
+    public final static String BASE_URL = "https://www.googleapis.com/urlshortener/v1/url/";
 
     public static void initAdMob(Context context){
         MobileAds.initialize(context.getApplicationContext(), "ca-app-pub-3940256099942544~3347511713");
@@ -159,22 +154,42 @@ public class Util {
         return null;
     }
 
-//    public static void showFcmMsg(String messageBody, Context context) {
-//        final int ntfId = (int)System.currentTimeMillis();
-//        String title = context.getString(R.string.app_name);
-//
-//        NotificationCompat.Builder notificationBuilder =
-//                new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_SECOND)
-//                        .setSmallIcon(R.drawable.ic_info_white_24dp)
-//                        .setContentTitle(title)
-//                        .setContentText(messageBody)
-//                        .setAutoCancel(true)
-//                        .setTicker(title)
-//                        .setContentIntent(createPendingIntent(context, ntfId));
-//
-//        if (SDK_INT >= 21)
-//            notificationBuilder.setCategory(Notification.CATEGORY_MESSAGE);
-//
-//        showNtf(context, ntfId, notificationBuilder.build());
-//    }
+    @NonNull
+    public static Retrofit getRetroFit(){
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .retryOnConnectionFailure(true)
+                .connectTimeout(TIMEOUT_SEC, TimeUnit.SECONDS)
+                .build();
+
+        return new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build();
+    }
+
+    public interface urlShortenApi {
+        @POST(".")
+        @Headers({
+                "Content-Type: application/json"
+        })
+        Single<ShortenUrlResponse> getData(@Body HashMap<String, String> postData, @Query("key") String key);
+    }
+
+    // TODO: 2017/11/27 libに移管してposで取得⇒操作系を一掃して！！
+    @Nullable
+    public static Content getContentByKey(@NonNull List<Content> contentList, @NonNull String key){
+        for (Content content : contentList)
+            if (content.contentKey.equals(key))
+                return content;
+        return null;
+    }
 }

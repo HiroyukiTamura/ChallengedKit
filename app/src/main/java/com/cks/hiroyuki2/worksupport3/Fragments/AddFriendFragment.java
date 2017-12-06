@@ -1,5 +1,17 @@
 /*
- * Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+ * Copyright 2017 Hiroyuki Tamura
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.cks.hiroyuki2.worksupport3.Fragments;
@@ -15,16 +27,12 @@ import android.widget.LinearLayout;
 import com.cks.hiroyuki2.worksupport3.Activities.AddFriendActivity;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.example.hiroyuki3.worksupportlibw.Adapters.AddFriendVPAdapter;
-import com.google.firebase.auth.FirebaseUser;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
-import java.util.HashMap;
-
-import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
-import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
+import static com.cks.hiroyuki2.worksupport3.Util.checkPermission;
 
 /**
  * {@link AddFriendActivity}のひとり子分。
@@ -53,28 +61,6 @@ public class AddFriendFragment extends Fragment implements AddFriendVPAdapter.IA
     //ただこれだけだからさ、いちいちimplementするほどでもないんだけどさ。fragmentからこういう処理しないと気持ち悪いのよ。
     @Override
     public void onClickCameraButton() {
-        // TODO: 2017/11/16 テスト解除時コードを戻すこと
-        final FirebaseUser user = com.cks.hiroyuki2.worksupprotlib.Util.getUserMe();
-        if (user == null){
-            onError(this, "FirebaseAuth.getInstance().getCurrentUser() == null", R.string.error);
-            return;
-        }
-        String userUid = "q1Ov1EZ8DYQ4yS2tpaBHe5VmuYx2";
-        String name = "hiroyukiSubTest";
-        String photoUrl = "null";
-
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("/"+ user.getUid() +"/"+ userUid +"/name", name);
-        hashMap.put("/"+ user.getUid() +"/"+ userUid +"/photoUrl", photoUrl);
-        hashMap.put("/"+ userUid + "/" + user.getUid() + "/name", user.getDisplayName());
-        String myPhotoUrl = "null";
-        if (user.getPhotoUrl() != null){
-            myPhotoUrl = user.getPhotoUrl().toString();
-        }
-        hashMap.put("/"+ userUid + "/" + user.getUid() + "/photoUrl", myPhotoUrl);
-        getRef("friend").updateChildren(hashMap);
-
-        /*
-        Util.checkPermission(getActivity(), ((AddFriendActivity) getActivity()).getListener());/*非同期じゃないから大丈夫*/
+        checkPermission(getActivity(), ((AddFriendActivity) getActivity()).getListener());/*非同期じゃないから大丈夫*/
     }
 }

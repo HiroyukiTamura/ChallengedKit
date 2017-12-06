@@ -1,5 +1,17 @@
 /*
- * Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+ * Copyright 2017 Hiroyuki Tamura
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.cks.hiroyuki2.worksupport3.Fragments;
@@ -8,18 +20,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.transition.AutoTransition;
 import android.support.transition.Transition;
 import android.support.transition.TransitionManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,21 +40,29 @@ import android.view.animation.AnimationUtils;
 
 import com.cks.hiroyuki2.worksupport3.Activities.EditDocActivity;
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
+import com.cks.hiroyuki2.worksupport3.FbIntentService_;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog;
+import com.cks.hiroyuki2.worksupport3.RxBus;
+import com.cks.hiroyuki2.worksupport3.Util;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Document;
 import com.cks.hiroyuki2.worksupprotlib.Entity.DocumentEle;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
+import com.cks.hiroyuki2.worksupprotlib.Entity.ShortenUrlResponse;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 import com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil;
 import com.cks.hiroyuki2.worksupprotlib.PreventableAnimator;
+import com.cks.hiroyuki2.worksupprotlib.isMeGroupMemberChecker;
 import com.example.hiroyuki3.worksupportlibw.Adapters.ShareBoardRVAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -54,12 +70,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
+import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -70,36 +85,35 @@ import org.jetbrains.annotations.Contract;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Random;
 
 import icepick.Icepick;
 import icepick.State;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog.ADD_ITEM_DIALOG;
-import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_SET_VALUE;
+import static com.cks.hiroyuki2.worksupport3.Util.getContentByKey;
+import static com.cks.hiroyuki2.worksupport3.Util.getRetroFit;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.LIMIT_SIZE;
-import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.getShortenUrlFromRes;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.isOverSize;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.uploadFile;
 import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.getOneGroupFromJson;
 import static com.cks.hiroyuki2.worksupprotlib.FriendJsonEditor.snap2Json;
 import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
+import static com.cks.hiroyuki2.worksupprotlib.Util.checkAdmittionAsMember;
 import static com.cks.hiroyuki2.worksupprotlib.Util.datePattern;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getFileName;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getMimeType;
@@ -109,7 +123,6 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.showCompleteNtf;
-import static com.cks.hiroyuki2.worksupprotlib.Util.showDownloadingNtf;
 import static com.cks.hiroyuki2.worksupprotlib.Util.showUploadingNtf;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.ShareBoardRVAdapter.ITEM_TYPE_DATA;
@@ -117,7 +130,7 @@ import static com.example.hiroyuki3.worksupportlibw.Adapters.ShareBoardRVAdapter
 import static com.example.hiroyuki3.worksupportlibw.Adapters.ShareBoardRVAdapter.ITEM_TYPE_UPLOADED;
 
 @EFragment(R.layout.fragment_share_board)
-public class ShareBoardFragment extends Fragment implements OnFailureListener, SwipeRefreshLayout.OnRefreshListener, ValueEventListener, ShareBoardRVAdapter.IShareBoardRVAdapter {
+public class ShareBoardFragment extends RxFragment implements OnFailureListener, SwipeRefreshLayout.OnRefreshListener, /*ValueEventListener,*/ ShareBoardRVAdapter.IShareBoardRVAdapter {
 
     //region statics
     private static final String TAG = "MANUAL_TAG: " + ShareBoardFragment.class.getSimpleName();
@@ -136,8 +149,6 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
     private static final int WRITE_REQUEST_CODE = 43;
 
     public static final int REQ_CODE_UPLOAD_MYFILE = 1300;
-    public static final String URL_SHORTEN_API = "https://www.googleapis.com/urlshortener/v1/url"
-            + "?key=AIzaSyDDrs60sI8h7JeNjR-VTAJcbdnwRB5bVrk";
 
     public static final int INTENT_REQ_VIEW_ACTVITIY = 2548;
     //endregion
@@ -166,6 +177,20 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
         super.onCreate(savedInstanceState);
         Icepick.restoreInstanceState(this, savedInstanceState);
         storageUtil = new FirebaseStorageUtil(getContext(), group);
+
+        RxBus.subscribe(RxBus.REMOVE_STORAGE_FILE, this, new Consumer<Object>() {
+            @Override
+            public void accept(Object contentsKey) throws Exception {
+                Content content = getContentByKey(group.contentList, (String) contentsKey);
+                if (content == null){
+                    onError(ShareBoardFragment.this, TAG+ "content == null", R.string.error);
+                    return;
+                }
+
+                group.contentList.remove(content);
+                rvAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -203,37 +228,83 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
 
     private void retrieveGroup(GroupInUserDataNode groupNode){
 //        srl.setRefreshing(true);
-        getRef("group", groupNode.groupKey)
-                .addListenerForSingleValueEvent(this);
-    }
+        Single.create(new SingleOnSubscribe<DataSnapshot>() {
+            @Override
+            public void subscribe(SingleEmitter<DataSnapshot> emitter) throws Exception {
+                getRef("group", groupNode.groupKey)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                emitter.onSuccess(dataSnapshot);
+                            }
 
-    @Override
-    public void onDataChange(DataSnapshot dataSnapshot) {
-        JSONObject jo = snap2Json(dataSnapshot);
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                emitter.onError(databaseError.toException());
+                            }
+                        });
+            }
+        })
+        .subscribeOn(Schedulers.newThread())
+        .observeOn(AndroidSchedulers.mainThread())
+        .compose(bindToLifecycle())
+        .subscribe(new Consumer<DataSnapshot>() {
+            @Override
+            public void accept(DataSnapshot dataSnapshot) throws Exception {
+                JSONObject jo = snap2Json(dataSnapshot);
 
-        if (jo != null)
-            try {
-                group = getOneGroupFromJson(jo, groupNode.groupKey);
-                storageUtil = new FirebaseStorageUtil(getContext(), group);
-                if (group != null){
+                if (jo == null){
+                    onError(ShareBoardFragment.this, TAG+"jo == null", R.string.error);
+                    return;
+                }
+
+                try {
+                    group = getOneGroupFromJson(jo, groupNode.groupKey);//ここで、jo != null -> group != nullである
+                    storageUtil = new FirebaseStorageUtil(getContext(), group);
                     if (group.contentList == null)
                         group.contentList = new ArrayList<>();
 //                    srl.setRefreshing(false);
                     drawUI();
-                    return;
+                } catch (JSONException e) {
+                    logStackTrace(e);
+                    toastNullable(getContext(), R.string.error);
                 }
-            } catch (JSONException e) {
-                logStackTrace(e);
             }
-
-//        srl.setRefreshing(false);
-        toastNullable(getContext(), R.string.error);
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                onError(ShareBoardFragment.this, throwable.getMessage(), R.string.error);
+            }
+        });
     }
 
-    @Override
-    public void onCancelled(DatabaseError databaseError) {
-        onError(this, TAG+databaseError.getDetails(), R.string.error);
-    }
+//    @Override
+//    public void onDataChange(DataSnapshot dataSnapshot) {
+//        JSONObject jo = snap2Json(dataSnapshot);
+//
+//        if (jo != null)
+//            try {
+//                group = getOneGroupFromJson(jo, groupNode.groupKey);
+//                storageUtil = new FirebaseStorageUtil(getContext(), group);
+//                if (group != null){
+//                    if (group.contentList == null)
+//                        group.contentList = new ArrayList<>();
+////                    srl.setRefreshing(false);
+//                    drawUI();
+//                    return;
+//                }
+//            } catch (JSONException e) {
+//                logStackTrace(e);
+//            }
+//
+////        srl.setRefreshing(false);
+//        toastNullable(getContext(), R.string.error);
+//    }
+//
+//    @Override
+//    public void onCancelled(DatabaseError databaseError) {
+//        onError(this, TAG+databaseError.getDetails(), R.string.error);
+//    }
 
     @AfterViews
     void onAfterViews(){
@@ -260,6 +331,8 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rvAdapter = new ShareBoardRVAdapter(group, this);
         rv.setAdapter(rvAdapter);
+
+        ((MainActivity) context).initToolBar(this, group.groupName);//え？またここでもtoolbarTitleをupdateするんですか？するんです！
 
         animator = new PreventableAnimator();
         rv.setItemAnimator(animator);
@@ -338,44 +411,100 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
             }
         }, 3000);
 
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("group/" + group.groupKey);
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("group/" + group.groupKey);
+        Single.create(new SingleOnSubscribe<Group>() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void subscribe(SingleEmitter<Group> emitter) throws Exception {
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String uid = FirebaseAuth.getInstance().getUid();
+                        if (uid == null){
+                            emitter.onError(new IllegalArgumentException("uid == null"));
+                            return;
+                        }
+
+                        String errMsg = checkAdmittionAsMember(dataSnapshot, uid);
+                        if (errMsg != null){
+                            emitter.onError(new IllegalArgumentException(errMsg));
+                            return;
+                        }
+
+                        JSONObject jo = snap2Json(dataSnapshot);
+                        if (jo == null){
+                            emitter.onError(new IllegalArgumentException("jo == null"));
+                            return;
+                        }
+
+                        try {
+                            Group groupC = getOneGroupFromJson(jo, group.groupKey);
+                            emitter.onSuccess(groupC);
+                        } catch (JSONException e) {
+                            emitter.onError(e);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        emitter.onError(databaseError.toException());
+                    }
+                });
+            }
+        })
+        .subscribeOn(Schedulers.newThread())
+        .observeOn(AndroidSchedulers.mainThread())
+        .compose(bindToLifecycle())
+        .subscribe(new Consumer<Group>() {
+            @Override
+            public void accept(Group group) throws Exception {
                 srl.setRefreshing(false);
-                if (!dataSnapshot.exists()){
-                    onError(ShareBoardFragment.this, TAG+ref.toString(), R.string.error);
-                    return;
-                }
-
-                JSONObject jo = snap2Json(dataSnapshot);
-                if (jo == null){
-                    onError(ShareBoardFragment.this, TAG+"jo == null", R.string.error);
-                    return;
-                }
-
-                Group groupC;
-                try {
-                    groupC = getOneGroupFromJson(jo, group.groupKey);
-                } catch (JSONException e) {
-                    logStackTrace(e);
-                    toastNullable(getContext(), R.string.error);
-                    return;
-                }
-
-                toastNullable(getContext(), R.string.success_swipe);
-                group = groupC;
                 storageUtil = new FirebaseStorageUtil(getContext(), group);
-                srl.setRefreshing(false);
                 onAfterViews();
             }
-
+        }, new Consumer<Throwable>() {
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void accept(Throwable throwable) throws Exception {
                 srl.setRefreshing(false);
-                onError(ShareBoardFragment.this, databaseError.getDetails(), R.string.error);
+                onError(ShareBoardFragment.this, throwable.getMessage(), R.string.error);
             }
         });
+
+//        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("group/" + group.groupKey);
+//        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                if (!dataSnapshot.exists()){
+//                    onError(ShareBoardFragment.this, TAG+ref.toString(), R.string.error);
+//                    return;
+//                }
+//
+//                JSONObject jo = snap2Json(dataSnapshot);
+//                if (jo == null){
+//                    onError(ShareBoardFragment.this, TAG+"jo == null", R.string.error);
+//                    return;
+//                }
+//
+//                Group groupC;
+//                try {
+//                    groupC = getOneGroupFromJson(jo, group.groupKey);
+//                } catch (JSONException e) {
+//                    logStackTrace(e);
+//                    toastNullable(getContext(), R.string.error);
+//                    return;
+//                }
+//
+////                toastNullable(getContext(), R.string.success_swipe);
+//                group = groupC;
+//                storageUtil = new FirebaseStorageUtil(getContext(), group);
+//                srl.setRefreshing(false);
+//                onAfterViews();
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                onError(ShareBoardFragment.this, databaseError.getDetails(), R.string.error);
+//            }
+//        });
     }
 
     @OnActivityResult(ShareBoardFragment.DIALOG_CODE)
@@ -465,23 +594,36 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
     void onResultEditComment(Intent data, int resultCode,
                              @OnActivityResult.Extra(ShareBoardRVAdapter.BUNDLE_KEY_NEW_COMMENT) final String newComment,
                              @OnActivityResult.Extra(ShareBoardRVAdapter.BUNDLE_KEY_POSITION) final int listPos){
-        if (resultCode != RESULT_OK) return;
+        if (resultCode != RESULT_OK)
+            return;
 
 //        Bundle bundle = data.getExtras();
 
         final Content content = group.contentList.get(listPos);
-        DatabaseReference checkRef = getRef("group", group.groupKey, "contents", content.contentKey);
-        DatabaseReference writeRef = getRef(checkRef, "comment");
-        FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, writeRef, getContext(), newComment) {
-            @Override
-            public void onSuccess(DatabaseReference ref) {
-                toastNullable(getContext(), R.string.updated_comment_msg);
-                //リスト書き込みしてUI更新
-                content.comment = newComment;/*リスト書き込みはするが、はてローカルに書き込む？*/
-                rvAdapter.notifyItemChanged(listPos);
-            }
-        };
-        writer.update(CODE_SET_VALUE);
+//        DatabaseReference checkRef = getRef("group", group.groupKey, "contents", content.contentKey);
+//        DatabaseReference writeRef = getRef(checkRef, "comment");
+        content.comment = newComment;
+        rvAdapter.notifyDataSetChanged();
+
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid == null){
+            onError(this, TAG+"uid == null", R.string.error);
+            return;
+        }
+
+        FbIntentService_.intent(getActivity().getApplicationContext())
+                .editNormalComment(uid, group.groupKey, content.contentKey, newComment)
+                .start();
+//        FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, writeRef, getContext(), newComment) {
+//            @Override
+//            public void onSuccess(DatabaseReference ref) {
+//                toastNullable(getContext(), R.string.updated_comment_msg);
+//                //リスト書き込みしてUI更新
+//                content.comment = newComment;/*リスト書き込みはするが、はてローカルに書き込む？*/
+//                rvAdapter.notifyDataSetChanged();
+//            }
+//        };
+//        writer.update(CODE_SET_VALUE);
     }
 
     @OnActivityResult(EditDocActivity.REQ_INTENT_CODE)
@@ -507,48 +649,113 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
 
     //region onChoose2ndItem系列
 
+    // TODO: 2017/11/26 ストレージのファイル構造、どうするか決めて整合性とれるようにせよ
+    /**
+     * ここでは、isMeGroupMemberCheckerでのチェックは行わない。
+     * なぜなら、1.この動作はDb書き込みでないから許容でき、2.どのみち更新動作時には{@link #onRefresh()}でDBへのアクセスが拒否されるから。
+     */
     private void onChoose2ndItem(final int listPos){
-        storageUtil.getStorageUrl(listPos, new OnSuccessListener<Uri>() {
+        Single.create(new SingleOnSubscribe<String>() {
             @Override
-            public void onSuccess(Uri uri) {
-                storageUtil.onSuccessShortenUrl(uri, new Callback() {
-                    @Override
-                    public void onFailure(@Nullable Call call, @Nullable IOException e) {
-                        if (e != null)
-                            logStackTrace(e);
-                        showToastOnMainThread();
-                    }
+            public void subscribe(SingleEmitter<String> emitter) throws Exception {
+                FirebaseStorage.getInstance().getReference()
+                    .child(makeScheme("shareFile", group.groupKey, group.contentList.get(listPos).contentKey))
+                    .getDownloadUrl()
+                    .addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()){
+                                Log.d(TAG, "onComplete: " + task.getResult().toString());
 
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        String shortenUrl = getShortenUrlFromRes(response);
-                        if (shortenUrl == null) {
-                            showToastOnMainThread();
-                            return;
+                                HashMap<String, String> hashMap = new HashMap<>();
+                                hashMap.put("longUrl", task.getResult().toString());
+
+                                getRetroFit().create(Util.urlShortenApi.class)
+                                        .getData(hashMap, getString(R.string.shorten_url_key))
+                                        .subscribeOn(Schedulers.newThread())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .compose(bindToLifecycle())
+                                        .subscribe(new Consumer<ShortenUrlResponse>() {
+                                            @Override
+                                            public void accept(ShortenUrlResponse response) throws Exception {
+                                                emitter.onSuccess(response.getId());
+                                            }
+                                        }, new Consumer<Throwable>() {
+                                            @Override
+                                            public void accept(Throwable throwable) throws Exception {
+                                                emitter.onError(throwable);
+                                                throwable.printStackTrace();
+                                            }
+                                        });
+                            } else {
+                                emitter.onError(new IllegalArgumentException(task.toString()));
+                            }
                         }
-
-                        Intent share = new Intent(Intent.ACTION_SEND);
-                        share.setType("text/plain");
-                        String subject = group.contentList.get(listPos).contentName;
-                        share.putExtra(Intent.EXTRA_SUBJECT, subject);
-                        share.putExtra(Intent.EXTRA_TEXT, shortenUrl);
-                        String title = getResources().getStringArray(R.array.vort_dialog)[1];
-                        startActivity(Intent.createChooser(share, title));
-                    }
-                });
+                    });
             }
-        }, this);
-    }
-
-    @MainThread
-    private void showToastOnMainThread(){
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
+        })
+        .subscribeOn(Schedulers.newThread())
+        .observeOn(AndroidSchedulers.mainThread())
+        .compose(bindToLifecycle())
+        .subscribe(new Consumer<String>() {
             @Override
-            public void run() {
-                onError(ShareBoardFragment.this, TAG + " onErrorメソッド", R.string.error);
+            public void accept(String url) throws Exception {
+                Intent share = new Intent(Intent.ACTION_SEND);
+                share.setType("text/plain");
+                String subject = group.contentList.get(listPos).contentName;
+                share.putExtra(Intent.EXTRA_SUBJECT, subject);
+                share.putExtra(Intent.EXTRA_TEXT, url);
+                String title = getResources().getStringArray(R.array.vort_dialog)[1];
+                startActivity(Intent.createChooser(share, title));
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                onError(ShareBoardFragment.this, TAG+ throwable.getMessage(), R.string.error);
             }
         });
+
+//        storageUtil.getStorageUrl(listPos, new OnSuccessListener<Uri>() {
+//            @Override
+//            public void onSuccess(Uri uri) {
+//                storageUtil.onSuccessShortenUrl(uri, new Callback() {
+//                    @Override
+//                    public void onFailure(@Nullable Call call, @Nullable IOException e) {
+//                        if (e != null)
+//                            logStackTrace(e);
+//                        showToastOnMainThread();
+//                    }
+//
+//                    @Override
+//                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+//                        String shortenUrl = getShortenUrlFromRes(response);
+//                        if (shortenUrl == null) {
+//                            showToastOnMainThread();
+//                            return;
+//                        }
+//
+//                        Intent share = new Intent(Intent.ACTION_SEND);
+//                        share.setType("text/plain");
+//                        String subject = group.contentList.get(listPos).contentName;
+//                        share.putExtra(Intent.EXTRA_SUBJECT, subject);
+//                        share.putExtra(Intent.EXTRA_TEXT, shortenUrl);
+//                        String title = getResources().getStringArray(R.array.vort_dialog)[1];
+//                        startActivity(Intent.createChooser(share, title));
+//                    }
+//                });
+//            }
+//        }, this);
     }
+
+//    @MainThread
+//    private void showToastOnMainThread(){
+//        new Handler(Looper.getMainLooper()).post(new Runnable() {
+//            @Override
+//            public void run() {
+//                onError(ShareBoardFragment.this, TAG + " onErrorメソッド", R.string.error);
+//            }
+//        });
+//    }
     //endregion
 
     //region onChoose3rdItem系列
@@ -611,57 +818,61 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
 
         setPermissionInvariant(uri);//パーミッション永続化は不必要化もしれないけど・・・
 
-        String tempFileName = String.valueOf(new Random().nextInt());
-        File file = new File(getContext().getCacheDir(), tempFileName);
-
-        final int ntfId = (int)System.currentTimeMillis();
-        final String fileName = group.contentList.get(listPosForDL).contentName;
-
-        storageUtil.downloadFile(listPosForDL, file, new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        toastNullable(getContext(), R.string.msgDlSuccess);
-                        showCompleteNtf(getContext(), fileName, ntfId, R.string.msgDlSuccess);
-                    }
-                },
-                storageUtil,
-                new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        showDownloadingNtf(getContext(), taskSnapshot, fileName, ntfId);
-                    }
-                },
-                new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        onFailureOparation(e, fileName, ntfId, R.string.msg_failed_download);
-                    }
-                });
-
-        try(OutputStream outputStream = getContext().getContentResolver().openOutputStream(uri)) {
-            FileInputStream fis = new FileInputStream(file);
-
-            // byte型の配列を宣言
-            byte[] buf = new byte[256];
-            int len;
-
-            // ファイルの終わりまで読み込む
-            while((len = fis.read(buf)) != -1){
-                outputStream.write(buf);
-            }
-
-            //ファイルに内容を書き込む
-            outputStream.flush();
-
-            //ファイルの終了処理
-            outputStream.close();
-            fis.close();
-        } catch(Exception e){
-            logStackTrace(e);
-            toastNullable(getContext(), R.string.error);
-        } finally {
-            file.delete();
-        }
+        Content content = group.contentList.get(listPosForDL);
+        FbIntentService_.intent(getContext().getApplicationContext())
+                .dlFileFromStorage(group.groupKey, content.contentKey, content.contentName, uri)
+                .start();
+//        String tempFileName = String.valueOf(new Random().nextInt());
+//        File file = new File(getContext().getCacheDir(), tempFileName);
+//
+//        final int ntfId = (int)System.currentTimeMillis();
+//        final String fileName = group.contentList.get(listPosForDL).contentName;
+//
+//        storageUtil.downloadFile(listPosForDL, file, new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+//                    @Override
+//                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//                        toastNullable(getContext(), R.string.msgDlSuccess);
+//                        showCompleteNtf(MainActivity.class, getContext(), fileName, ntfId, R.string.msgDlSuccess);
+//                    }
+//                },
+//                storageUtil,
+//                new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+//                    @Override
+//                    public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//                        showDownloadingNtf(MainActivity.class, getContext(), taskSnapshot, fileName, ntfId);
+//                    }
+//                },
+//                new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        onFailureOparation(e, fileName, ntfId, R.string.msg_failed_download);
+//                    }
+//                });
+//
+//        try(OutputStream outputStream = getContext().getContentResolver().openOutputStream(uri)) {
+//            FileInputStream fis = new FileInputStream(file);
+//
+//            // byte型の配列を宣言
+//            byte[] buf = new byte[256];
+//            int len;
+//
+//            // ファイルの終わりまで読み込む
+//            while((len = fis.read(buf)) != -1){
+//                outputStream.write(buf);
+//            }
+//
+//            //ファイルに内容を書き込む
+//            outputStream.flush();
+//
+//            //ファイルの終了処理
+//            outputStream.close();
+//            fis.close();
+//        } catch(Exception e){
+//            logStackTrace(e);
+//            toastNullable(getContext(), R.string.error);
+//        } finally {
+//            file.delete();
+//        }
     }
 
     /**
@@ -677,47 +888,55 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
 
     //region onChoose4thItem系列
     private void onChoose4thItem(final int listPos, final boolean isDoc){
-        final Content content = group.contentList.get(listPos);
-        getRef("group", group.groupKey, "contents", content.contentKey)
-                .removeValue(new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null)
-                    onError(ShareBoardFragment.this, TAG + databaseError.getMessage(), R.string.error);
-                else {
-                    toastNullable(getContext(), R.string.msg_delete_item);
-                    group.contentList.remove(listPos);
-                    rvAdapter.notifyDataSetChanged();
-                    if (!isDoc)
-                        onSuccessRemoveData(content);
-                }
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid == null){
+            onError(this, TAG+"uid == null", R.string.error);
+            return;
+        }
 
-            }
-        });
+        FbIntentService_.intent(getContext().getApplicationContext())
+                .removeFileFromStorage(uid, group.groupKey, group.contentList.get(listPos).contentKey, isDoc)
+                .start();
+//        final Content content = group.contentList.get(listPos);
+//        getRef("group", group.groupKey, "contents", content.contentKey)
+//                .removeValue(new DatabaseReference.CompletionListener() {
+//            @Override
+//            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+//                if (databaseError != null)
+//                    onError(ShareBoardFragment.this, TAG + databaseError.getMessage(), R.string.error);
+//                else {
+//                    toastNullable(getContext(), R.string.msg_delete_item);
+//                    group.contentList.remove(listPos);
+//                    rvAdapter.notifyDataSetChanged();
+//                    if (!isDoc)
+//                        onSuccessRemoveData(content);
+//                }
+//            }
+//        });
     }
 
     private void onFailureOparation(Exception e, String fileName, int ntfId, @StringRes int string){
         logStackTrace(e);
         toastNullable(getContext(), R.string.error);
-        showCompleteNtf(getContext(), fileName, ntfId, string);
+        showCompleteNtf(MainActivity.class, getContext().getApplicationContext(), fileName, ntfId, string);
     }
 
-    /**このメソッドでストレージのデータを削除できようができまいが、ここに到達した時点で{@link #onChoose4thItem(int, boolean)}でDatabaseは削除しているので、
-     * トーストは{@link #onChoose4thItem(int, boolean)}で出すようにする。*/
-    private void onSuccessRemoveData(Content content){
-        StorageReference ref = FirebaseStorage.getInstance().getReference().child("shareFile/"+group.groupKey+"/"+content.contentKey);
-        ref.delete().addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                logStackTrace(e);
-            }
-        }).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d(TAG, "onSuccess: addOnSuccessListener");
-            }
-        });
-    }
+//    /**このメソッドでストレージのデータを削除できようができまいが、ここに到達した時点で{@link #onChoose4thItem(int, boolean)}でDatabaseは削除しているので、
+//     * トーストは{@link #onChoose4thItem(int, boolean)}で出すようにする。*/
+//    private void onSuccessRemoveData(Content content){
+//        StorageReference ref = FirebaseStorage.getInstance().getReference().child("shareFile/"+group.groupKey+"/"+content.contentKey);
+//        ref.delete().addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                logStackTrace(e);
+//            }
+//        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void aVoid) {
+//                Log.d(TAG, "onSuccess: addOnSuccessListener");
+//            }
+//        });
+//    }
     //endregion
 
     //region EditDocActivityにintent投げる系
@@ -737,7 +956,11 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
     }
     //endregion
 
-    /** firebaseに上げているファイル名は、表示されているファイル名とは別物であることに注意してください。*/
+    /**
+     * firebaseに上げているファイル名は、表示されているファイル名とは別物であることに注意してください。
+     * ここでは、isMeGroupMemberCheckerでのチェックは行わない。
+     * なぜなら、1.この動作はDb書き込みでないから許容でき、2.どのみち更新動作時には{@link #onRefresh()}でDBへのアクセスが拒否されるから。
+     */
     @Override
     public void onClickItemUploaded(int listPos){
         final Content content = group.contentList.get(listPos);
@@ -752,26 +975,71 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
             }
         }
 
-        storageUtil.getStorageUrl(listPos, new OnSuccessListener<Uri>() {
+        Single.create(new SingleOnSubscribe<Uri>() {
             @Override
-            public void onSuccess(Uri uri) {
-                intentKicker(getContext(), content.contentName, uri, Intent.ACTION_VIEW, content.type);
+            public void subscribe(SingleEmitter<Uri> emitter) throws Exception {
+                storageUtil.getStorageUrl(listPos, emitter::onSuccess, emitter::onError);
             }
-        }, this);
+        })
+        .subscribeOn(Schedulers.newThread())
+        .observeOn(AndroidSchedulers.mainThread())
+        .compose(bindToLifecycle())
+                .subscribe(new Consumer<Uri>() {
+                    @Override
+                    public void accept(Uri uri) throws Exception {
+                        intentKicker(getContext(), content.contentName, uri, Intent.ACTION_VIEW, content.type);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        onError(ShareBoardFragment.this, throwable.getMessage(), R.string.error);
+                    }
+                });
+
+//        storageUtil.getStorageUrl(listPos, new OnSuccessListener<Uri>() {
+//            @Override
+//            public void onSuccess(Uri uri) {
+//                intentKicker(getContext(), content.contentName, uri, Intent.ACTION_VIEW, content.type);
+//            }
+//        }, this);
     }
 
     /**
      * pdfをブラウザから開く！ダウンロードの必要なし！
+     * ここでは、isMeGroupMemberCheckerでのチェックは行わない。
+     * なぜなら、1.この動作はDb書き込みでないから許容でき、2.どのみち更新動作時には{@link #onRefresh()}でDBへのアクセスが拒否されるから。
      */
     private void showUrlPdf(int listPos){
-        storageUtil.getStorageUrl(listPos, new OnSuccessListener<Uri>() {
+        Single.create(new SingleOnSubscribe<Uri>() {
             @Override
-            public void onSuccess(Uri uri) {
+            public void subscribe(SingleEmitter<Uri> emitter) throws Exception {
+                storageUtil.getStorageUrl(listPos, emitter::onSuccess, emitter::onError);
+            }
+        })
+        .subscribeOn(Schedulers.newThread())
+        .observeOn(AndroidSchedulers.mainThread())
+        .compose(bindToLifecycle())
+        .subscribe(new Consumer<Uri>() {
+            @Override
+            public void accept(Uri uri) throws Exception {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.parse( "http://docs.google.com/viewer?url=" + uri), "text/html");
                 startActivity(intent);
             }
-        }, this);
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                onError(ShareBoardFragment.this, throwable.getMessage(), R.string.error);
+            }
+        });
+//        storageUtil.getStorageUrl(listPos, new OnSuccessListener<Uri>() {
+//            @Override
+//            public void onSuccess(Uri uri) {
+//                Intent intent = new Intent(Intent.ACTION_VIEW);
+//                intent.setDataAndType(Uri.parse( "http://docs.google.com/viewer?url=" + uri), "text/html");
+//                startActivity(intent);
+//            }
+//        }, this);
     }
 
 //    void dlAndShowPdf(final int listPos){
@@ -796,31 +1064,65 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
 
     /**このアプリを使っている以上、自分のデータのノードはあるだろうから、ここではノードの存在チェックは行わない*/
     private void shareMyRecord(){
-        final User me = new User(getUserMe());
-        DatabaseReference ref = getRef("group", group.groupKey);
+        FirebaseUser me = getUserMe();
+        if (me == null){
+            onError(ShareBoardFragment.this, TAG+"me == null", R.string.error);
+            return;
+        }
 
-        HashMap<String, Object> children = new HashMap<>();
-        final String contentsKey = ref.push().getKey();
-        final String ymd = cal2date(Calendar.getInstance(), datePattern);
-        final String contentsName = me.getName()+"さんの記録";
-        final Content content = new Content(contentsKey, contentsName, ymd, me.getUserUid(), me.getUserUid(), "data", null);
-        children.put("contents/"+contentsKey+"/lastEdit", content.lastEdit);
-        children.put("contents/"+contentsKey+"/lastEditor", content.lastEditor);
-        children.put("contents/"+contentsKey+"/whose", content.whose);
-        children.put("contents/"+contentsKey+"/type", content.type);
-        children.put("contents/"+contentsKey+"/contentName", content.contentName);
-        children.put("contents/"+contentsKey+"/comment", content.comment);
-
-        ref.updateChildren(children, new DatabaseReference.CompletionListener() {
+        Single.create(new SingleOnSubscribe<Object>() {
             @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null)
-                    onError(ShareBoardFragment.this, databaseError.getMessage(), R.string.error);
-                else {
-                    toastNullable(getContext(), R.string.msg_sync_data);
-                    group.contentList.add(content);
-                    rvAdapter.notifyItemInserted(group.contentList.size()-1);
-                }
+            public void subscribe(SingleEmitter<Object> emitter) throws Exception {
+                new isMeGroupMemberChecker(){
+                    @Override
+                    protected void onError(@NonNull String errMsg) {
+                        emitter.onError(new IllegalArgumentException(errMsg));
+                    }
+
+                    @Override
+                    protected void onSuccess(DataSnapshot dataSnapshot) {
+                        DatabaseReference ref = getRef("group", group.groupKey);
+
+                        HashMap<String, Object> children = new HashMap<>();
+                        final String contentsKey = ref.push().getKey();
+                        final String ymd = cal2date(Calendar.getInstance(), datePattern);
+                        final String contentsName = me.getDisplayName()+"さんの記録";
+                        final Content content = new Content(contentsKey, contentsName, ymd, me.getUid(), me.getUid(), "data", null);
+                        children.put("contents/"+contentsKey+"/lastEdit", content.lastEdit);
+                        children.put("contents/"+contentsKey+"/lastEditor", content.lastEditor);
+                        children.put("contents/"+contentsKey+"/whose", content.whose);
+                        children.put("contents/"+contentsKey+"/type", content.type);
+                        children.put("contents/"+contentsKey+"/contentName", content.contentName);
+                        children.put("contents/"+contentsKey+"/comment", content.comment);
+
+                        ref.updateChildren(children, new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                if (databaseError != null)
+                                    emitter.onError(new IllegalArgumentException(databaseError.getMessage()));
+                                else {
+                                    emitter.onSuccess(content);
+                                }
+                            }
+                        });
+                    }
+                }.check(me.getUid(), group.groupKey);
+            }
+        })
+        .subscribeOn(Schedulers.newThread())
+        .observeOn(AndroidSchedulers.mainThread())
+        .compose(bindToLifecycle())
+        .subscribe(new Consumer<Object>() {
+            @Override
+            public void accept(Object content) throws Exception {
+                toastNullable(getContext(), R.string.msg_sync_data);
+                group.contentList.add((Content) content);
+                rvAdapter.notifyItemInserted(group.contentList.size()-1);
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                onError(ShareBoardFragment.this, throwable.getMessage(), R.string.error);
             }
         });
     }
@@ -875,11 +1177,11 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                         if (databaseError != null) {
                                             onError(ShareBoardFragment.this, TAG + databaseError.getDetails(), R.string.error);
-                                            showCompleteNtf(getContext(), fileName, ntfId, R.string.msg_failed_upload);
+                                            showCompleteNtf(MainActivity.class, getContext(), fileName, ntfId, R.string.msg_failed_upload);
                                         } else {
                                             toastNullable(getContext(), R.string.msg_succeed_upload);
                                             addContent(content);
-                                            showCompleteNtf(getContext(), fileName, ntfId, R.string.msg_succeed_upload);
+                                            showCompleteNtf(MainActivity.class, getContext(), fileName, ntfId, R.string.msg_succeed_upload);
                                         }
                                     }
                                 });
@@ -887,7 +1189,7 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                 }, storageUtil, new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        showUploadingNtf(getContext(), taskSnapshot, fileName, ntfId);
+                        showUploadingNtf(MainActivity.class, getContext(), taskSnapshot, fileName, ntfId);
                     }
                 });
             }
@@ -949,7 +1251,8 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
      */
     private void addDocComment(final Intent data){
         final int listPos = data.getIntExtra(EditDocActivity.INTENT_KEY_POS, Integer.MAX_VALUE);
-        if (listPos == Integer.MAX_VALUE){
+        FirebaseUser user = getUserMe();
+        if (listPos == Integer.MAX_VALUE || user == null){
             onError(this, "pos == Integer.MAX_VALUE", R.string.error);
             return;
         }
@@ -957,7 +1260,12 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
         final Content content = group.contentList.get(listPos);
         final DocumentEle docEle = (DocumentEle) data.getSerializableExtra(EditDocActivity.INTENT_KEY_DOC);
 
-        DatabaseReference ref = getRef(makeScheme("group", group.groupKey, "contents", "おかしなあたい"/*content.contentKey*/, "comment"));
+//        ServiceMessage sm = new ServiceMessage(docEle, user, group.groupKey, content.contentKey);
+//        boolean sendSuccess = ((MainActivity)getActivity()).getConnector().send(SEND_CODE_ADD_COMMENT, sm);
+//        if (!sendSuccess)
+//            onError(this, TAG+"!sendSuccess", R.string.error);
+
+        DatabaseReference ref = getRef(makeScheme("group", group.groupKey, "contents", content.contentKey, "comment"));
         ref.runTransaction(new Transaction.Handler() {
             private String newVal;
 
@@ -983,7 +1291,7 @@ public class ShareBoardFragment extends Fragment implements OnFailureListener, S
                     rvAdapter.notifyItemChanged(actualPos);
                 }
             }
-        }, false);
+        });
     }
 
     @Override

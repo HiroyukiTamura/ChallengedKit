@@ -1,5 +1,17 @@
 /*
- * Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+ * Copyright 2017 Hiroyuki Tamura
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.cks.hiroyuki2.worksupport3.Activities;
@@ -39,7 +51,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -73,12 +84,10 @@ import com.firebase.ui.auth.ResultCodes;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.ColorRes;
-import org.androidannotations.annotations.res.DimensionPixelSizeRes;
 
 import java.util.Calendar;
 import java.util.List;
@@ -91,7 +100,6 @@ import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.cks.hiroyuki2.worksupport3.BackService.UNKNOWN_STATE;
-import static com.cks.hiroyuki2.worksupport3.Util.getFragmentTag;
 import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 import static com.cks.hiroyuki2.worksupprotlib.LoginCheck.checkIsLogin;
 import static com.cks.hiroyuki2.worksupprotlib.TemplateEditor.initDefaultTemplate;
@@ -101,7 +109,6 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_KEY_WIDTH;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
 import static com.cks.hiroyuki2.worksupprotlib.Util.RC_SIGN_IN;
 import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
-import static com.cks.hiroyuki2.worksupprotlib.Util.datePattern;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getMonthIllust;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getToolBarHeight;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
@@ -217,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (isFirstLaunch)
             return;
 
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
         toolbarHeight = getToolBarHeight(this);
 
@@ -538,15 +546,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.w(TAG, "handleSignInResponse: Successfully signed in");
             //結局今のところは、乱数を作成してログインしている。後々要修正。
             check.writeLocalProf();
-            boolean isPreSetting = data.getBooleanExtra(LoginCheck.IS_PRE_SETTING, false);
-            if (isPreSetting){
-                changeContentFragment(com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment_
-                        .builder().build());
-            } else {
+//            boolean isPreSetting = data.getBooleanExtra(LoginCheck.IS_PRE_SETTING, false);
+//            if (isPreSetting){
+//                changeContentFragment(com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment_
+//                        .builder().build());
+//            } else {
                 FirebaseConnection.getInstance().setFireBaseRefs(this);
                 if (!isSavedInstanceState)
                     setContentFragment();
-            }
+//            }
 
         } else {
             // Sign in failed
@@ -595,20 +603,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @OnActivityResult(REQ_CODE_GROUP_SETTING)
-    void onResultExitGroup(int requesCode, @OnActivityResult.Extra(GroupSettingFragment.GROUP) Group group){
+    void onResultExitGroup(int requesCode,
+                           @OnActivityResult.Extra(GroupSettingFragment.GROUP) Group group
+                           /*@OnActivityResult.Extra(GroupSettingActivity.NEW_GROUP_NAME) String newGroupName*/){
         if (requesCode != Activity.RESULT_OK)
             return;
 
-        FirebaseUser userMe = getUserMe();
-        if (userMe == null){
-            onError(this, TAG+"userMe == null", R.string.error);
-            return;
-        }
+        if (group == null){
+            //グループ名変更など、設定操作をした後なので、リロードさせる
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(ShareBoardFragment.class.getSimpleName());
+            if (fragment != null)
+                ((ShareBoardFragment) fragment).onRefresh();
+//            setToolbarTitle(newGroupName);
+        } else {
+            FirebaseUser userMe = getUserMe();
+            if (userMe == null){
+                onError(this, TAG+"userMe == null", R.string.error);
+                return;
+            }
 
-        String tag = SocialFragment.class.getSimpleName();
-        getSupportFragmentManager().popBackStack(tag, 0);
-        SocialFragment fragment = (SocialFragment) getSupportFragmentManager().findFragmentByTag(tag);
-        fragment.exitGroup(getUserMe().getUid(), group.groupKey, R.string.exit_group_toast);
+            String tag = SocialFragment.class.getSimpleName();
+            getSupportFragmentManager().popBackStack(tag, 0);
+            SocialFragment fragment = (SocialFragment) getSupportFragmentManager().findFragmentByTag(tag);
+            fragment.exitGroup(getUserMe().getUid(), group.groupKey, R.string.exit_group_toast);
+        }
     }
 
     private RecordFragment getRecordFragmentInstance(){
@@ -672,5 +690,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             headerLL.setVisibility(GONE);
             space.setVisibility(VISIBLE);
         }
+    }
+
+    public ServiceConnector getConnector() {
+        return connector;
     }
 }

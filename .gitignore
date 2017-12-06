@@ -1,8 +1,6 @@
 *.iml
 .gradle
 /local.properties
-/.idea/workspace.xml
-/.idea/libraries
 .DS_Store
 /build
 /captures
@@ -19,3 +17,9 @@ proguard-rules.pro
 
 #fabric
 fabric.properties
+/doc/book/
+/app/.gitignore
+/app/src/main/res/values/keys.xml
+/.gitignore
+/.idea/
+/app/release/

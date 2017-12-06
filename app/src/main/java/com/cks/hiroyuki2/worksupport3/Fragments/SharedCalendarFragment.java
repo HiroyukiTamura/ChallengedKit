@@ -1,5 +1,17 @@
 /*
- * Copyright (c) $year. Hiroyuki Tamura All rights reserved.
+ * Copyright 2017 Hiroyuki Tamura
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.cks.hiroyuki2.worksupport3.Fragments;
@@ -12,12 +24,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
 import com.cks.hiroyuki2.worksupport3.Activities.SharedCalendarActivity;
+import com.cks.hiroyuki2.worksupport3.Util;
 import com.cks.hiroyuki2.worksupprotlib.Entity.CalendarOneEvent;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.example.hiroyuki3.worksupportlibw.Adapters.SharedCalendarVPAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
 import org.androidannotations.annotations.AfterViews;
@@ -27,6 +42,7 @@ import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.Calendar;
+import java.util.Observable;
 
 import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.ADD_SCHEDULE;
 import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.CALENDAR;
@@ -35,18 +51,37 @@ import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.INPUT;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickCalendarDialog;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_SET_VALUE;
 import com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter;
+import com.google.firebase.database.ValueEventListener;
+import com.trello.rxlifecycle2.components.support.RxFragment;
+
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleObserver;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.Subject;
+
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRootRef;
 import static com.cks.hiroyuki2.worksupprotlib.Util.COLOR_NUM;
 import static com.cks.hiroyuki2.worksupprotlib.Util.DATE_PATTERN_YM;
 import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
+import static com.cks.hiroyuki2.worksupprotlib.Util.checkAdmittionAsMember;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
+import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 
 /**
  * {@link SharedCalendarActivity}のひとり子分。
  * {@link SharedCalendarVPAdapter}を従える。子孫は多い！
  */
 @EFragment(R.layout.fragment_shared_calendar)
-public class SharedCalendarFragment extends Fragment implements ViewPager.OnPageChangeListener{
+public class SharedCalendarFragment extends RxFragment implements ViewPager.OnPageChangeListener{
 
     @FragmentArg("group") Group group;
     private DatabaseReference ref;
@@ -58,6 +93,7 @@ public class SharedCalendarFragment extends Fragment implements ViewPager.OnPage
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ref = FirebaseConnection.getRef(getRootRef(), makeScheme("calendar", group.groupKey));
+        adapter = new SharedCalendarVPAdapter(this, Calendar.getInstance(), ref);
     }
 
     @Override
@@ -75,7 +111,6 @@ public class SharedCalendarFragment extends Fragment implements ViewPager.OnPage
 
     @AfterViews
     void afterViews(){
-        adapter = new SharedCalendarVPAdapter(this, Calendar.getInstance(), ref);
         vp.setAdapter(adapter);
         vp.setCurrentItem(adapter.getCount()/2);
         vp.addOnPageChangeListener(this);
@@ -127,29 +162,87 @@ public class SharedCalendarFragment extends Fragment implements ViewPager.OnPage
                              @OnActivityResult.Extra(INPUT) final String input,
                              @OnActivityResult.Extra(CALENDAR) final Calendar cal,
                              @OnActivityResult.Extra(COLOR_NUM) final int colorNum){
+
         if (resultCode != Activity.RESULT_OK) return;
 
-        DatabaseReference checkRef = FirebaseConnection.getRef("calendar", group.groupKey);
-        FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, null, getContext()/*非同期でないからok*/, null) {
-            CalendarOneEvent calEve;
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid == null){
+            onError(this, "uid == null", R.string.error);
+            return;
+        }
 
+        Single.create(new SingleOnSubscribe<CalendarOneEvent>() {
             @Override
-            public void onSuccess(DatabaseReference ref) {
-                adapter.addSchedule(cal, calEve);//ここ、今はこれで問題ないけど、変えるときは処理の順序を気を付けてください
-            }
+            public void subscribe(SingleEmitter<CalendarOneEvent> emitter) throws Exception {
+                FirebaseConnection.getRef("group", group.groupKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String errMsg = checkAdmittionAsMember(dataSnapshot, uid);
+                        if (errMsg != null){
+                            emitter.onError(new IllegalArgumentException(errMsg));
+                            return;
+                        }
 
-            @Override
-            protected void onNodeExist(@NonNull DataSnapshot dataSnapshot) {
-                DatabaseReference ref = dataSnapshot.getRef().push();
-                calEve = new CalendarOneEvent(ref.getKey(), input, colorNum);
-                setObj(calEve);
-                String ym = cal2date(cal, DATE_PATTERN_YM);
-                String d = Integer.toString(cal.get(Calendar.DATE));
-                DatabaseReference writeRef = FirebaseConnection.getRef("calendar", group.groupKey, ym, d, ref.getKey());
-                setWriteRef(writeRef);
-                super.onNodeExist(dataSnapshot);
+                        String calEveKey = FirebaseConnection.getRef("keyPusher").push().getKey();
+                        CalendarOneEvent calEve = new CalendarOneEvent(calEveKey, input, colorNum);
+                        String ym = cal2date(cal, DATE_PATTERN_YM);
+                        String d = Integer.toString(cal.get(Calendar.DATE));
+                        FirebaseConnection.getRef("calendar", group.groupKey, ym, d, calEveKey)
+                                .setValue(calEve, new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                        if (databaseError == null){
+                                            emitter.onSuccess(calEve);
+                                        } else {
+                                            emitter.onError(new IllegalArgumentException(databaseError.getMessage()));
+                                        }
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        emitter.onError(new IllegalArgumentException(databaseError.getMessage()));
+                    }
+                });
+//                DatabaseReference checkRef = FirebaseConnection.getRef("calendar", group.groupKey);
+//                FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, null, getContext()/*非同期でないからok*/, null) {
+//                    CalendarOneEvent calEve;
+//
+//                    @Override
+//                    public void onSuccess(DatabaseReference ref) {
+//                        emitter.onSuccess();
+//                        adapter.addSchedule(cal, calEve);//ここ、今はこれで問題ないけど、変えるときは処理の順序を気を付けてください
+//                    }
+//
+//                    @Override
+//                    protected void onNodeExist(@NonNull DataSnapshot dataSnapshot) {
+//                        DatabaseReference ref = dataSnapshot.getRef().push();
+//                        calEve = new CalendarOneEvent(ref.getKey(), input, colorNum);
+//                        setObj(calEve);
+//                        String ym = cal2date(cal, DATE_PATTERN_YM);
+//                        String d = Integer.toString(cal.get(Calendar.DATE));
+//                        DatabaseReference writeRef = FirebaseConnection.getRef("calendar", group.groupKey, ym, d, ref.getKey());
+//                        setWriteRef(writeRef);
+//                        super.onNodeExist(dataSnapshot);
+//                    }
+//                };
+//                writer.update(CODE_SET_VALUE);
             }
-        };
-        writer.update(CODE_SET_VALUE);
+        })
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeOn(Schedulers.newThread())
+        .compose(bindToLifecycle())
+        .subscribe(new Consumer<CalendarOneEvent>() {
+            @Override
+            public void accept(CalendarOneEvent calEve) throws Exception {
+                adapter.addSchedule(cal, calEve);
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                onError(SharedCalendarFragment.this, throwable.getMessage(), R.string.error);
+            }
+        });
     }
 }

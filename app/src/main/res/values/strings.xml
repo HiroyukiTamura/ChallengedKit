@@ -1,3 +1,19 @@
+<!--
+  ~ Copyright 2017 Hiroyuki Tamura
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <resources>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -7,15 +23,4 @@
     <string name="title_activity_help">HelpActivity</string>
     <string name="app_name_correct">ChallengedKit(β)</string><!--ライブラリ間で競合するので、ここでapp_nameは定義しちゃう-->
     <string name="add_member_title">メンバーを追加</string>
-
-    <!--ログインまわり-->
-    <string name="facebook_app_id">123697191641575</string>
-    <string name="fb_login_protocol_scheme">fb123697191641575</string>
-    <string name="twitter_consumer_key" translatable="false">6mW7nUPpONPFFU0aQJ657xrRT</string>
-    <string name="twitter_consumer_secret" translatable="false">f7AEIoKPy3coc80l9wyJe6AED9cQXUtq1sOEyYUjaeirkW64lY</string>
-
-    <!--広告まわり-->
-    <string name="banner_ad_unit_id_test">ca-app-pub-3940256099942544/6300978111</string>
-    <!--firebase-->
-    <string name="firebase_client_id">490115270967-gcfpdtcgq1odrmc9lcl0imckqskkgn36.apps.googleusercontent.com</string>
 </resources>
