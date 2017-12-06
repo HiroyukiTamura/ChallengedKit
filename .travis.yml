@@ -14,4 +14,4 @@ jdk:
   - oraclejdk8
 
 script:
-   - chmod +x - ./gradlew build connectedCheck
+   - chmod +x ./gradlew build connectedCheck
