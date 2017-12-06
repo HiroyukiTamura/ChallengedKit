@@ -103,4 +103,5 @@ public class DialogKicker {
         f.setTargetFragment(fragment, SettingDialogFragment.DIALOG_CALLBACK);
         f.show(fragment.getFragmentManager(), from);
     }
+
 }
