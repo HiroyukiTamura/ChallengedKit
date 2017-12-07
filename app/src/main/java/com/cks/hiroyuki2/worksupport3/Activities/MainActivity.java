@@ -689,6 +689,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //            navRoot.setPadding(0, 0, 0, 0);
 //            space.setVisibility(GONE);
             headerLL.setBackgroundResource(getMonthIllust(mon));
+
 //            tv.setText(cal2date(Calendar.getInstance(), DATE_PATTERN_DOT_YMD));
         } else {
             headerLL.setVisibility(GONE);
