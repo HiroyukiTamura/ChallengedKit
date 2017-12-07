@@ -54,6 +54,7 @@ import static com.cks.hiroyuki2.worksupprotlib.TemplateEditor.initDefaultTemplat
 import static com.cks.hiroyuki2.worksupprotlib.Util.DEFAULT;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
+import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 
 @EFragment(R.layout.fragment_about2)
 public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAdapter{
@@ -157,6 +158,6 @@ public class AboutFragment extends Fragment implements AboutVPAdapter.IAboutVPAd
 
     @Override
     public void onSwitchChange(boolean show) {
-        ((MainActivity) getActivity()).showNavHeader(show);
+//        ((MainActivity) getActivity()).showNavHeader(show);
     }
 }

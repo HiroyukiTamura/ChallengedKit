@@ -24,6 +24,7 @@ import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -51,6 +52,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -88,6 +90,7 @@ import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.ColorRes;
+import org.androidannotations.annotations.res.DimensionPixelSizeRes;
 
 import java.util.Calendar;
 import java.util.List;
@@ -100,6 +103,7 @@ import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.cks.hiroyuki2.worksupport3.BackService.UNKNOWN_STATE;
+import static com.cks.hiroyuki2.worksupport3.Util.getStatusBarHeight;
 import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 import static com.cks.hiroyuki2.worksupprotlib.LoginCheck.checkIsLogin;
 import static com.cks.hiroyuki2.worksupprotlib.TemplateEditor.initDefaultTemplate;
@@ -160,6 +164,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @org.androidannotations.annotations.res.StringRes(R.string.ntf_channel) String channelName;
     @org.androidannotations.annotations.res.StringRes(R.string.ntf_channel_description) String channelDsc;
     @ColorRes(R.color.colorPrimary) int colorNavHeader;
+    @DimensionPixelSizeRes(R.dimen.nav_header_vertical_spacing) int navTopPad;
+    int statusbarHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -233,6 +239,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         initAdMob(this);
 
+        statusbarHeight = getStatusBarHeight(this);
+
 //        FirebaseConnection.getInstance().setmAuth(this);
 //        FirebaseConnection.getInstance().setmAuthListener();
 //        FirebaseConnection.getInstance().setChildListener();
@@ -245,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        showNavHeader(pref.getBoolean(PREF_KEY_SHOW_NAV_IMG, true));
+        showNavHeader(true/*pref.getBoolean(PREF_KEY_SHOW_NAV_IMG, true)*/);
 
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -671,24 +679,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void showNavHeader(boolean show){
         FrameLayout navRoot = (FrameLayout) navigationView.getHeaderView(0);
         LinearLayout headerLL = navRoot.findViewById(R.id.nav_wrapper);
-        Space space = navRoot.findViewById(R.id.header_space);
+//        Space space = navRoot.findViewById(R.id.header_space);
         if (show){
             int mon = Calendar.getInstance().get(Calendar.MONTH);
             TextView tv = headerLL.findViewById(R.id.header_tv);
-            if (mon == -1){
-                headerLL.setVisibility(GONE);
-                space.setVisibility(VISIBLE);
-                return;
-            } else if (mon == 10 || mon == 11 || mon == 0 || mon == 1){
+            if (mon == 10 || mon == 11 || mon == 0 || mon == 1)
                 tv.setTextColor(colorNavHeader);
-            }
             headerLL.setVisibility(VISIBLE);
-            space.setVisibility(GONE);
+            navRoot.setPadding(0, 0, 0, 0);
+//            space.setVisibility(GONE);
             headerLL.setBackgroundResource(getMonthIllust(mon));
             tv.setText(cal2date(Calendar.getInstance(), DATE_PATTERN_DOT_YMD));
         } else {
             headerLL.setVisibility(GONE);
-            space.setVisibility(VISIBLE);
+            navRoot.setPadding(0, statusbarHeight, 0, 0);
+//            space.setVisibility(VISIBLE);
         }
     }
 

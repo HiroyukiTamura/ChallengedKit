@@ -19,11 +19,13 @@ package com.cks.hiroyuki2.worksupport3;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 import android.support.v4.app.Fragment;
+import android.view.Window;
 import android.widget.FrameLayout;
 
 import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment;
@@ -191,5 +193,12 @@ public class Util {
             if (content.contentKey.equals(key))
                 return content;
         return null;
+    }
+
+    public static int getStatusBarHeight(Activity activity){
+        final Rect rect = new Rect();
+        Window window = activity.getWindow();
+        window.getDecorView().getWindowVisibleDisplayFrame(rect);
+        return rect.top;
     }
 }

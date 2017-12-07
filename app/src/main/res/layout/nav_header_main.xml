@@ -20,12 +20,12 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.v4.widget.Space
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:visibility="gone"
-        android:id="@+id/header_space"/>
+    <!--android:paddingTop="@dimen/nav_header_vertical_spacing"-->
+    <!--<android.support.v4.widget.Space-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/nav_header_vertical_spacing"-->
+        <!--android:visibility="gone"-->
+        <!--android:id="@+id/header_space"/>-->
 
     <LinearLayout
         android:layout_width="match_parent"
