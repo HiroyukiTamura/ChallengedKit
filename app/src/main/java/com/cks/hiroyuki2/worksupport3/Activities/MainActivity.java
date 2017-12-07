@@ -682,14 +682,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        Space space = navRoot.findViewById(R.id.header_space);
         if (show){
             int mon = Calendar.getInstance().get(Calendar.MONTH);
-            TextView tv = headerLL.findViewById(R.id.header_tv);
-            if (mon == 10 || mon == 11 || mon == 0 || mon == 1)
-                tv.setTextColor(colorNavHeader);
-            headerLL.setVisibility(VISIBLE);
-            navRoot.setPadding(0, 0, 0, 0);
+//            TextView tv = headerLL.findViewById(R.id.header_tv);
+//            if (mon == 10 || mon == 11 || mon == 0 || mon == 1)
+//                tv.setTextColor(colorNavHeader);
+//            headerLL.setVisibility(VISIBLE);
+//            navRoot.setPadding(0, 0, 0, 0);
 //            space.setVisibility(GONE);
             headerLL.setBackgroundResource(getMonthIllust(mon));
-            tv.setText(cal2date(Calendar.getInstance(), DATE_PATTERN_DOT_YMD));
+//            tv.setText(cal2date(Calendar.getInstance(), DATE_PATTERN_DOT_YMD));
         } else {
             headerLL.setVisibility(GONE);
             navRoot.setPadding(0, statusbarHeight, 0, 0);
