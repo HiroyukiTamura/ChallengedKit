@@ -50,7 +50,6 @@ import icepick.State;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.DialogFragments.AboutDialogFragment.CALLCACK_IMG;
 import static com.cks.hiroyuki2.worksupport3.DialogFragments.AboutDialogFragment.TAG_IMG;
-import static com.cks.hiroyuki2.worksupprotlib.TemplateEditor.initDefaultTemplate;
 import static com.cks.hiroyuki2.worksupprotlib.Util.DEFAULT;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;

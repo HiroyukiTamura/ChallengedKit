@@ -60,6 +60,7 @@ import android.widget.Toast;
 
 
 import com.cks.hiroyuki2.worksupport3.BackService;
+import com.cks.hiroyuki2.worksupport3.FbIntentService_;
 import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.AboutFragment_;
 import com.cks.hiroyuki2.worksupport3.Fragments.AnalyticsFragment;
@@ -103,10 +104,11 @@ import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.cks.hiroyuki2.worksupport3.BackService.UNKNOWN_STATE;
+import static com.cks.hiroyuki2.worksupport3.Fragments.EditTemplateFragment.initDefaultTemplate;
 import static com.cks.hiroyuki2.worksupport3.Util.getStatusBarHeight;
 import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;
 import static com.cks.hiroyuki2.worksupprotlib.LoginCheck.checkIsLogin;
-import static com.cks.hiroyuki2.worksupprotlib.TemplateEditor.initDefaultTemplate;
+import static com.cks.hiroyuki2.worksupprotlib.TemplateEditor.getDefaultTempList;
 import static com.cks.hiroyuki2.worksupprotlib.Util.DATE_PATTERN_DOT_YMD;
 import static com.cks.hiroyuki2.worksupprotlib.Util.NOTIFICATION_CHANNEL;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_KEY_WIDTH;
@@ -185,6 +187,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (initDefaultTemplate(this)){
                 AppLaunchChecker.onActivityCreate(this);
                 isFirstLaunch = true;
+                FbIntentService_.intent(this)
+                        .updateTemplate(getDefaultTempList(this))
+                        .start();
             } else
                 onError(this, "onCreate: !initDefaultTemplate()", null);
         }
