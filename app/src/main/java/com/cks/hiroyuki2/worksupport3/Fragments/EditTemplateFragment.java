@@ -30,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.cks.hiroyuki2.worksupport3.FbIntentService_;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.RecordDiaogFragmentTag;
 import com.cks.hiroyuki2.worksupprotlib.TemplateEditor;
@@ -286,6 +287,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
                 updateMap(dataNum, tagNum, val);
 
                 boolean success = applyTemplate(list, getContext());
+                applyTemplateFb(success);
                 toast(getContext(), success, R.string.succeed_adding_tag, R.string.error);
                 break;}
 
@@ -304,6 +306,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
                 tagPool.updateTag(tagNum, val);
 
                 boolean b = applyTemplate(list, getContext());
+                applyTemplateFb(b);
                 toast(getContext(), b, R.string.succeed_edit_tag, R.string.error);
                 break;}
 
@@ -324,6 +327,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
                 itemParam.updateItemValue(plotPos, newStr);
 
                 boolean b = applyTemplate(list, getContext());
+                applyTemplateFb(b);
                 if (!b)
                     Toast.makeText(getContext(), R.string.error, Toast.LENGTH_LONG).show();
 
@@ -341,6 +345,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
                 itemParam.updateItemValue(plotNum, strings);
 
                 boolean b = applyTemplate(list, getContext());
+                applyTemplateFb(b);
                 if (!b)
                     Toast.makeText(getContext(), R.string.error, Toast.LENGTH_LONG).show();
                 break;}
@@ -374,6 +379,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
     private void syncTimeDataMapAndLocal(int dataNum, RecordVpItemTime itemTime){
         syncTimeDataMap(list, dataNum, itemTime);
         boolean b = applyTemplate(list, getContext());
+        applyTemplateFb(b);
         if (!b)
             Toast.makeText(getContext(), R.string.error, Toast.LENGTH_LONG).show();
     }
@@ -443,6 +449,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
         itemComment.updateComment();
 
         boolean b = applyTemplate(list, getContext());
+        applyTemplateFb(b);
         if (!b)
             Toast.makeText(getContext(), R.string.error, Toast.LENGTH_LONG).show();
     }
@@ -479,7 +486,8 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
                 setParamsView(list.size()-1);
         }
 
-        applyTemplate(list, getContext());
+//        applyTemplate(list, getContext());
+        applyTemplateFb(applyTemplate(list, getContext()));
     }
 
     private void onEditWidget(Bundle bundle){
@@ -520,6 +528,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
             ((TempItemTagPool)obj).updateName(newName);
         list.get(dataNum).setDataName(newName);
         boolean b = applyTemplate(list, getContext());
+        applyTemplateFb(b);
         toast(getContext(), b, R.string.succeed_edit_name, R.string.error);
     }
 
@@ -536,6 +545,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
         updateCommentMap(list, dataNum, newComment);
 
         boolean b = applyTemplate(list, getContext());
+        applyTemplateFb(b);
         if (!b)
             onError(this, TAG+"!b", R.string.error);
     }
@@ -622,6 +632,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
         removeItemFromData(getList().get(dataNum), Integer.toString(tagNum));
 
         boolean b = applyTemplate(getList(), getContext());
+        applyTemplateFb(b);
         toast(getContext(), b, R.string.remove_tag_toast, R.string.error);
     }
 
@@ -691,5 +702,14 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
     @Override
     public void onRemoveItem(int dataNum, RecordVpItemTime recordVpItemTime) {
         syncTimeDataMapAndLocal(dataNum, recordVpItemTime);
+    }
+
+    boolean applyTemplateFb(boolean b){
+        if (b){
+            FbIntentService_.intent(getContext().getApplicationContext())
+                    .updateTemplate(getList())
+                    .start();
+        }
+        return b;
     }
 }

@@ -36,6 +36,7 @@ import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import com.cks.hiroyuki2.worksupprotlib.*;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
+import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.CustomEvent;
@@ -66,6 +67,7 @@ import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 import static com.cks.hiroyuki2.worksupport3.RxBus.UPDATE_GROUP_PHOTO;
@@ -383,6 +385,24 @@ public class FbIntentService extends IntentService implements OnFailureListener,
                 });
             }, this, taskSnapshot -> showUploadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, ntfTitle, ntfId));
         }
+    }
+
+    @ServiceAction
+    void updateTemplate(List<RecordData> dataList){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null){
+            onErrorForService(TAG+ "user == null", R.string.error);
+            return;
+        }
+
+        getRef("userData", user.getUid(), "template").setValue(dataList, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null){
+                    logAnalytics(databaseError.getMessage(), getApplicationContext());
+                }
+            }
+        });
     }
 
     @Override
