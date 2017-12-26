@@ -19,6 +19,7 @@ package com.cks.hiroyuki2.worksupport3;
 import android.annotation.SuppressLint;
 import android.app.IntentService;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -51,6 +52,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnPausedListener;
@@ -79,6 +81,7 @@ import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRootRef;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.isOverSize;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.uploadFile;
+import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getExtension;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
@@ -92,12 +95,12 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 /**
  * Fbにぶん投げる系
  */
-
 @SuppressLint("Registered")
 @EIntentService
 public class FbIntentService extends IntentService implements OnFailureListener, OnPausedListener<UploadTask.TaskSnapshot>{
     private static final String TAG = "MANUAL_TAG: " + FbIntentService.class.getSimpleName();
     private Handler toastHandler = new Handler(Looper.getMainLooper());
+    public static String PREF_KEY_ACCESS_SOCIAL = "PREF_KEY_ACCESS_SOCIAL";
 
     public FbIntentService(){
         // ActivityのstartService(intent);で呼び出されるコンストラクタはこちら
@@ -401,6 +404,27 @@ public class FbIntentService extends IntentService implements OnFailureListener,
                 if (databaseError != null){
                     logAnalytics(databaseError.getMessage(), getApplicationContext());
                 }
+            }
+        });
+    }
+
+    @ServiceAction
+    void checkShareAvailable(){
+        getRef("accept", "social").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    getSharedPreferences(PREF_NAME, MODE_PRIVATE)
+                            .edit()
+                            .putBoolean(PREF_KEY_ACCESS_SOCIAL, dataSnapshot.getValue(Boolean.class));//Fbの仕様上NonNull
+                } else {
+                    onError(getApplicationContext(), "checkShareAvailable datasnap null", null);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                onError(getApplicationContext(), TAG+"checkShareAvailable()"+databaseError.getMessage(), null);
             }
         });
     }

@@ -77,9 +77,9 @@ public class ServiceConnector extends BroadcastReceiver implements ServiceConnec
                     ((MainActivity)context).notifyFriendChanged(list, newUserUids);
                 }
                 break;
-            case SEND_CODE_SOCIAL_STATE:
-                ((MainActivity) context).socialDbState = intent.getIntExtra(INTENT_KEY_1, UNKNOWN_STATE);
-                break;
+//            case SEND_CODE_SOCIAL_STATE:
+//                ((MainActivity) context).socialDbState = intent.getIntExtra(INTENT_KEY_1, UNKNOWN_STATE);
+//                break;
         }
     }
 

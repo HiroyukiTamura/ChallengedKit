@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.cks.hiroyuki2.worksupport3.Activities.AddFriendActivity;
 import com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity;
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
+import com.cks.hiroyuki2.worksupport3.FbIntentService;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
@@ -62,6 +63,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.view.View.VISIBLE;
@@ -69,6 +71,7 @@ import static com.cks.hiroyuki2.worksupport3.BackService.ACCEPT_SOCIAL;
 import static com.cks.hiroyuki2.worksupport3.BackService.REJECT_SOCIAL;
 import static com.cks.hiroyuki2.worksupport3.BackService.UNKNOWN_STATE;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
+import static com.cks.hiroyuki2.worksupport3.FbIntentService.PREF_KEY_ACCESS_SOCIAL;
 import static com.cks.hiroyuki2.worksupprotlib.Entity.Group.makeGroupFromSnap;
 import static com.cks.hiroyuki2.worksupprotlib.Entity.User.makeUserFromSnap;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
@@ -76,6 +79,7 @@ import com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRootRef;
 import static com.cks.hiroyuki2.worksupprotlib.Util.DEFAULT;
+import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
@@ -129,17 +133,23 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
 
     @AfterViews
     void onAfterViews(){
-        switch (((MainActivity) context).socialDbState){
-            case UNKNOWN_STATE:
-                onError(this, TAG+"checkSocialState() == UNKNOWN_STATE", R.string.error);
-                break;
-            case REJECT_SOCIAL:
-                onOutOfService();
-                break;
-            case ACCEPT_SOCIAL:
-                onAcceptSocial();
-                break;
-        }
+//        switch (((MainActivity) context).socialDbState){
+//            case UNKNOWN_STATE:
+//                onError(this, TAG+"checkSocialState() == UNKNOWN_STATE", R.string.error);
+//                break;
+//            case REJECT_SOCIAL:
+//                onOutOfService();
+//                break;
+//            case ACCEPT_SOCIAL:
+//                onAcceptSocial();
+//                break;
+//        }
+        boolean isSocialAvialble = getActivity().getSharedPreferences(PREF_NAME, MODE_PRIVATE)
+                .getBoolean(PREF_KEY_ACCESS_SOCIAL, true);
+        if (isSocialAvialble)
+            onAcceptSocial();
+        else
+            onOutOfService();
     }
 
     private void onAcceptSocial(){

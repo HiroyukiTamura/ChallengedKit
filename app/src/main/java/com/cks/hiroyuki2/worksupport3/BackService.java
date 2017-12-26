@@ -172,7 +172,7 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
         if (user != null) {
             uid = user.getUid();
 //            writeLocalProf(user);
-            getRef("accept", "social").addValueEventListener(this);
+//            getRef("accept", "social").addValueEventListener(this);
             getRef("friend", uid).addValueEventListener(this);
             getRef("userData", uid, "group").addValueEventListener(this);
 
@@ -274,20 +274,21 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
         String url = dataSnapshot.getRef().toString();
-        if (url.equals(urlStart + "/accept/social")){
-            if (dataSnapshot.exists()){
-                boolean accept = dataSnapshot.getValue(Boolean.class);
-                isAcceptSocial = accept?
-                        ACCEPT_SOCIAL:
-                        REJECT_SOCIAL;
-                Intent i = new Intent()
-                        .setAction(MY_ACTION)
-                        .putExtra(SEND_CODE, SEND_CODE_SOCIAL_STATE)
-                        .putExtra(INTENT_KEY_1, isAcceptSocial);
-                sendBroadcast(i);
-            }
-
-        } else if (url.equals(urlStart +"/friend/"+ uid)){
+//        if (url.equals(urlStart + "/accept/social")){
+//            if (dataSnapshot.exists()){
+//                boolean accept = dataSnapshot.getValue(Boolean.class);
+//                isAcceptSocial = accept?
+//                        ACCEPT_SOCIAL:
+//                        REJECT_SOCIAL;
+//                Intent i = new Intent()
+//                        .setAction(MY_ACTION)
+//                        .putExtra(SEND_CODE, SEND_CODE_SOCIAL_STATE)
+//                        .putExtra(INTENT_KEY_1, isAcceptSocial);
+//                sendBroadcast(i);
+//            }
+//
+//        } else
+            if (url.equals(urlStart +"/friend/"+ uid)){
             if (!dataSnapshot.exists())
                 return;
 

@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             finish();
         }
     };
-    @BackService.socialState @State public int socialDbState = UNKNOWN_STATE;
+//    @BackService.socialState @State public int socialDbState = UNKNOWN_STATE;
 //    @Extra String groupKey;
     @org.androidannotations.annotations.res.StringRes(R.string.ntf_channel) String channelName;
     @org.androidannotations.annotations.res.StringRes(R.string.ntf_channel_description) String channelDsc;
@@ -208,6 +208,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(this, TutorialActivity_.class);
             startActivityForResult(intent, REQ_CODE_TUTORIAL);
         }
+
+        FbIntentService_.
+                intent(this).
+                checkShareAvailable();
     }
 
     @Override
