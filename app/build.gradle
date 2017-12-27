@@ -36,6 +36,7 @@ buildscript {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'io.fabric'
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.google.gms.oss.licenses.plugin'
@@ -124,6 +125,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-vision:11.6.2'
     compile 'com.google.android.gms:play-services-oss-licenses:11.6.2'
     compile 'com.google.firebase:firebase-messaging:11.6.2'
+    compile 'com.google.firebase:firebase-perf:11.6.2'
 //    compile 'com.facebook.android:facebook-android-sdk:4.29.0'
     compile 'org.apmem.tools:layouts:1.10@aar'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.3'
