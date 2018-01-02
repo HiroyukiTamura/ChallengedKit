@@ -33,9 +33,6 @@ import android.widget.Toast;
 import com.cks.hiroyuki2.worksupport3.FbIntentService_;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.RecordDiaogFragmentTag;
-import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
-import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEventDataSet;
-import com.cks.hiroyuki2.worksupprotlib.Entity.TimeEventRange;
 import com.cks.hiroyuki2.worksupprotlib.TemplateEditor;
 import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 
@@ -87,7 +84,6 @@ import com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemParam;
 import com.example.hiroyuki3.worksupportlibw.RecordVpItems.RecordVpItemTime;
 import com.example.hiroyuki3.worksupportlibw.RecordVpItems.TempItemTag;
 import com.example.hiroyuki3.worksupportlibw.RecordVpItems.TempItemTagPool;
-import com.google.gson.Gson;
 
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.example.hiroyuki3.worksupportlibw.Adapters.RecordVPAdapter.DATA_NUM;

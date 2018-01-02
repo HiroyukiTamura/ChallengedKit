@@ -45,10 +45,6 @@ import static com.cks.hiroyuki2.worksupport3.BackService.INTENT_KEY_1;
 import static com.cks.hiroyuki2.worksupport3.BackService.INTENT_KEY_2;
 import static com.cks.hiroyuki2.worksupport3.BackService.MY_ACTION;
 import static com.cks.hiroyuki2.worksupport3.BackService.SEND_CODE;
-import static com.cks.hiroyuki2.worksupport3.BackService.SEND_CODE_ADD_COMMENT;
-import static com.cks.hiroyuki2.worksupport3.BackService.SEND_CODE_SOCIAL_STATE;
-import static com.cks.hiroyuki2.worksupport3.BackService.UNKNOWN_STATE;
-import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 
 /**

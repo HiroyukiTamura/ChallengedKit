@@ -263,26 +263,23 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
         final FrameLayout fm = root.findViewById(id);
         ImageView iv = (ImageView) fm.getChildAt(0);
         iv.setColorFilter(ContextCompat.getColor(getContext(), UtilSpec.colorId.get(num)));
-        iv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: fire");
+        iv.setOnClickListener(view -> {
+            Log.d(TAG, "onClick: fire");
 
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putInt(Util.PREF_KEY_COLOR, num);
-                editor.apply();
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putInt(Util.PREF_KEY_COLOR, num);
+            editor.apply();
 
-                for (int id: UtilSpec.colorId) {
-                    FrameLayout fm = root.findViewById(id);
-                    ImageView iv = (ImageView) fm.getChildAt(1);
-                    if (fm.getChildAt(1).getVisibility() == View.VISIBLE){
-                        iv.setVisibility(View.INVISIBLE);
-                    }
+            for (int id1 : UtilSpec.colorId) {
+                FrameLayout fm1 = root.findViewById(id1);
+                ImageView iv1 = (ImageView) fm1.getChildAt(1);
+                if (fm1.getChildAt(1).getVisibility() == View.VISIBLE){
+                    iv1.setVisibility(View.INVISIBLE);
                 }
-                if (from.equals(Util.TEMPLATE_TIME_COLOR))
-                    checkBoxS.setChecked(false);
-                fm.getChildAt(1).setVisibility(View.VISIBLE);
             }
+            if (from.equals(Util.TEMPLATE_TIME_COLOR))
+                checkBoxS.setChecked(false);
+            fm.getChildAt(1).setVisibility(View.VISIBLE);
         });
     }
 
@@ -334,15 +331,12 @@ public class RecordDialogFragment extends DialogFragment implements DialogInterf
                 cv.setCardElevation(0);
             }
 
-            cv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.d(TAG, "onClick: fire");
-                    if (cv.getCardElevation() == 0) {
-                        cv.setCardElevation(CHOOSEN_TAG_ELEVATION);
-                    } else {
-                        cv.setCardElevation(0);
-                    }
+            cv.setOnClickListener(view -> {
+                Log.d(TAG, "onClick: fire");
+                if (cv.getCardElevation() == 0) {
+                    cv.setCardElevation(CHOOSEN_TAG_ELEVATION);
+                } else {
+                    cv.setCardElevation(0);
                 }
             });
 

@@ -34,7 +34,6 @@ import android.widget.Toast;
 import com.cks.hiroyuki2.worksupport3.Activities.AddFriendActivity;
 import com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity;
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
-import com.cks.hiroyuki2.worksupport3.FbIntentService;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
@@ -67,9 +66,6 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.view.View.VISIBLE;
-import static com.cks.hiroyuki2.worksupport3.BackService.ACCEPT_SOCIAL;
-import static com.cks.hiroyuki2.worksupport3.BackService.REJECT_SOCIAL;
-import static com.cks.hiroyuki2.worksupport3.BackService.UNKNOWN_STATE;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.FbIntentService.PREF_KEY_ACCESS_SOCIAL;
 import static com.cks.hiroyuki2.worksupprotlib.Entity.Group.makeGroupFromSnap;
@@ -280,15 +276,12 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
         childMap.put(makeScheme("calendar", groupKey, DEFAULT), DEFAULT);
 
         final Group group = new Group(userListOpe, groupName, groupKey, null, me.getUserUid(), photoUrl);//groupインスタンスを作成。
-        getRootRef().updateChildren(childMap, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null){
-                    Log.w(TAG, "onComplete: " + databaseError.getMessage());
-                } else {
-                    if (mListener != null)
-                        mListener.onCompleteGroup(group);
-                }
+        getRootRef().updateChildren(childMap, (databaseError, databaseReference) -> {
+            if (databaseError != null){
+                Log.w(TAG, "onComplete: " + databaseError.getMessage());
+            } else {
+                if (mListener != null)
+                    mListener.onCompleteGroup(group);
             }
         });
     }

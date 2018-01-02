@@ -157,13 +157,7 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
     @FragmentArg GroupInUserDataNode groupNode;
     private ShareBoardRVAdapter rvAdapter;
     private PreventableAnimator animator;
-    private final View.OnTouchListener touchEater = new View.OnTouchListener() {
-        @Contract(value = "_, _ -> true", pure = true)
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            return true;
-        }
-    };
+    private final View.OnTouchListener touchEater = (view, motionEvent) -> true;
     private Transition expandCollapse;
     private FirebaseStorageUtil storageUtil;
     private Context context;
@@ -178,18 +172,15 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
         Icepick.restoreInstanceState(this, savedInstanceState);
         storageUtil = new FirebaseStorageUtil(getContext(), group);
 
-        RxBus.subscribe(RxBus.REMOVE_STORAGE_FILE, this, new Consumer<Object>() {
-            @Override
-            public void accept(Object contentsKey) throws Exception {
-                Content content = getContentByKey(group.contentList, (String) contentsKey);
-                if (content == null){
-                    onError(ShareBoardFragment.this, TAG+ "content == null", R.string.error);
-                    return;
-                }
-
-                group.contentList.remove(content);
-                rvAdapter.notifyDataSetChanged();
+        RxBus.subscribe(RxBus.REMOVE_STORAGE_FILE, this, contentsKey -> {
+            Content content = getContentByKey(group.contentList, (String) contentsKey);
+            if (content == null){
+                onError(ShareBoardFragment.this, TAG+ "content == null", R.string.error);
+                return;
             }
+
+            group.contentList.remove(content);
+            rvAdapter.notifyDataSetChanged();
         });
     }
 
@@ -228,54 +219,41 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
 
     private void retrieveGroup(GroupInUserDataNode groupNode){
 //        srl.setRefreshing(true);
-        Single.create(new SingleOnSubscribe<DataSnapshot>() {
-            @Override
-            public void subscribe(SingleEmitter<DataSnapshot> emitter) throws Exception {
-                getRef("group", groupNode.groupKey)
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                emitter.onSuccess(dataSnapshot);
-                            }
+        Single.create((SingleOnSubscribe<DataSnapshot>) emitter -> getRef("group", groupNode.groupKey)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        emitter.onSuccess(dataSnapshot);
+                    }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                emitter.onError(databaseError.toException());
-                            }
-                        });
-            }
-        })
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        emitter.onError(databaseError.toException());
+                    }
+                }))
         .subscribeOn(Schedulers.newThread())
         .observeOn(AndroidSchedulers.mainThread())
         .compose(bindToLifecycle())
-        .subscribe(new Consumer<DataSnapshot>() {
-            @Override
-            public void accept(DataSnapshot dataSnapshot) throws Exception {
-                JSONObject jo = snap2Json(dataSnapshot);
+        .subscribe(dataSnapshot -> {
+            JSONObject jo = snap2Json(dataSnapshot);
 
-                if (jo == null){
-                    onError(ShareBoardFragment.this, TAG+"jo == null", R.string.error);
-                    return;
-                }
+            if (jo == null){
+                onError(ShareBoardFragment.this, TAG+"jo == null", R.string.error);
+                return;
+            }
 
-                try {
-                    group = getOneGroupFromJson(jo, groupNode.groupKey);//ここで、jo != null -> group != nullである
-                    storageUtil = new FirebaseStorageUtil(getContext(), group);
-                    if (group.contentList == null)
-                        group.contentList = new ArrayList<>();
+            try {
+                group = getOneGroupFromJson(jo, groupNode.groupKey);//ここで、jo != null -> group != nullである
+                storageUtil = new FirebaseStorageUtil(getContext(), group);
+                if (group.contentList == null)
+                    group.contentList = new ArrayList<>();
 //                    srl.setRefreshing(false);
-                    drawUI();
-                } catch (JSONException e) {
-                    logStackTrace(e);
-                    toastNullable(getContext(), R.string.error);
-                }
+                drawUI();
+            } catch (JSONException e) {
+                logStackTrace(e);
+                toastNullable(getContext(), R.string.error);
             }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                onError(ShareBoardFragment.this, throwable.getMessage(), R.string.error);
-            }
-        });
+        }, throwable -> onError(ShareBoardFragment.this, throwable.getMessage(), R.string.error));
     }
 
 //    @Override
@@ -404,69 +382,53 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
 
     @Override
     public void onRefresh() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                srl.setRefreshing(false);
-            }
-        }, 3000);
+        new Handler().postDelayed(() -> srl.setRefreshing(false), 3000);
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("group/" + group.groupKey);
-        Single.create(new SingleOnSubscribe<Group>() {
+        Single.create((SingleOnSubscribe<Group>) emitter -> ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void subscribe(SingleEmitter<Group> emitter) throws Exception {
-                ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        String uid = FirebaseAuth.getInstance().getUid();
-                        if (uid == null){
-                            emitter.onError(new IllegalArgumentException("uid == null"));
-                            return;
-                        }
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String uid = FirebaseAuth.getInstance().getUid();
+                if (uid == null){
+                    emitter.onError(new IllegalArgumentException("uid == null"));
+                    return;
+                }
 
-                        String errMsg = checkAdmittionAsMember(dataSnapshot, uid);
-                        if (errMsg != null){
-                            emitter.onError(new IllegalArgumentException(errMsg));
-                            return;
-                        }
+                String errMsg = checkAdmittionAsMember(dataSnapshot, uid);
+                if (errMsg != null){
+                    emitter.onError(new IllegalArgumentException(errMsg));
+                    return;
+                }
 
-                        JSONObject jo = snap2Json(dataSnapshot);
-                        if (jo == null){
-                            emitter.onError(new IllegalArgumentException("jo == null"));
-                            return;
-                        }
+                JSONObject jo = snap2Json(dataSnapshot);
+                if (jo == null){
+                    emitter.onError(new IllegalArgumentException("jo == null"));
+                    return;
+                }
 
-                        try {
-                            Group groupC = getOneGroupFromJson(jo, group.groupKey);
-                            emitter.onSuccess(groupC);
-                        } catch (JSONException e) {
-                            emitter.onError(e);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        emitter.onError(databaseError.toException());
-                    }
-                });
+                try {
+                    Group groupC = getOneGroupFromJson(jo, group.groupKey);
+                    emitter.onSuccess(groupC);
+                } catch (JSONException e) {
+                    emitter.onError(e);
+                }
             }
-        })
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                emitter.onError(databaseError.toException());
+            }
+        }))
         .subscribeOn(Schedulers.newThread())
         .observeOn(AndroidSchedulers.mainThread())
         .compose(bindToLifecycle())
-        .subscribe(new Consumer<Group>() {
-            @Override
-            public void accept(Group group) throws Exception {
-                srl.setRefreshing(false);
-                storageUtil = new FirebaseStorageUtil(getContext(), group);
-                onAfterViews();
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                srl.setRefreshing(false);
-                onError(ShareBoardFragment.this, throwable.getMessage(), R.string.error);
-            }
+        .subscribe(group -> {
+            srl.setRefreshing(false);
+            storageUtil = new FirebaseStorageUtil(getContext(), group);
+            onAfterViews();
+        }, throwable -> {
+            srl.setRefreshing(false);
+            onError(ShareBoardFragment.this, throwable.getMessage(), R.string.error);
         });
 
 //        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("group/" + group.groupKey);
@@ -655,65 +617,41 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
      * なぜなら、1.この動作はDb書き込みでないから許容でき、2.どのみち更新動作時には{@link #onRefresh()}でDBへのアクセスが拒否されるから。
      */
     private void onChoose2ndItem(final int listPos){
-        Single.create(new SingleOnSubscribe<String>() {
-            @Override
-            public void subscribe(SingleEmitter<String> emitter) throws Exception {
-                FirebaseStorage.getInstance().getReference()
-                    .child(makeScheme("shareFile", group.groupKey, group.contentList.get(listPos).contentKey))
-                    .getDownloadUrl()
-                    .addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()){
-                                Log.d(TAG, "onComplete: " + task.getResult().toString());
+        Single.create((SingleOnSubscribe<String>) emitter -> FirebaseStorage.getInstance().getReference()
+            .child(makeScheme("shareFile", group.groupKey, group.contentList.get(listPos).contentKey))
+            .getDownloadUrl()
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    Log.d(TAG, "onComplete: " + task.getResult().toString());
 
-                                HashMap<String, String> hashMap = new HashMap<>();
-                                hashMap.put("longUrl", task.getResult().toString());
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.put("longUrl", task.getResult().toString());
 
-                                getRetroFit().create(Util.urlShortenApi.class)
-                                        .getData(hashMap, getString(R.string.shorten_url_key))
-                                        .subscribeOn(Schedulers.newThread())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .compose(bindToLifecycle())
-                                        .subscribe(new Consumer<ShortenUrlResponse>() {
-                                            @Override
-                                            public void accept(ShortenUrlResponse response) throws Exception {
-                                                emitter.onSuccess(response.getId());
-                                            }
-                                        }, new Consumer<Throwable>() {
-                                            @Override
-                                            public void accept(Throwable throwable) throws Exception {
-                                                emitter.onError(throwable);
-                                                throwable.printStackTrace();
-                                            }
-                                        });
-                            } else {
-                                emitter.onError(new IllegalArgumentException(task.toString()));
-                            }
-                        }
-                    });
-            }
-        })
+                    getRetroFit().create(Util.urlShortenApi.class)
+                            .getData(hashMap, getString(R.string.shorten_url_key))
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .compose(bindToLifecycle())
+                            .subscribe(response -> emitter.onSuccess(response.getId()), throwable -> {
+                                emitter.onError(throwable);
+                                throwable.printStackTrace();
+                            });
+                } else {
+                    emitter.onError(new IllegalArgumentException(task.toString()));
+                }
+            }))
         .subscribeOn(Schedulers.newThread())
         .observeOn(AndroidSchedulers.mainThread())
         .compose(bindToLifecycle())
-        .subscribe(new Consumer<String>() {
-            @Override
-            public void accept(String url) throws Exception {
-                Intent share = new Intent(Intent.ACTION_SEND);
-                share.setType("text/plain");
-                String subject = group.contentList.get(listPos).contentName;
-                share.putExtra(Intent.EXTRA_SUBJECT, subject);
-                share.putExtra(Intent.EXTRA_TEXT, url);
-                String title = getResources().getStringArray(R.array.vort_dialog)[1];
-                startActivity(Intent.createChooser(share, title));
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                onError(ShareBoardFragment.this, TAG+ throwable.getMessage(), R.string.error);
-            }
-        });
+        .subscribe(url -> {
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("text/plain");
+            String subject = group.contentList.get(listPos).contentName;
+            share.putExtra(Intent.EXTRA_SUBJECT, subject);
+            share.putExtra(Intent.EXTRA_TEXT, url);
+            String title = getResources().getStringArray(R.array.vort_dialog)[1];
+            startActivity(Intent.createChooser(share, title));
+        }, throwable -> onError(ShareBoardFragment.this, TAG+ throwable.getMessage(), R.string.error));
 
 //        storageUtil.getStorageUrl(listPos, new OnSuccessListener<Uri>() {
 //            @Override
@@ -975,26 +913,11 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
             }
         }
 
-        Single.create(new SingleOnSubscribe<Uri>() {
-            @Override
-            public void subscribe(SingleEmitter<Uri> emitter) throws Exception {
-                storageUtil.getStorageUrl(listPos, emitter::onSuccess, emitter::onError);
-            }
-        })
+        Single.create((SingleOnSubscribe<Uri>) emitter -> storageUtil.getStorageUrl(listPos, emitter::onSuccess, emitter::onError))
         .subscribeOn(Schedulers.newThread())
         .observeOn(AndroidSchedulers.mainThread())
         .compose(bindToLifecycle())
-                .subscribe(new Consumer<Uri>() {
-                    @Override
-                    public void accept(Uri uri) throws Exception {
-                        intentKicker(getContext(), content.contentName, uri, Intent.ACTION_VIEW, content.type);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        onError(ShareBoardFragment.this, throwable.getMessage(), R.string.error);
-                    }
-                });
+                .subscribe(uri -> intentKicker(getContext(), content.contentName, uri, Intent.ACTION_VIEW, content.type), throwable -> onError(ShareBoardFragment.this, throwable.getMessage(), R.string.error));
 
 //        storageUtil.getStorageUrl(listPos, new OnSuccessListener<Uri>() {
 //            @Override
@@ -1010,28 +933,15 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
      * なぜなら、1.この動作はDb書き込みでないから許容でき、2.どのみち更新動作時には{@link #onRefresh()}でDBへのアクセスが拒否されるから。
      */
     private void showUrlPdf(int listPos){
-        Single.create(new SingleOnSubscribe<Uri>() {
-            @Override
-            public void subscribe(SingleEmitter<Uri> emitter) throws Exception {
-                storageUtil.getStorageUrl(listPos, emitter::onSuccess, emitter::onError);
-            }
-        })
+        Single.create((SingleOnSubscribe<Uri>) emitter -> storageUtil.getStorageUrl(listPos, emitter::onSuccess, emitter::onError))
         .subscribeOn(Schedulers.newThread())
         .observeOn(AndroidSchedulers.mainThread())
         .compose(bindToLifecycle())
-        .subscribe(new Consumer<Uri>() {
-            @Override
-            public void accept(Uri uri) throws Exception {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.parse( "http://docs.google.com/viewer?url=" + uri), "text/html");
-                startActivity(intent);
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                onError(ShareBoardFragment.this, throwable.getMessage(), R.string.error);
-            }
-        });
+        .subscribe(uri -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse( "http://docs.google.com/viewer?url=" + uri), "text/html");
+            startActivity(intent);
+        }, throwable -> onError(ShareBoardFragment.this, throwable.getMessage(), R.string.error));
 //        storageUtil.getStorageUrl(listPos, new OnSuccessListener<Uri>() {
 //            @Override
 //            public void onSuccess(Uri uri) {
@@ -1070,61 +980,45 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
             return;
         }
 
-        Single.create(new SingleOnSubscribe<Object>() {
+        Single.create(emitter -> new isMeGroupMemberChecker(){
             @Override
-            public void subscribe(SingleEmitter<Object> emitter) throws Exception {
-                new isMeGroupMemberChecker(){
-                    @Override
-                    protected void onError(@NonNull String errMsg) {
-                        emitter.onError(new IllegalArgumentException(errMsg));
-                    }
-
-                    @Override
-                    protected void onSuccess(DataSnapshot dataSnapshot) {
-                        DatabaseReference ref = getRef("group", group.groupKey);
-
-                        HashMap<String, Object> children = new HashMap<>();
-                        final String contentsKey = ref.push().getKey();
-                        final String ymd = cal2date(Calendar.getInstance(), datePattern);
-                        final String contentsName = me.getDisplayName()+"さんの記録";
-                        final Content content = new Content(contentsKey, contentsName, ymd, me.getUid(), me.getUid(), "data", null);
-                        children.put("contents/"+contentsKey+"/lastEdit", content.lastEdit);
-                        children.put("contents/"+contentsKey+"/lastEditor", content.lastEditor);
-                        children.put("contents/"+contentsKey+"/whose", content.whose);
-                        children.put("contents/"+contentsKey+"/type", content.type);
-                        children.put("contents/"+contentsKey+"/contentName", content.contentName);
-                        children.put("contents/"+contentsKey+"/comment", content.comment);
-
-                        ref.updateChildren(children, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                if (databaseError != null)
-                                    emitter.onError(new IllegalArgumentException(databaseError.getMessage()));
-                                else {
-                                    emitter.onSuccess(content);
-                                }
-                            }
-                        });
-                    }
-                }.check(me.getUid(), group.groupKey);
+            protected void onError(@NonNull String errMsg) {
+                emitter.onError(new IllegalArgumentException(errMsg));
             }
-        })
+
+            @Override
+            protected void onSuccess(DataSnapshot dataSnapshot) {
+                DatabaseReference ref = getRef("group", group.groupKey);
+
+                HashMap<String, Object> children = new HashMap<>();
+                final String contentsKey = ref.push().getKey();
+                final String ymd = cal2date(Calendar.getInstance(), datePattern);
+                final String contentsName = me.getDisplayName()+"さんの記録";
+                final Content content = new Content(contentsKey, contentsName, ymd, me.getUid(), me.getUid(), "data", null);
+                children.put("contents/"+contentsKey+"/lastEdit", content.lastEdit);
+                children.put("contents/"+contentsKey+"/lastEditor", content.lastEditor);
+                children.put("contents/"+contentsKey+"/whose", content.whose);
+                children.put("contents/"+contentsKey+"/type", content.type);
+                children.put("contents/"+contentsKey+"/contentName", content.contentName);
+                children.put("contents/"+contentsKey+"/comment", content.comment);
+
+                ref.updateChildren(children, (databaseError, databaseReference) -> {
+                    if (databaseError != null)
+                        emitter.onError(new IllegalArgumentException(databaseError.getMessage()));
+                    else {
+                        emitter.onSuccess(content);
+                    }
+                });
+            }
+        }.check(me.getUid(), group.groupKey))
         .subscribeOn(Schedulers.newThread())
         .observeOn(AndroidSchedulers.mainThread())
         .compose(bindToLifecycle())
-        .subscribe(new Consumer<Object>() {
-            @Override
-            public void accept(Object content) throws Exception {
-                toastNullable(getContext(), R.string.msg_sync_data);
-                group.contentList.add((Content) content);
-                rvAdapter.notifyItemInserted(group.contentList.size()-1);
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                onError(ShareBoardFragment.this, throwable.getMessage(), R.string.error);
-            }
-        });
+        .subscribe(content -> {
+            toastNullable(getContext(), R.string.msg_sync_data);
+            group.contentList.add((Content) content);
+            rvAdapter.notifyItemInserted(group.contentList.size()-1);
+        }, throwable -> onError(ShareBoardFragment.this, throwable.getMessage(), R.string.error));
     }
 
     private void uploadMyFile(Intent data){
@@ -1158,40 +1052,24 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
                 toastNullable(getContext(), R.string.msg_start_upload);
                 final String contentsKey = ref.push().getKey();
                 final int ntfId = (int) System.currentTimeMillis();//NotificationのIdは現在時刻から生成する。
-                uploadFile("shareFile/"+ group.groupKey +"/"+ contentsKey, uri, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        onFailureOparation(e, fileName, ntfId, R.string.msg_failed_upload);
-                    }
-                }, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        User me = new User(FirebaseAuth.getInstance().getCurrentUser());
-                        String ymd = cal2date(Calendar.getInstance(), datePattern);
-                        String mimeType = getMimeType(getContext(), uri);
-                        final Content content = new Content(contentsKey, fileName, ymd, me.getUserUid(), me.getUserUid(), mimeType, null);
+                uploadFile("shareFile/"+ group.groupKey +"/"+ contentsKey, uri, e -> onFailureOparation(e, fileName, ntfId, R.string.msg_failed_upload), taskSnapshot -> {
+                    User me = new User(FirebaseAuth.getInstance().getCurrentUser());
+                    String ymd = cal2date(Calendar.getInstance(), datePattern);
+                    String mimeType = getMimeType(getContext(), uri);
+                    final Content content = new Content(contentsKey, fileName, ymd, me.getUserUid(), me.getUserUid(), mimeType, null);
 
-                        getRef("group", group.groupKey, "contents", contentsKey)
-                                .setValue(content, new DatabaseReference.CompletionListener() {
-                                    @Override
-                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                        if (databaseError != null) {
-                                            onError(ShareBoardFragment.this, TAG + databaseError.getDetails(), R.string.error);
-                                            showCompleteNtf(MainActivity.class, getContext(), fileName, ntfId, R.string.msg_failed_upload);
-                                        } else {
-                                            toastNullable(getContext(), R.string.msg_succeed_upload);
-                                            addContent(content);
-                                            showCompleteNtf(MainActivity.class, getContext(), fileName, ntfId, R.string.msg_succeed_upload);
-                                        }
-                                    }
-                                });
-                    }
-                }, storageUtil, new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        showUploadingNtf(MainActivity.class, getContext(), taskSnapshot, fileName, ntfId);
-                    }
-                });
+                    getRef("group", group.groupKey, "contents", contentsKey)
+                            .setValue(content, (databaseError, databaseReference) -> {
+                                if (databaseError != null) {
+                                    onError(ShareBoardFragment.this, TAG + databaseError.getDetails(), R.string.error);
+                                    showCompleteNtf(MainActivity.class, getContext(), fileName, ntfId, R.string.msg_failed_upload);
+                                } else {
+                                    toastNullable(getContext(), R.string.msg_succeed_upload);
+                                    addContent(content);
+                                    showCompleteNtf(MainActivity.class, getContext(), fileName, ntfId, R.string.msg_succeed_upload);
+                                }
+                            });
+                }, storageUtil, taskSnapshot -> showUploadingNtf(MainActivity.class, getContext(), taskSnapshot, fileName, ntfId));
             }
 
             @Override

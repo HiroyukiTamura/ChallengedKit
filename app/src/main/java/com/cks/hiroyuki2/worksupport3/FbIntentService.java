@@ -19,7 +19,6 @@ package com.cks.hiroyuki2.worksupport3;
 import android.annotation.SuppressLint;
 import android.app.IntentService;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -30,22 +29,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
-import com.cks.hiroyuki2.worksupport3.Fragments.AddGroupFragment;
-import com.cks.hiroyuki2.worksupport3.Fragments.GroupSettingFragment;
-import com.cks.hiroyuki2.worksupport3.Fragments.SettingFragment;
 import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import com.cks.hiroyuki2.worksupprotlib.*;
-import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
-import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
-import com.cks.hiroyuki2.worksupprotlib.Util;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.CustomEvent;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.common.eventbus.Subscribe;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -53,13 +42,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnPausedListener;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.EIntentService;
 import org.androidannotations.annotations.ServiceAction;
@@ -67,13 +52,11 @@ import org.androidannotations.annotations.ServiceAction;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 import static com.cks.hiroyuki2.worksupport3.RxBus.UPDATE_GROUP_PHOTO;
-import static com.cks.hiroyuki2.worksupport3.RxBus.UPDATE_PROF_NAME_FAILURE;
 import static com.cks.hiroyuki2.worksupport3.RxBus.UPDATE_PROF_NAME_SUCCESS;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_SET_VALUE;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
@@ -90,7 +73,6 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.showCompleteNtf;
 import static com.cks.hiroyuki2.worksupprotlib.Util.showDownloadingNtf;
 import static com.cks.hiroyuki2.worksupprotlib.Util.showUploadingNtf;
-import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 
 /**
  * Fbにぶん投げる系
@@ -398,16 +380,14 @@ public class FbIntentService extends IntentService implements OnFailureListener,
             return;
         }
 
-        getRef("userData", user.getUid(), "template").setValue(dataList, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null){
-                    logAnalytics(databaseError.getMessage(), getApplicationContext());
-                }
+        getRef("userData", user.getUid(), "template").setValue(dataList, (databaseError, databaseReference) -> {
+            if (databaseError != null){
+                logAnalytics(databaseError.getMessage(), getApplicationContext());
             }
         });
     }
 
+//    todo なにこれ 直せ
     @ServiceAction
     void checkShareAvailable(){
         getRef("accept", "social").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -416,7 +396,8 @@ public class FbIntentService extends IntentService implements OnFailureListener,
                 if(!dataSnapshot.exists()){
                     getSharedPreferences(PREF_NAME, MODE_PRIVATE)
                             .edit()
-                            .putBoolean(PREF_KEY_ACCESS_SOCIAL, dataSnapshot.getValue(Boolean.class));//Fbの仕様上NonNull
+                            .putBoolean(PREF_KEY_ACCESS_SOCIAL, dataSnapshot.getValue(Boolean.class))
+                            .commit();//Fbの仕様上NonNull
                 } else {
                     onError(getApplicationContext(), "checkShareAvailable datasnap null", null);
                 }

@@ -23,22 +23,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.SettingDialogFragment;
 import com.cks.hiroyuki2.worksupport3.FbIntentService_;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.RxBus;
-import com.cks.hiroyuki2.worksupprotlib.FirebaseEventHandler;
-import com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil;
-import com.cks.hiroyuki2.worksupprotlib.SettingFbCommunicator;
 import com.cks.hiroyuki2.worksupprotlib.Util;
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -46,9 +40,6 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.trello.rxlifecycle2.components.support.RxFragment;
@@ -60,25 +51,12 @@ import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import io.reactivex.Single;
-import io.reactivex.SingleEmitter;
-import io.reactivex.SingleOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
-import static android.widget.Toast.LENGTH_LONG;
-import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
-import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.isOverSize;
-import static com.cks.hiroyuki2.worksupprotlib.SettingFbCommunicator.SCHEME_PHOTO_URL;
-import static com.cks.hiroyuki2.worksupprotlib.Util.INTENT_KEY_NEW_PARAM;
-import static com.cks.hiroyuki2.worksupprotlib.Util.getExtension;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getTextNullable;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
 import static com.cks.hiroyuki2.worksupprotlib.Util.kickIntentIcon;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
-import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
-import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.setImgFromStorage;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickSettingDialog;
 import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
@@ -111,22 +89,14 @@ public class SettingFragment extends RxFragment implements OnFailureListener, Ca
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        RxBus.subscribe(RxBus.UPDATE_PROF_NAME_SUCCESS, this, new Consumer<Object>() {
-            @Override
-            public void accept(Object newName) throws Exception {
-                toastNullable(getContext(), R.string.success_name);
-                nameTv.setText((String) newName);
-            }
+        RxBus.subscribe(RxBus.UPDATE_PROF_NAME_SUCCESS, this, newName -> {
+            toastNullable(getContext(), R.string.success_name);
+            nameTv.setText((String) newName);
         });
 
-        RxBus.subscribe(RxBus.UPDATE_PROF_NAME_SUCCESS, this, new Consumer<Object>() {
-            @Override
-            public void accept(Object uri) throws Exception {
-                Picasso.with(getContext())
-                    .load((Uri)uri)
-                    .into(iconIv, SettingFragment.this);
-            }
-        });
+        RxBus.subscribe(RxBus.UPDATE_PROF_NAME_SUCCESS, this, uri -> Picasso.with(getContext())
+            .load((Uri)uri)
+            .into(iconIv, SettingFragment.this));
     }
 
     @Override
@@ -283,37 +253,26 @@ public class SettingFragment extends RxFragment implements OnFailureListener, Ca
     private void reAuthenticate(@NonNull FirebaseUser user, @NonNull final String email, @NonNull String pw){
         AuthCredential credential = EmailAuthProvider.getCredential(email, pw);
         user.reauthenticate(credential)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d(TAG, "User re-authenticated.");
-                        if (getActivity() != null)
-                            kickSettingDialog(SettingDialogFragment.DIALOG_TAG_PW, SettingDialogFragment.METHOD_UPDATE_PW, SettingFragment.this);
-                    }
+                .addOnCompleteListener(task -> {
+                    Log.d(TAG, "User re-authenticated.");
+                    if (getActivity() != null)
+                        kickSettingDialog(SettingDialogFragment.DIALOG_TAG_PW, SettingDialogFragment.METHOD_UPDATE_PW, SettingFragment.this);
                 });
     }
 
     /** パスワードを再設定するおっさん*/
     private void updatePassWord(@NonNull FirebaseUser user, @NonNull final String pw){
         user.updatePassword(pw)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        toastNullable(getContext(), R.string.success_pw);
-                    }
-                });
+                .addOnCompleteListener(task -> toastNullable(getContext(), R.string.success_pw));
     }
 
     /** メールアドレスを再設定するおっさん*/
     private void upDateEmail(@NonNull FirebaseUser user, @NonNull final String email){
         user.updateEmail(email)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (mailTv != null)
-                            mailTv.setText(email);
-                        toastNullable(getContext(), R.string.update_success_mail);
-                    }
+                .addOnCompleteListener(task -> {
+                    if (mailTv != null)
+                        mailTv.setText(email);
+                    toastNullable(getContext(), R.string.update_success_mail);
                 });
     }
     //////////////////////////////FireBaseパスワード問い合わせ系 onClick配属 ここまで///////////////////////////

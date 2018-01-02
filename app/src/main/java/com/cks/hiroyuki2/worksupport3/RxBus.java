@@ -16,7 +16,6 @@
 
 package com.cks.hiroyuki2.worksupport3;
 
-import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 

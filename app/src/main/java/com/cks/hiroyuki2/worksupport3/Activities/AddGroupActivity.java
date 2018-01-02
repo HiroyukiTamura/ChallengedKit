@@ -91,12 +91,9 @@ public class AddGroupActivity extends AppCompatActivity implements AddGroupFragm
         }
 
         //subscribeするのは、ここだけ。
-        RxBus.subscribe(RxBus.CREATE_GROUP_NEW_IMG, this, new Consumer<Object>() {
-            @Override
-            public void accept(Object o) throws Exception {
-                AddGroupFragment fragment = (AddGroupFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                fragment.dlIconUri = (String) o;
-            }
+        RxBus.subscribe(RxBus.CREATE_GROUP_NEW_IMG, this, o -> {
+            AddGroupFragment fragment = (AddGroupFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            fragment.dlIconUri = (String) o;
         });
     }
 

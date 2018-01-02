@@ -19,12 +19,9 @@ package com.cks.hiroyuki2.worksupport3.Fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
 import com.cks.hiroyuki2.worksupport3.Activities.SharedCalendarActivity;
-import com.cks.hiroyuki2.worksupport3.Util;
 import com.cks.hiroyuki2.worksupprotlib.Entity.CalendarOneEvent;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.FirebaseConnection;
@@ -42,31 +39,22 @@ import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.Calendar;
-import java.util.Observable;
 
 import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.ADD_SCHEDULE;
 import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.CALENDAR;
 import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.CALLBACK_ADD_SCHEDULE;
 import static com.cks.hiroyuki2.worksupprotlib.CalendarDialogFragment.INPUT;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickCalendarDialog;
-import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_SET_VALUE;
-import com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter;
+
 import com.google.firebase.database.ValueEventListener;
 import com.trello.rxlifecycle2.components.support.RxFragment;
 
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
-import io.reactivex.SingleObserver;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.Subject;
 
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRootRef;
 import static com.cks.hiroyuki2.worksupprotlib.Util.COLOR_NUM;
@@ -171,40 +159,35 @@ public class SharedCalendarFragment extends RxFragment implements ViewPager.OnPa
             return;
         }
 
-        Single.create(new SingleOnSubscribe<CalendarOneEvent>() {
-            @Override
-            public void subscribe(SingleEmitter<CalendarOneEvent> emitter) throws Exception {
-                FirebaseConnection.getRef("group", group.groupKey).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        String errMsg = checkAdmittionAsMember(dataSnapshot, uid);
-                        if (errMsg != null){
-                            emitter.onError(new IllegalArgumentException(errMsg));
-                            return;
-                        }
-
-                        String calEveKey = FirebaseConnection.getRef("keyPusher").push().getKey();
-                        CalendarOneEvent calEve = new CalendarOneEvent(calEveKey, input, colorNum);
-                        String ym = cal2date(cal, DATE_PATTERN_YM);
-                        String d = Integer.toString(cal.get(Calendar.DATE));
-                        FirebaseConnection.getRef("calendar", group.groupKey, ym, d, calEveKey)
-                                .setValue(calEve, new DatabaseReference.CompletionListener() {
-                                    @Override
-                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                        if (databaseError == null){
-                                            emitter.onSuccess(calEve);
-                                        } else {
-                                            emitter.onError(new IllegalArgumentException(databaseError.getMessage()));
-                                        }
-                                    }
-                                });
+        Single.create((SingleOnSubscribe<CalendarOneEvent>) emitter -> {
+            FirebaseConnection.getRef("group", group.groupKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String errMsg = checkAdmittionAsMember(dataSnapshot, uid);
+                    if (errMsg != null){
+                        emitter.onError(new IllegalArgumentException(errMsg));
+                        return;
                     }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        emitter.onError(new IllegalArgumentException(databaseError.getMessage()));
-                    }
-                });
+                    String calEveKey = FirebaseConnection.getRef("keyPusher").push().getKey();
+                    CalendarOneEvent calEve = new CalendarOneEvent(calEveKey, input, colorNum);
+                    String ym = cal2date(cal, DATE_PATTERN_YM);
+                    String d = Integer.toString(cal.get(Calendar.DATE));
+                    FirebaseConnection.getRef("calendar", group.groupKey, ym, d, calEveKey)
+                            .setValue(calEve, (databaseError, databaseReference) -> {
+                                if (databaseError == null){
+                                    emitter.onSuccess(calEve);
+                                } else {
+                                    emitter.onError(new IllegalArgumentException(databaseError.getMessage()));
+                                }
+                            });
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    emitter.onError(new IllegalArgumentException(databaseError.getMessage()));
+                }
+            });
 //                DatabaseReference checkRef = FirebaseConnection.getRef("calendar", group.groupKey);
 //                FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, null, getContext()/*非同期でないからok*/, null) {
 //                    CalendarOneEvent calEve;
@@ -228,21 +211,10 @@ public class SharedCalendarFragment extends RxFragment implements ViewPager.OnPa
 //                    }
 //                };
 //                writer.update(CODE_SET_VALUE);
-            }
         })
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.newThread())
         .compose(bindToLifecycle())
-        .subscribe(new Consumer<CalendarOneEvent>() {
-            @Override
-            public void accept(CalendarOneEvent calEve) throws Exception {
-                adapter.addSchedule(cal, calEve);
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                onError(SharedCalendarFragment.this, throwable.getMessage(), R.string.error);
-            }
-        });
+        .subscribe(calEve -> adapter.addSchedule(cal, calEve), throwable -> onError(SharedCalendarFragment.this, throwable.getMessage(), R.string.error));
     }
 }
