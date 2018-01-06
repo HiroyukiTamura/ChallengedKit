@@ -75,9 +75,9 @@
 3692:46 support-vector-drawable
 3740:46 support-compat
 3836:46 butterknife-annotations
-3884:92 gifdecoder
-4074:46 runtime
-4122:46 common
+3980:46 runtime
+4028:46 common
+4076:92 gifdecoder
 4170:46 support-annotations
 4218:41 junit
 4261:11358 safeparcel
@@ -111,7 +111,7 @@
 283448:16013 Android SDK
 299463:10695 Android Core UI Support Library
 310160:92 disklrucache
-311087:37 annotations
+310993:37 annotations
 310348:34 arcanimator
 310384:49 reactive-streams
 310483:46 butterknife-compiler
@@ -119,17 +119,17 @@
 310625:41 icepick-processor
 310668:50 jcodemodel
 310720:46 javapoet
-310862:41 scout
-310905:41 quoin
-310948:46 core.cache
-310996:46 clojure
-311044:41 icepick
-311126:46 jsr305
-311174:84 checker-compat-qual
-311260:46 error_prone_annotations
-311308:46 j2objc-annotations
-311356:46 leakcanary-android
-311404:46 leakcanary-analyzer
-311452:46 leakcanary-watcher
-311500:46 haha
-311548:46 leakcanary-android-no-op
+310768:41 scout
+310811:41 quoin
+310854:46 core.cache
+310902:46 clojure
+310950:41 icepick
+311032:46 jsr305
+311080:84 checker-compat-qual
+311166:46 error_prone_annotations
+311214:46 j2objc-annotations
+311262:46 leakcanary-android
+311310:46 leakcanary-analyzer
+311358:46 leakcanary-watcher
+311406:46 haha
+311454:46 leakcanary-android-no-op

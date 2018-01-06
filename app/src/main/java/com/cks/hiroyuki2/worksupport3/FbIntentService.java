@@ -387,17 +387,16 @@ public class FbIntentService extends IntentService implements OnFailureListener,
         });
     }
 
-//    todo なにこれ 直せ
     @ServiceAction
     void checkShareAvailable(){
         getRef("accept", "social").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists()){
+                if(dataSnapshot.exists()){
                     getSharedPreferences(PREF_NAME, MODE_PRIVATE)
                             .edit()
-                            .putBoolean(PREF_KEY_ACCESS_SOCIAL, dataSnapshot.getValue(Boolean.class))
-                            .commit();//Fbの仕様上NonNull
+                            .putBoolean(PREF_KEY_ACCESS_SOCIAL, dataSnapshot.getValue(Boolean.class))//Fbの仕様上nonNullなので大丈夫
+                            .apply();//Fbの仕様上NonNull
                 } else {
                     onError(getApplicationContext(), "checkShareAvailable datasnap null", null);
                 }

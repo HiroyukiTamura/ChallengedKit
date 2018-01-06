@@ -56,7 +56,7 @@ repositories {
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '27.0.2'
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "com.cks.hiroyuki2.worksupport3"
@@ -112,7 +112,7 @@ dependencies {
     compile 'com.takisoft.fix:preference-v7:27.0.2.0'
     compile 'org.jetbrains:annotations-java5:15.0'
     //    compile 'com.github.channguyen:rsv:1.0.1'
-    compile 'com.github.HiroyukTamura:WorkSupportLibW:9c94000'
+    compile 'com.github.HiroyukTamura:WorkSupportLibW:da04ab6'
     compile 'com.prolificinteractive:material-calendarview:1.4.3'
     compile 'com.firebaseui:firebase-ui:3.1.2'
     compile 'com.google.firebase:firebase-core:11.6.2'
@@ -144,7 +144,7 @@ dependencies {
     compile 'com.squareup.okhttp3:logging-interceptor:3.9.1'
     //    compile 'jp.wasabeef:richeditor-android:1.2.2'
     compile 'com.google.code.gson:gson:2.8.2'
-    compile 'com.github.bumptech.glide:glide:4.3.1'
+    compile 'com.github.bumptech.glide:glide:4.4.0'
     compile 'com.karumi:dexter:4.2.0'
     compile 'com.github.apl-devs:appintro:v4.2.2'
     compile 'com.gordonwong:material-sheet-fab:1.2.1'
