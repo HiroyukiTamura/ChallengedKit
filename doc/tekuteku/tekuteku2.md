@@ -3,9 +3,7 @@
 
 ##### web版
 
-https://goo.gl/xWEF5K
-
-※今のところスマホに対応していません
+https://goo.gl/xWEF5K ※今のところスマホに対応していません
 
 ##### android版
 ![qr-code](https://user-images.githubusercontent.com/26954245/35813680-8d6625ac-0ad7-11e8-8755-f8c828126f5f.png)
