@@ -396,7 +396,7 @@ public class FbIntentService extends IntentService implements OnFailureListener,
                     getSharedPreferences(PREF_NAME, MODE_PRIVATE)
                             .edit()
                             .putBoolean(PREF_KEY_ACCESS_SOCIAL, dataSnapshot.getValue(Boolean.class))//Fbの仕様上nonNullなので大丈夫
-                            .apply();//Fbの仕様上NonNull
+                            .apply();
                 } else {
                     onError(getApplicationContext(), "checkShareAvailable datasnap null", null);
                 }
