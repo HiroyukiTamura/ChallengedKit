@@ -1,5 +1,5 @@
-![theme](https://user-images.githubusercontent.com/26954245/35813465-06275a7a-0ad7-11e8-9216-d468b62385bb.jpg)
-
+# ChallengedKit(β)
+体調を見える化して共有。当事者・職場・支援者・病院をつないで、より働きやすい環境を実現します。
 
 ##### web版
 
