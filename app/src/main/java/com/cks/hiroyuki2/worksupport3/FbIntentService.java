@@ -25,6 +25,7 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -94,44 +95,54 @@ public class FbIntentService extends IntentService implements OnFailureListener,
         //do nothing here
     }
 
+    //todo ここblobでコンパイルしようね
     @ServiceAction
     public void updateGroupName(@NonNull String uid, @NonNull String groupKey, @NonNull String newGroupName){
         Log.d(TAG, "sampleAction() called");
 
-        new isMeGroupMemberChecker(){
-            @Override
-            protected void onSuccess(DataSnapshot dataSnapshot) {
-                DatabaseReference ref = getRef("group", groupKey, "groupName");
-                FbCheckAndWriter writer = new FbCheckAndWriter(ref, ref, getApplicationContext(), newGroupName) {
-                    @Override
-                    public void onSuccess(DatabaseReference ref) {
-                        Log.d(TAG, "onSuccess: 成功したよね");
-                        RxBus.publish(RxBus.UPDATE_GROUP_NAME, "てってれー");
-                    }
-                };
-                writer.update(CODE_SET_VALUE);
-            }
+        getRef("group", groupKey, "groupName").setValue(newGroupName, (databaseError, databaseReference) -> {
+            if (databaseError != null)
+                onErrorForService(TAG + databaseError.getMessage(), R.string.error);
+            else
+                RxBus.publish(RxBus.UPDATE_GROUP_NAME, "てってれー");
+        });
 
-            @Override
-            protected void onError(@NonNull String errMsg) {
-                onErrorForService(errMsg, R.string.error);
-            }
-        }.check(uid, groupKey);
+//        new isMeGroupMemberChecker(){
+//            @Override
+//            protected void onSuccess(DataSnapshot dataSnapshot) {
+//                DatabaseReference ref = getRef("group", groupKey, "groupName");
+//                FbCheckAndWriter writer = new FbCheckAndWriter(ref, ref, getApplicationContext(), newGroupName) {
+//                    @Override
+//                    public void onSuccess(DatabaseReference ref) {
+//                        Log.d(TAG, "onSuccess: 成功したよね");
+//                        RxBus.publish(RxBus.UPDATE_GROUP_NAME, "てってれー");
+//                    }
+//                };
+//                writer.update(CODE_SET_VALUE);
+//            }
+//
+//            @Override
+//            protected void onError(@NonNull String errMsg) {
+//                onErrorForService(errMsg, R.string.error);
+//            }
+//        }.check(uid, groupKey);
     }
 
+    //todo ここblobでコンパイルして代替しようね
     @ServiceAction
     public void updateGroupPhotoUrl(@NonNull String uid, @NonNull String groupKey, @NonNull String groupName, /*このuriは、ローカルファイルのuri*/ @NonNull Uri uri){
-        new isMeGroupMemberChecker(){
-            @Override
-            protected void onSuccess(DataSnapshot dataSnapshot) {
-                uploadGroupIcon(groupKey, groupName, uri, UPDATE_GROUP_PHOTO);
-            }
-
-            @Override
-            protected void onError(@NonNull String errMsg) {
-                onErrorForService(errMsg, R.string.error);
-            }
-        }.check(uid, groupKey);
+//        new isMeGroupMemberChecker(){
+//            @Override
+//            protected void onSuccess(DataSnapshot dataSnapshot) {
+//                uploadGroupIcon(groupKey, groupName, uri, UPDATE_GROUP_PHOTO);
+//            }
+//
+//            @Override
+//            protected void onError(@NonNull String errMsg) {
+//                onErrorForService(errMsg, R.string.error);
+//            }
+//        }.check(uid, groupKey);
+        uploadGroupIcon(groupKey, groupName, uri, UPDATE_GROUP_PHOTO);
     }
 
     @ServiceAction
@@ -143,18 +154,25 @@ public class FbIntentService extends IntentService implements OnFailureListener,
 
         final int ntfId = (int) System.currentTimeMillis();
 
-        uploadFile("group_icon/" + fileName, uri, FbIntentService.this, taskSnapshot -> {
+        uploadFile("group_icon/" + fileName, uri, FbIntentService.this, (UploadTask.TaskSnapshot taskSnapshot) -> {
                     Uri uri1 = taskSnapshot.getDownloadUrl();
                     RxBus.publish(subject, uri1);/*Firebaseの仕様上NPEはあり得ないので、you can ignore this warning*/
 
-                    DatabaseReference ref = getRef("group", groupKey, "photoUrl");
-                    FbCheckAndWriter writer = new FbCheckAndWriter(ref, ref, getApplicationContext(), uri1.toString()) {
-                        @Override
-                        public void onSuccess(DatabaseReference ref) {
+//                    DatabaseReference ref = getRef("group", groupKey, "photoUrl");
+//                    FbCheckAndWriter writer = new FbCheckAndWriter(ref, ref, getApplicationContext(), uri1.toString()) {
+//                        @Override
+//                        public void onSuccess(DatabaseReference ref) {
+//                            showCompleteNtf(MainActivity.class, getApplicationContext(), groupName, ntfId, R.string.ntf_txt_change_group_img);
+//                        }
+//                    };
+//                    writer.update(CODE_SET_VALUE);
+                    getRef("group", groupKey, "photoUrl").setValue(uri1.toString(), (databaseError,  databaseReference) -> {
+                        if (databaseError != null) {
+                            onErrorForService(TAG + databaseError.getMessage(), R.string.error);
+                        } else {
                             showCompleteNtf(MainActivity.class, getApplicationContext(), groupName, ntfId, R.string.ntf_txt_change_group_img);
                         }
-                    };
-                    writer.update(CODE_SET_VALUE);
+                    });
                 },
                 FbIntentService.this,
                 taskSnapshot -> showUploadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, fileName, ntfId));
@@ -162,26 +180,36 @@ public class FbIntentService extends IntentService implements OnFailureListener,
 
     @ServiceAction
     public void removeMember(@NonNull String groupKey, @NonNull String uid, @NonNull String name){
-        new isMeGroupMemberChecker(){
-            @Override
-            protected void onError(@NonNull String errMsg) {
-                onErrorForService(errMsg, R.string.error);
-            }
-
-            @Override
-            protected void onSuccess(DataSnapshot dataSnapshot) {
-                DatabaseReference checkRef = getRef("group", groupKey);
-                HashMap<String, Object> children = new HashMap<>();
-                children.put(makeScheme("group", groupKey, "member", uid), null);
-                children.put(makeScheme("userData", uid, "group", groupKey), null);
-                new FbCheckAndWriter(checkRef, getRootRef(), getApplicationContext(), children) {
-                    @Override
-                    public void onSuccess(DatabaseReference ref) {
-                        RxBus.publish(RxBus.REMOVE_MEMBER, name);
-                    }
-                }.update(CODE_UPDATE_CHILDREN);
-            }
-        }.check(uid, groupKey);
+//        new isMeGroupMemberChecker(){
+//            @Override
+//            protected void onError(@NonNull String errMsg) {
+//                onErrorForService(errMsg, R.string.error);
+//            }
+//
+//            @Override
+//            protected void onSuccess(DataSnapshot dataSnapshot) {
+//                DatabaseReference checkRef = getRef("group", groupKey);
+//                HashMap<String, Object> children = new HashMap<>();
+//                children.put(makeScheme("group", groupKey, "member", uid), null);
+//                children.put(makeScheme("userData", uid, "group", groupKey), null);
+//                new FbCheckAndWriter(checkRef, getRootRef(), getApplicationContext(), children) {
+//                    @Override
+//                    public void onSuccess(DatabaseReference ref) {
+//                        RxBus.publish(RxBus.REMOVE_MEMBER, name);
+//                    }
+//                }.update(CODE_UPDATE_CHILDREN);
+//            }
+//        }.check(uid, groupKey);
+        HashMap<String, String> map = new HashMap<>();
+        map.put("whose", uid);
+        map.put("groupKey", groupKey);
+        String pushKey = getRef("keyPusher").push().getKey();
+        getRef("writeTask/", pushKey).setValue(map, (databaseError, databaseReference) -> {
+            if (databaseError != null)
+                onErrorForService(TAG + databaseError.getMessage(), R.string.error);
+            else
+                RxBus.publish(RxBus.REMOVE_MEMBER, name);
+        });
     }
 
     @ServiceAction
