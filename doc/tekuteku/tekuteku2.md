@@ -1,9 +1,14 @@
 ![theme](https://user-images.githubusercontent.com/26954245/35813465-06275a7a-0ad7-11e8-9216-d468b62385bb.jpg)
 
 
-web版: https://goo.gl/xWEF5K
+##### web版
 
-android版: ![qr-code](https://user-images.githubusercontent.com/26954245/35813680-8d6625ac-0ad7-11e8-8755-f8c828126f5f.png)
+https://goo.gl/xWEF5K
+
+※今のところスマホに対応していません
+
+##### android版
+![qr-code](https://user-images.githubusercontent.com/26954245/35813680-8d6625ac-0ad7-11e8-8755-f8c828126f5f.png)
 
 ## こんな機能があります
 * 【記録】睡眠時間や症状の有無など、毎日の体調記録がつけられます。項目は自由に変更することができます。
