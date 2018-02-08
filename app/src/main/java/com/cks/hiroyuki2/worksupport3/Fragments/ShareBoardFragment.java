@@ -1149,9 +1149,9 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
 
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-                if (mutableData == null)
-                    return Transaction.abort();
                 String value = (String) mutableData.getValue();
+                if (value == null)
+                    return Transaction.success(mutableData);
                 Document doc = new Gson().fromJson(value, Document.class);
                 doc.eleList.add(docEle);
                 newVal = new Gson().toJson(doc);

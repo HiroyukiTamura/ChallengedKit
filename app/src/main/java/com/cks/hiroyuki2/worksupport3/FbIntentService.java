@@ -53,9 +53,13 @@ import org.androidannotations.annotations.ServiceAction;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+
+import clojure.lang.Obj;
 
 import static com.cks.hiroyuki2.worksupport3.RxBus.UPDATE_GROUP_PHOTO;
 import static com.cks.hiroyuki2.worksupport3.RxBus.UPDATE_PROF_NAME_SUCCESS;
@@ -66,6 +70,8 @@ import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRootRef;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.isOverSize;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.uploadFile;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
+import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
+import static com.cks.hiroyuki2.worksupprotlib.Util.datePattern;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getExtension;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
@@ -84,6 +90,7 @@ public class FbIntentService extends IntentService implements OnFailureListener,
     private static final String TAG = "MANUAL_TAG: " + FbIntentService.class.getSimpleName();
     private Handler toastHandler = new Handler(Looper.getMainLooper());
     public static String PREF_KEY_ACCESS_SOCIAL = "PREF_KEY_ACCESS_SOCIAL";
+    private static final String ADD_DOC_COMMENT ="ADD_DOC_COMMENT";
 
     public FbIntentService(){
         // ActivityのstartService(intent);で呼び出されるコンストラクタはこちら
@@ -178,6 +185,7 @@ public class FbIntentService extends IntentService implements OnFailureListener,
                 taskSnapshot -> showUploadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, fileName, ntfId));
     }
 
+    //todo 未デバッグ
     @ServiceAction
     public void removeMember(@NonNull String groupKey, @NonNull String uid, @NonNull String name){
 //        new isMeGroupMemberChecker(){
@@ -200,28 +208,38 @@ public class FbIntentService extends IntentService implements OnFailureListener,
 //                }.update(CODE_UPDATE_CHILDREN);
 //            }
 //        }.check(uid, groupKey);
-        HashMap<String, String> map = new HashMap<>();
-        map.put("whose", uid);
-        map.put("groupKey", groupKey);
-        String pushKey = getRef("keyPusher").push().getKey();
-        getRef("writeTask/", pushKey).setValue(map, (databaseError, databaseReference) -> {
-            if (databaseError != null)
-                onErrorForService(TAG + databaseError.getMessage(), R.string.error);
-            else
-                RxBus.publish(RxBus.REMOVE_MEMBER, name);
+
+        getRef("group", groupKey, "member", uid).setValue(null, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null)
+                    onErrorForService(TAG + databaseError.getMessage(), R.string.error);
+                else
+                    RxBus.publish(RxBus.REMOVE_MEMBER, name);
+            }
         });
+//        HashMap<String, String> updates =  createDefaultUpdates(uid, );
+//        String pushKey = getRef("keyPusher").push().getKey();
+//        getRef("writeTask/", pushKey).setValue(updates, (databaseError, databaseReference) -> {
+//            if (databaseError != null)
+//                onErrorForService(TAG + databaseError.getMessage(), R.string.error);
+//            else
+//                RxBus.publish(RxBus.REMOVE_MEMBER, name);
+//        });
     }
+
 
     @ServiceAction
     public void editNormalComment(@NonNull String uid, @NonNull String groupKey, @NonNull String contentKey, @Nullable String newComment){
-        new isMeGroupMemberChecker(){
-            @Override
-            protected void onError(@NonNull String errMsg) {
-                onErrorForService(errMsg, R.string.error);
-            }
 
-            @Override
-            protected void onSuccess(DataSnapshot dataSnapshot) {
+//        new isMeGroupMemberChecker(){
+//            @Override
+//            protected void onError(@NonNull String errMsg) {
+//                onErrorForService(errMsg, R.string.error);
+//            }
+
+//            @Override
+//            protected void onSuccess(DataSnapshot dataSnapshot) {
                 DatabaseReference checkRef = getRef("group", groupKey, "contents", contentKey);
                 DatabaseReference writeRef = getRef(checkRef, "comment");
                 FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, writeRef, getApplicationContext(), newComment) {
@@ -231,8 +249,8 @@ public class FbIntentService extends IntentService implements OnFailureListener,
                     }
                 };
                 writer.update(CODE_SET_VALUE);
-            }
-        }.check(uid, groupKey);
+//            }
+//        }.check(uid, groupKey);
     }
 
     /**
@@ -295,6 +313,7 @@ public class FbIntentService extends IntentService implements OnFailureListener,
 
     /**
      * ネストの深さは心の闇の深さ・・・
+     * todo これバックエンドで代替できるやろ・・・
      */
     @ServiceAction
     public void removeFileFromStorage(@NonNull String uid, @NonNull String groupKey, @NonNull String contentKey, final boolean isDoc){
@@ -344,6 +363,7 @@ public class FbIntentService extends IntentService implements OnFailureListener,
                         return;
                     }
 
+                    //todo これwriteTaskに書き換えられる
                     getRef(makeScheme("userData", user.getUid(), "displayName"))
                             .setValue(newMyName, (databaseError, databaseReference) -> {
                                 if (databaseError != null)
@@ -471,5 +491,14 @@ public class FbIntentService extends IntentService implements OnFailureListener,
         toastHandler.post(new DisplayToast(msgRes));
         logAnalytics(errLog, this);
         Answers.getInstance().logCustom(new CustomEvent(errLog));
+    }
+
+    private static HashMap<String, Object> createDefaultUpdates(String uid, String code) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("whose", uid);
+        map.put("code", code);
+        String ymd = cal2date(Calendar.getInstance(), datePattern);
+        map.put("time", ymd);
+        return  map;
     }
 }
