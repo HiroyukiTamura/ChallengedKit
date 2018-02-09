@@ -230,11 +230,11 @@ public class EditDocActivity extends AppCompatActivity implements TextWatcher /*
 
         if (pos != -1 && group != null){
             User user = new User(FirebaseAuth.getInstance().getCurrentUser());
-            DocumentEle ele = new DocumentEle(user, editContent.getText().toString());
+//            DocumentEle ele = new DocumentEle(user, editContent.getText().toString());
 //            doc.eleList.add(ele);
             Intent data = new Intent();
-            data.putExtra(INTENT_KEY_DOC, ele);
-            data.putExtra(INTENT_KEY_POS, pos);
+            data.putExtra(INTENT_KEY_DOC, editContent.getText().toString());
+            data.putExtra(INTENT_KEY_POS, pos);//todo 本来はここcontentsKeyであるべき
             setResult(RESULT_OK, data);
             finish();
 
@@ -249,8 +249,7 @@ public class EditDocActivity extends AppCompatActivity implements TextWatcher /*
             Document doc = new Document(editTitle.getText().toString(), eleList);
 
             Intent data = new Intent();
-            Gson gson = new Gson();
-            data.putExtra(INTENT_KEY_DOC, gson.toJson(doc));
+            data.putExtra(INTENT_KEY_DOC, new Gson().toJson(doc));
             setResult(RESULT_OK, data);
             finish();
         }

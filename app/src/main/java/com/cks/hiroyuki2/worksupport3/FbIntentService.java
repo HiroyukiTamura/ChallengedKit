@@ -32,6 +32,8 @@ import android.widget.Toast;
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import com.cks.hiroyuki2.worksupprotlib.*;
+import com.cks.hiroyuki2.worksupprotlib.Entity.Document;
+import com.cks.hiroyuki2.worksupprotlib.Entity.DocumentEle;
 import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.CustomEvent;
@@ -42,10 +44,13 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnPausedListener;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
 
 import org.androidannotations.annotations.EIntentService;
 import org.androidannotations.annotations.ServiceAction;
@@ -209,14 +214,11 @@ public class FbIntentService extends IntentService implements OnFailureListener,
 //            }
 //        }.check(uid, groupKey);
 
-        getRef("group", groupKey, "member", uid).setValue(null, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null)
-                    onErrorForService(TAG + databaseError.getMessage(), R.string.error);
-                else
-                    RxBus.publish(RxBus.REMOVE_MEMBER, name);
-            }
+        getRef("group", groupKey, "member", uid).setValue(null, (databaseError, databaseReference) -> {
+            if (databaseError != null)
+                onErrorForService(TAG + databaseError.getMessage(), R.string.error);
+            else
+                RxBus.publish(RxBus.REMOVE_MEMBER, name);
         });
 //        HashMap<String, String> updates =  createDefaultUpdates(uid, );
 //        String pushKey = getRef("keyPusher").push().getKey();
@@ -225,6 +227,53 @@ public class FbIntentService extends IntentService implements OnFailureListener,
 //                onErrorForService(TAG + databaseError.getMessage(), R.string.error);
 //            else
 //                RxBus.publish(RxBus.REMOVE_MEMBER, name);
+//        });
+    }
+
+    @ServiceAction
+    public void addCommentToDoc(@NonNull String uid, @NonNull String groupKey, @NonNull String contentKey, @Nullable String newComment) {
+        String commandKey = getRef("keyPusher").getKey();
+        HashMap<String, Object> children = createDefaultUpdates(uid, ADD_DOC_COMMENT);
+        children.put("groupKey", groupKey);
+        children.put("contentsKey", contentKey);
+        children.put("newComment", newComment);
+
+        getRef("writeTask/" + commandKey).updateChildren(children, (databaseError, databaseReference) -> {
+            if (databaseError != null) {
+                onErrorForService(TAG + databaseError.getMessage(), R.string.error);
+            } else {
+                RxMsgForAddDocComment msg = new RxMsgForAddDocComment(groupKey, contentKey, newComment);
+                RxBus.publish(RxBus.ADD_DOC_COMMENT, msg);
+            }
+        });
+//        DatabaseReference ref = getRef(makeScheme("group", groupKey, "contents", contentKey, "comment"));
+//        ref.runTransaction(new Transaction.Handler() {
+//            private String newVal;
+//
+//            @Override
+//            public Transaction.Result doTransaction(MutableData mutableData) {
+//                String value = (String) mutableData.getValue();
+//                if (value == null)
+//                    return Transaction.success(mutableData);
+//                Document doc = new Gson().fromJson(value, Document.class);
+//                doc.eleList.add(docEle);
+//                newVal = new Gson().toJson(doc);
+//                mutableData.setValue(newVal);
+//                return Transaction.success(mutableData);
+//            }
+//
+//            @Override
+//            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+//                if (databaseError != null)
+//                    onErrorForService(TAG + databaseError.getMessage(), R.string.error);
+//                else {
+////                    content.comment = newVal;
+////                    int actualPos = listPos+1;
+////                    rvAdapter.notifyItemChanged(actualPos);
+//                    RxMsgForAddDocComment msg = new RxMsgForAddDocComment(groupKey, contentKey, newVal);
+//                    RxBus.publish(RxBus.ADD_DOC_COMMENT, msg);
+//                }
+//            }
 //        });
     }
 

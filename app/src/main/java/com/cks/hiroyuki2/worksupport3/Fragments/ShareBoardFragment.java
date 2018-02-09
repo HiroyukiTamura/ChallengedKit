@@ -44,6 +44,7 @@ import com.cks.hiroyuki2.worksupport3.FbIntentService_;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog;
 import com.cks.hiroyuki2.worksupport3.RxBus;
+import com.cks.hiroyuki2.worksupport3.RxMsgForAddDocComment;
 import com.cks.hiroyuki2.worksupport3.Util;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Document;
@@ -181,6 +182,19 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
 
             group.contentList.remove(content);
             rvAdapter.notifyDataSetChanged();
+        });
+
+        RxBus.subscribe(RxBus.ADD_DOC_COMMENT, this, o -> {
+            RxMsgForAddDocComment msgObj = (RxMsgForAddDocComment) o;
+            if (!group.groupKey.equals(msgObj.getGroupKey()))
+                return;
+
+            Content content = getContentByKey(group.contentList, msgObj.getContentKey());
+            if (content == null)
+                return;
+            content.comment = msgObj.getNewVal();
+            int actualPos = group.contentList.indexOf(content) +1;
+            rvAdapter.notifyItemChanged(actualPos);
         });
     }
 
@@ -1135,41 +1149,44 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
             return;
         }
 
-        final Content content = group.contentList.get(listPos);
-        final DocumentEle docEle = (DocumentEle) data.getSerializableExtra(EditDocActivity.INTENT_KEY_DOC);
+        Content content = group.contentList.get(listPos);
+        String newComment = data.getStringExtra(EditDocActivity.INTENT_KEY_DOC);
+
+        FbIntentService_.intent(getContext().getApplicationContext())
+                .addCommentToDoc(user.getUid(), group.groupKey, content.contentKey, newComment).start();
 
 //        ServiceMessage sm = new ServiceMessage(docEle, user, group.groupKey, content.contentKey);
 //        boolean sendSuccess = ((MainActivity)getActivity()).getConnector().send(SEND_CODE_ADD_COMMENT, sm);
 //        if (!sendSuccess)
 //            onError(this, TAG+"!sendSuccess", R.string.error);
 
-        DatabaseReference ref = getRef(makeScheme("group", group.groupKey, "contents", content.contentKey, "comment"));
-        ref.runTransaction(new Transaction.Handler() {
-            private String newVal;
-
-            @Override
-            public Transaction.Result doTransaction(MutableData mutableData) {
-                String value = (String) mutableData.getValue();
-                if (value == null)
-                    return Transaction.success(mutableData);
-                Document doc = new Gson().fromJson(value, Document.class);
-                doc.eleList.add(docEle);
-                newVal = new Gson().toJson(doc);
-                mutableData.setValue(newVal);
-                return Transaction.success(mutableData);
-            }
-
-            @Override
-            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-                if (databaseError != null)
-                    onError(ShareBoardFragment.this, databaseError.toString(), R.string.error);
-                else {
-                    content.comment = newVal;
-                    int actualPos = listPos+1;
-                    rvAdapter.notifyItemChanged(actualPos);
-                }
-            }
-        });
+//        DatabaseReference ref = getRef(makeScheme("group", group.groupKey, "contents", content.contentKey, "comment"));
+//        ref.runTransaction(new Transaction.Handler() {
+//            private String newVal;
+//
+//            @Override
+//            public Transaction.Result doTransaction(MutableData mutableData) {
+//                String value = (String) mutableData.getValue();
+//                if (value == null)
+//                    return Transaction.success(mutableData);
+//                Document doc = new Gson().fromJson(value, Document.class);
+//                doc.eleList.add(docEle);
+//                newVal = new Gson().toJson(doc);
+//                mutableData.setValue(newVal);
+//                return Transaction.success(mutableData);
+//            }
+//
+//            @Override
+//            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+//                if (databaseError != null)
+//                    onError(ShareBoardFragment.this, databaseError.toString(), R.string.error);
+//                else {
+//                    content.comment = newVal;
+//                    int actualPos = listPos+1;
+//                    rvAdapter.notifyItemChanged(actualPos);
+//                }
+//            }
+//        });
     }
 
     @Override

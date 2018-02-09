@@ -49,7 +49,8 @@ public class RxBus {
     public static final int UPDATE_PROF_NAME_SUCCESS = 6;
     public static final int UPDATE_PROF_NAME_FAILURE = 7;
     public static final int UPDATE_PROF_ICON = 8;
-    @IntRange(from = 0, to = 8)
+    public static final int ADD_DOC_COMMENT = 9;
+    @IntRange(from = 0, to = 9)
     @interface subject{}
 
     /**
