@@ -25,16 +25,17 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.util.ArrayMap;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.cks.hiroyuki2.worksupport3.Activities.EditDocActivity;
 import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupport3.Fragments.ShareBoardFragment;
 import com.cks.hiroyuki2.worksupprotlib.*;
+import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Document;
-import com.cks.hiroyuki2.worksupprotlib.Entity.DocumentEle;
 import com.cks.hiroyuki2.worksupprotlib.Entity.RecordData;
+import com.cks.hiroyuki2.worksupprotlib.Entity.User;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.CustomEvent;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -44,8 +45,6 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnPausedListener;
@@ -59,19 +58,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import clojure.lang.Obj;
-
 import static com.cks.hiroyuki2.worksupport3.RxBus.UPDATE_GROUP_PHOTO;
 import static com.cks.hiroyuki2.worksupport3.RxBus.UPDATE_PROF_NAME_SUCCESS;
-import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_SET_VALUE;
-import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
-import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRootRef;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.isOverSize;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.uploadFile;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
@@ -85,6 +78,7 @@ import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.showCompleteNtf;
 import static com.cks.hiroyuki2.worksupprotlib.Util.showDownloadingNtf;
 import static com.cks.hiroyuki2.worksupprotlib.Util.showUploadingNtf;
+import static com.cks.hiroyuki2.worksupprotlib.Util.toastNullable;
 
 /**
  * Fbにぶん投げる系
@@ -231,7 +225,7 @@ public class FbIntentService extends IntentService implements OnFailureListener,
     }
 
     @ServiceAction
-    public void addCommentToDoc(@NonNull String uid, @NonNull String groupKey, @NonNull String contentKey, @Nullable String newComment) {
+    public void addCommentToDoc(@NonNull String uid, @NonNull String groupKey, @NonNull String contentKey, @NonNull String newComment) {
         String commandKey = getRef("keyPusher").getKey();
         HashMap<String, Object> children = createDefaultUpdates(uid, ADD_DOC_COMMENT);
         children.put("groupKey", groupKey);
@@ -277,6 +271,36 @@ public class FbIntentService extends IntentService implements OnFailureListener,
 //        });
     }
 
+    /**
+     * 今のところ、コメント追加動作はバックエンド側で実装、ドキュメント作成動作はクライエント側実装です。
+     */
+    @ServiceAction
+    public void createNewDoc(Intent data, String groupKey){
+        final String docStr = data.getStringExtra(EditDocActivity.INTENT_KEY_DOC);
+        Document doc =  new Gson().fromJson(docStr, Document.class);
+        String contentsKey = getRef("keyPusher").push().getKey();
+        String ymd = cal2date(Calendar.getInstance(), datePattern);
+        final User me = new User(FirebaseAuth.getInstance().getCurrentUser());
+        final Content content = new Content(contentsKey, doc.title, ymd, me.getUserUid(), me.getUserUid(), "document", docStr);
+        HashMap<String, Object> children = new HashMap<>();
+        children.put("contents/" + contentsKey + "/lastEdit", content.lastEdit);
+        children.put("contents/" + contentsKey + "/lastEditor", content.lastEditor);
+        children.put("contents/" + contentsKey + "/whose", content.whose);
+        children.put("contents/" + contentsKey + "/type", content.type);
+        children.put("contents/" + contentsKey + "/contentName", content.contentName);
+        children.put("contents/" + contentsKey + "/comment", content.comment);
+
+        getRef("group", groupKey).updateChildren(children, (databaseError, databaseReference) -> {
+            if (databaseError != null)
+                onErrorForService(TAG + databaseError.getMessage(), R.string.error);
+            else {
+                RxMsgForNewDoc msg = new RxMsgForNewDoc(groupKey, content);
+                RxBus.publish(RxBus.CREATE_DOC, msg);
+//                addContent(content);
+            }
+        });
+    }
+
 
     @ServiceAction
     public void editNormalComment(@NonNull String uid, @NonNull String groupKey, @NonNull String contentKey, @Nullable String newComment){
@@ -289,15 +313,25 @@ public class FbIntentService extends IntentService implements OnFailureListener,
 
 //            @Override
 //            protected void onSuccess(DataSnapshot dataSnapshot) {
-                DatabaseReference checkRef = getRef("group", groupKey, "contents", contentKey);
-                DatabaseReference writeRef = getRef(checkRef, "comment");
-                FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, writeRef, getApplicationContext(), newComment) {
+//                DatabaseReference checkRef = getRef("group", groupKey, "contents", contentKey);
+                getRef("group", groupKey, "contents", contentKey, "comment").setValue(newComment, new DatabaseReference.CompletionListener() {
                     @Override
-                    public void onSuccess(DatabaseReference ref) {
-                        Log.d(TAG, "onSuccess: succeed to edit comment"+ ref.toString());
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if (databaseError != null) {
+                            onErrorForService(TAG + databaseError.getMessage(), R.string.error);
+                        } else {
+                            RxMsgForUpdateComment msg = new RxMsgForUpdateComment(groupKey, contentKey, newComment);
+                            RxBus.publish(RxBus.UPDATE_COMMENT, msg);
+                        }
                     }
-                };
-                writer.update(CODE_SET_VALUE);
+                });
+//                FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, writeRef, getApplicationContext(), newComment) {
+//                    @Override
+//                    public void onSuccess(DatabaseReference ref) {
+//                        Log.d(TAG, "onSuccess: succeed to edit comment"+ ref.toString());
+//                    }
+//                };
+//                writer.update(CODE_SET_VALUE);
 //            }
 //        }.check(uid, groupKey);
     }

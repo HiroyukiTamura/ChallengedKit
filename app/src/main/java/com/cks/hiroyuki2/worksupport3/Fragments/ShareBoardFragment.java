@@ -45,6 +45,8 @@ import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog;
 import com.cks.hiroyuki2.worksupport3.RxBus;
 import com.cks.hiroyuki2.worksupport3.RxMsgForAddDocComment;
+import com.cks.hiroyuki2.worksupport3.RxMsgForNewDoc;
+import com.cks.hiroyuki2.worksupport3.RxMsgForUpdateComment;
 import com.cks.hiroyuki2.worksupport3.Util;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Document;
@@ -195,6 +197,23 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
             content.comment = msgObj.getNewVal();
             int actualPos = group.contentList.indexOf(content) +1;
             rvAdapter.notifyItemChanged(actualPos);
+        });
+
+        RxBus.subscribe(RxBus.CREATE_DOC, this, o -> {
+            RxMsgForNewDoc msg = (RxMsgForNewDoc) o;
+            if (group.groupKey.equals(msg.getGroupKey()))
+                addContent(msg.getContent());
+        });
+
+        RxBus.subscribe(RxBus.UPDATE_COMMENT, this, o -> {
+            RxMsgForUpdateComment msg = (RxMsgForUpdateComment) o;
+            if (!group.groupKey.equals(msg.getGroupKey()))
+                return;
+            Content content = getContentByKey(group.contentList, msg.getContentsKey());
+            if (content == null)
+                return;
+            content.comment = msg.getNewComment();
+            rvAdapter.notifyDataSetChanged();
         });
     }
 
@@ -566,6 +585,7 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
                 onChoose4thItem(listPos, true);
     }
 
+    //todo 本来はcontentsKeyで操作するべき
     @OnActivityResult(DIALOG_CODE_EDIT_COMMENT)
     void onResultEditComment(Intent data, int resultCode,
                              @OnActivityResult.Extra(ShareBoardRVAdapter.BUNDLE_KEY_NEW_COMMENT) final String newComment,
@@ -573,13 +593,7 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
         if (resultCode != RESULT_OK)
             return;
 
-//        Bundle bundle = data.getExtras();
-
         final Content content = group.contentList.get(listPos);
-//        DatabaseReference checkRef = getRef("group", group.groupKey, "contents", content.contentKey);
-//        DatabaseReference writeRef = getRef(checkRef, "comment");
-        content.comment = newComment;
-        rvAdapter.notifyDataSetChanged();
 
         String uid = FirebaseAuth.getInstance().getUid();
         if (uid == null){
@@ -607,7 +621,8 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
         if (resultCode == RESULT_CANCELED) {
             toastNullable(getContext(), R.string.msg_cancel);
         } else if (resultCode == RESULT_OK) {
-            addDoc(data);
+            FbIntentService_.intent(getContext().getApplicationContext())
+                    .createNewDoc(data, group.groupKey).start();
         }
     }
 
@@ -1094,34 +1109,32 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
     }
 
     private void addDoc(Intent data){
-        final String docStr = data.getStringExtra(EditDocActivity.INTENT_KEY_DOC);
-        Gson gson = new Gson();
-        final Document doc = gson.fromJson(docStr, Document.class);
+
 //        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("group/" + group.groupKey);
 //        ref.addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(DataSnapshot dataSnapshot) {
-                String contentsKey = getRef("keyPusher").push().getKey();
-                String ymd = cal2date(Calendar.getInstance(), datePattern);
-                final User me = new User(FirebaseAuth.getInstance().getCurrentUser());
-                final Content content = new Content(contentsKey, doc.title, ymd, me.getUserUid(), me.getUserUid(), "document", docStr);
-                HashMap<String, Object> children = new HashMap<>();
-                children.put("contents/" + contentsKey + "/lastEdit", content.lastEdit);
-                children.put("contents/" + contentsKey + "/lastEditor", content.lastEditor);
-                children.put("contents/" + contentsKey + "/whose", content.whose);
-                children.put("contents/" + contentsKey + "/type", content.type);
-                children.put("contents/" + contentsKey + "/contentName", content.contentName);
-                children.put("contents/" + contentsKey + "/comment", content.comment);
-
-                DatabaseReference ref = getRef("group", group.groupKey);
-                FbCheckAndWriter writerInner = new FbCheckAndWriter(ref, ref, getContext(), children){
-                    @Override
-                    public void onSuccess(DatabaseReference ref) {
-                        toastNullable(getContext(), R.string.msg_succeed_make_doc);
-                        addContent(content);
-                    }
-                };
-                writerInner.update(CODE_UPDATE_CHILDREN);
+//                String contentsKey = getRef("keyPusher").push().getKey();
+//                String ymd = cal2date(Calendar.getInstance(), datePattern);
+//                final User me = new User(FirebaseAuth.getInstance().getCurrentUser());
+//                final Content content = new Content(contentsKey, doc.title, ymd, me.getUserUid(), me.getUserUid(), "document", docStr);
+//                HashMap<String, Object> children = new HashMap<>();
+//                children.put("contents/" + contentsKey + "/lastEdit", content.lastEdit);
+//                children.put("contents/" + contentsKey + "/lastEditor", content.lastEditor);
+//                children.put("contents/" + contentsKey + "/whose", content.whose);
+//                children.put("contents/" + contentsKey + "/type", content.type);
+//                children.put("contents/" + contentsKey + "/contentName", content.contentName);
+//                children.put("contents/" + contentsKey + "/comment", content.comment);
+//
+//                DatabaseReference ref = getRef("group", group.groupKey);
+//                FbCheckAndWriter writerInner = new FbCheckAndWriter(ref, ref, getContext(), children){
+//                    @Override
+//                    public void onSuccess(DatabaseReference ref) {
+//                        toastNullable(getContext(), R.string.msg_succeed_make_doc);
+//                        addContent(content);
+//                    }
+//                };
+//                writerInner.update(CODE_UPDATE_CHILDREN);
 //            }
 
 //            @Override
