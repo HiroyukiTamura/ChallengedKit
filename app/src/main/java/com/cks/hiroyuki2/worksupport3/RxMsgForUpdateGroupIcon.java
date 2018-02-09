@@ -16,28 +16,29 @@
 
 package com.cks.hiroyuki2.worksupport3;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
-
-import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
 
 /**
  * Created by hiroyuki2 on 2018/02/09.
  */
 
-public class RxMsgForShareRecord {
+public class RxMsgForUpdateGroupIcon {
     private String groupKey;
-    private Content content;
+    private Uri downloadUrl;
 
-    RxMsgForShareRecord (@NonNull String groupKey, @NonNull Content content) {
+    RxMsgForUpdateGroupIcon (@NonNull String groupKey, @NonNull Uri downloadUrl) {
         this.groupKey = groupKey;
-        this.content = content;
+        this.downloadUrl = downloadUrl;
     }
 
+    @NonNull
+    public Uri getDownloadUrl() {
+        return downloadUrl;
+    }
+
+    @NonNull
     public String getGroupKey() {
         return groupKey;
-    }
-
-    public Content getContent() {
-        return content;
     }
 }

@@ -39,6 +39,7 @@ import com.cks.hiroyuki2.worksupport3.Activities.MainActivity;
 import com.cks.hiroyuki2.worksupport3.FbIntentService;
 import com.cks.hiroyuki2.worksupport3.FbIntentService_;
 import com.cks.hiroyuki2.worksupport3.RxBus;
+import com.cks.hiroyuki2.worksupport3.RxMsgForUpdateGroupIcon;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Group;
 import com.cks.hiroyuki2.worksupprotlib.Entity.GroupInUserDataNode;
 import com.cks.hiroyuki2.worksupprotlib.Entity.User;
@@ -174,17 +175,21 @@ public class GroupSettingFragment extends RxFragment implements Callback, OnFail
         RxBus.subscribe(RxBus.UPDATE_GROUP_NAME, this, new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
-                toastNullable(getContext(), R.string.updated_group_name);
+                String groupKeyMsg = (String)o;
+                if (groupKeyMsg == group.groupKey)
+                    toastNullable(getContext(), R.string.updated_group_name);
             }
         });
 
         RxBus.subscribe(RxBus.UPDATE_GROUP_PHOTO, this, new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
-                Uri photoUrlUri = (Uri)o;
-                group.photoUrl = photoUrlUri.toString();
+                RxMsgForUpdateGroupIcon msg = (RxMsgForUpdateGroupIcon)o;
+                if (msg.getGroupKey() == group.groupKey)
+                    return;
+                group.photoUrl = msg.getDownloadUrl().toString();
                 Picasso.with(getContext())
-                        .load(photoUrlUri)
+                        .load(msg.getDownloadUrl())
                         .into(icon, GroupSettingFragment.this);
             }
         });

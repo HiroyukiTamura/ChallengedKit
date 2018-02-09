@@ -65,12 +65,15 @@ import java.util.Random;
 import static com.cks.hiroyuki2.worksupport3.RxBus.UPDATE_GROUP_PHOTO;
 import static com.cks.hiroyuki2.worksupport3.RxBus.UPDATE_PROF_NAME_SUCCESS;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
+import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.LIMIT_SIZE;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.isOverSize;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseStorageUtil.uploadFile;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
 import static com.cks.hiroyuki2.worksupprotlib.Util.cal2date;
 import static com.cks.hiroyuki2.worksupprotlib.Util.datePattern;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getExtension;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getFileName;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getMimeType;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logAnalytics;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
@@ -110,7 +113,7 @@ public class FbIntentService extends IntentService implements OnFailureListener,
             if (databaseError != null)
                 onErrorForService(TAG + databaseError.getMessage(), R.string.error);
             else
-                RxBus.publish(RxBus.UPDATE_GROUP_NAME, "てってれー");
+                RxBus.publish(RxBus.UPDATE_GROUP_NAME, groupKey);
         });
 
 //        new isMeGroupMemberChecker(){
@@ -161,9 +164,6 @@ public class FbIntentService extends IntentService implements OnFailureListener,
         final int ntfId = (int) System.currentTimeMillis();
 
         uploadFile("group_icon/" + fileName, uri, FbIntentService.this, (UploadTask.TaskSnapshot taskSnapshot) -> {
-                    Uri uri1 = taskSnapshot.getDownloadUrl();
-                    RxBus.publish(subject, uri1);/*Firebaseの仕様上NPEはあり得ないので、you can ignore this warning*/
-
 //                    DatabaseReference ref = getRef("group", groupKey, "photoUrl");
 //                    FbCheckAndWriter writer = new FbCheckAndWriter(ref, ref, getApplicationContext(), uri1.toString()) {
 //                        @Override
@@ -172,10 +172,13 @@ public class FbIntentService extends IntentService implements OnFailureListener,
 //                        }
 //                    };
 //                    writer.update(CODE_SET_VALUE);
+                    Uri uri1 = taskSnapshot.getDownloadUrl();/*Firebaseの仕様上NPEはあり得ないので、you can ignore this warning*/
                     getRef("group", groupKey, "photoUrl").setValue(uri1.toString(), (databaseError,  databaseReference) -> {
                         if (databaseError != null) {
                             onErrorForService(TAG + databaseError.getMessage(), R.string.error);
                         } else {
+                            RxMsgForUpdateGroupIcon msg = new RxMsgForUpdateGroupIcon(groupKey, uri1);
+                            RxBus.publish(subject, msg);
                             showCompleteNtf(MainActivity.class, getApplicationContext(), groupName, ntfId, R.string.ntf_txt_change_group_img);
                         }
                     });
@@ -336,7 +339,7 @@ public class FbIntentService extends IntentService implements OnFailureListener,
     }
 
     @ServiceAction
-    public void shareMyRecord(String groupKey, FirebaseUser me) {
+    public void shareMyRecord(@NonNull String groupKey, @NonNull FirebaseUser me) {
         DatabaseReference ref = getRef("group", groupKey);
 
         HashMap<String, Object> children = new HashMap<>();
@@ -355,10 +358,69 @@ public class FbIntentService extends IntentService implements OnFailureListener,
             if (databaseError != null) {
                 onErrorForService(TAG + databaseError.getMessage(), R.string.error);
             } else {
-                RxMsgForShareRecord msg = new RxMsgForShareRecord(groupKey, content);
+                RxMsgForContent msg = new RxMsgForContent(groupKey, content);
                 RxBus.publish(RxBus.SHARE_MY_RECORD, msg);
             }
         });
+    }
+
+    @ServiceAction
+    public void uploadMyFile(@NonNull String groupKey, @NonNull Intent data){
+        final Uri uri = data.getData();
+        if (uri == null || isOverSize(uri, LIMIT_SIZE)){
+            toastNullable(getApplicationContext(), R.string.over_size_err);
+            return;
+        }
+
+        String uid  = FirebaseAuth.getInstance().getUid();
+        final String fileName = getFileName(getApplicationContext(), uri);
+        if (fileName == null || uid == null) {
+            onError(this, TAG+"fileName || uid == null", R.string.error);
+            return;
+        }
+
+        toastNullable(getApplicationContext(), R.string.msg_start_upload);
+        final String contentsKey = getRef("keyPusher").push().getKey();
+        final int ntfId = (int) System.currentTimeMillis();//NotificationのIdは現在時刻から生成する。
+
+        FirebaseStorage.getInstance().getReference().child("shareFile/"+ groupKey +"/"+ contentsKey)
+                .putFile(uri)
+                .addOnFailureListener(e -> {
+                    logStackTrace(e);
+                    toastNullable(getApplicationContext(), R.string.error);
+                    showCompleteNtf(MainActivity.class, getApplicationContext(), fileName, ntfId, R.string.msg_failed_upload);
+
+                }).addOnSuccessListener(taskSnapshot -> {
+                    showCompleteNtf(MainActivity.class, getApplicationContext(), fileName, ntfId, R.string.msg_succeed_upload);
+
+                    String ymd = cal2date(Calendar.getInstance(), datePattern);
+                    String mimeType = getMimeType(getApplicationContext(), uri);
+                    final Content content = new Content(contentsKey, fileName, ymd, uid, uid, mimeType, null);
+                    RxMsgForContent msg = new RxMsgForContent(groupKey, content);
+                    RxBus.publish(RxBus.UPLOAD_MY_FILE, msg);
+
+                }).addOnPausedListener(taskSnapshot -> {
+                    //do nothing
+                }).addOnProgressListener(taskSnapshot -> {
+                    showUploadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, fileName, ntfId);
+                });
+
+//        uploadFile("shareFile/"+ groupKey +"/"+ contentsKey, uri, e -> onFailureOparation(e, fileName, ntfId, R.string.msg_failed_upload), taskSnapshot -> {
+//            User me = new User(FirebaseAuth.getInstance().getCurrentUser());
+//            String ymd = cal2date(Calendar.getInstance(), datePattern);
+//            String mimeType = getMimeType(getApplicationContext(), uri);
+//            final Content content = new Content(contentsKey, fileName, ymd, me.getUserUid(), me.getUserUid(), mimeType, null);
+//
+//            getRef("group", groupKey, "contents", contentsKey)
+//                    .setValue(content, (databaseError, databaseReference) -> {
+//                        if (databaseError != null) {
+//                            onErrorForService(TAG + databaseError.getDetails(), R.string.error);
+//                            showCompleteNtf(MainActivity.class, getApplicationContext(), fileName, ntfId, R.string.msg_failed_upload);
+//                        } else {
+//
+//                        }
+//                    });
+//        }, storageUtil, taskSnapshot -> showUploadingNtf(MainActivity.class, getContext(), taskSnapshot, fileName, ntfId));
     }
 
     /**
