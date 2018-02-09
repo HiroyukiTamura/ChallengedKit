@@ -52,7 +52,8 @@ public class RxBus {
     public static final int ADD_DOC_COMMENT = 9;
     public static final int CREATE_DOC = 10;
     public static final int UPDATE_COMMENT = 11;
-    @IntRange(from = 0, to = 11)
+    public static final int SHARE_MY_RECORD = 12;
+    @IntRange(from = 0, to = 12)
     @interface subject{}
 
     /**

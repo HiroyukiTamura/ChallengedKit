@@ -301,7 +301,6 @@ public class FbIntentService extends IntentService implements OnFailureListener,
         });
     }
 
-
     @ServiceAction
     public void editNormalComment(@NonNull String uid, @NonNull String groupKey, @NonNull String contentKey, @Nullable String newComment){
 
@@ -334,6 +333,32 @@ public class FbIntentService extends IntentService implements OnFailureListener,
 //                writer.update(CODE_SET_VALUE);
 //            }
 //        }.check(uid, groupKey);
+    }
+
+    @ServiceAction
+    public void shareMyRecord(String groupKey, FirebaseUser me) {
+        DatabaseReference ref = getRef("group", groupKey);
+
+        HashMap<String, Object> children = new HashMap<>();
+        final String contentsKey = ref.push().getKey();
+        final String ymd = cal2date(Calendar.getInstance(), datePattern);
+        final String contentsName = me.getDisplayName() +"さんの記録";
+        final Content content = new Content(contentsKey, contentsName, ymd, me.getUid(), me.getUid(), "data", null);
+        children.put("contents/"+contentsKey+"/lastEdit", content.lastEdit);
+        children.put("contents/"+contentsKey+"/lastEditor", content.lastEditor);
+        children.put("contents/"+contentsKey+"/whose", content.whose);
+        children.put("contents/"+contentsKey+"/type", content.type);
+        children.put("contents/"+contentsKey+"/contentName", content.contentName);
+        children.put("contents/"+contentsKey+"/comment", content.comment);
+
+        ref.updateChildren(children, (databaseError, databaseReference) -> {
+            if (databaseError != null) {
+                onErrorForService(TAG + databaseError.getMessage(), R.string.error);
+            } else {
+                RxMsgForShareRecord msg = new RxMsgForShareRecord(groupKey, content);
+                RxBus.publish(RxBus.SHARE_MY_RECORD, msg);
+            }
+        });
     }
 
     /**

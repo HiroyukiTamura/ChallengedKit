@@ -46,6 +46,7 @@ import com.cks.hiroyuki2.worksupport3.DialogFragments.ShareBoardDialog;
 import com.cks.hiroyuki2.worksupport3.RxBus;
 import com.cks.hiroyuki2.worksupport3.RxMsgForAddDocComment;
 import com.cks.hiroyuki2.worksupport3.RxMsgForNewDoc;
+import com.cks.hiroyuki2.worksupport3.RxMsgForShareRecord;
 import com.cks.hiroyuki2.worksupport3.RxMsgForUpdateComment;
 import com.cks.hiroyuki2.worksupport3.Util;
 import com.cks.hiroyuki2.worksupprotlib.Entity.Content;
@@ -214,6 +215,13 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
                 return;
             content.comment = msg.getNewComment();
             rvAdapter.notifyDataSetChanged();
+        });
+
+        RxBus.subscribe(RxBus.SHARE_MY_RECORD, this, o -> {
+            RxMsgForShareRecord msg = (RxMsgForShareRecord) o;
+            toastNullable(getContext(), R.string.msg_sync_data);
+            group.contentList.add(msg.getContent());
+            rvAdapter.notifyItemInserted(group.contentList.size()-1);
         });
     }
 
