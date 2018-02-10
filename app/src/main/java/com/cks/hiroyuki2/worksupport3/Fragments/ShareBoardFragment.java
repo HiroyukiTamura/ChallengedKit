@@ -888,11 +888,11 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
 //        });
     }
 
-    private void onFailureOparation(Exception e, String fileName, int ntfId, @StringRes int string){
-        logStackTrace(e);
-        toastNullable(getContext(), R.string.error);
-        showCompleteNtf(MainActivity.class, getContext().getApplicationContext(), fileName, ntfId, string);
-    }
+//    private void onFailureOparation(Exception e, String fileName, int ntfId, @StringRes int string){
+//        logStackTrace(e);
+//        toastNullable(getContext(), R.string.error);
+//        showCompleteNtf(MainActivity.class, getContext().getApplicationContext(), fileName, ntfId, string);
+//    }
 
 //    /**このメソッドでストレージのデータを削除できようができまいが、ここに到達した時点で{@link #onChoose4thItem(int, boolean)}でDatabaseは削除しているので、
 //     * トーストは{@link #onChoose4thItem(int, boolean)}で出すようにする。*/
@@ -1114,7 +1114,7 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
 //        });
 //    }
 
-    private void addDoc(Intent data){
+//    private void addDoc(Intent data){
 
 //        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("group/" + group.groupKey);
 //        ref.addValueEventListener(new ValueEventListener() {
@@ -1148,7 +1148,7 @@ public class ShareBoardFragment extends RxFragment implements OnFailureListener,
 //                onError(ShareBoardFragment.this, TAG+databaseError.getDetails(), R.string.error);
 //            }
 //        });
-    }
+//    }
 
     private void addContent(@NonNull Content content){
         group.contentList.add(content);

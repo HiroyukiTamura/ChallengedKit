@@ -94,7 +94,7 @@ public class SettingFragment extends RxFragment implements OnFailureListener, Ca
             nameTv.setText((String) newName);
         });
 
-        RxBus.subscribe(RxBus.UPDATE_PROF_NAME_SUCCESS, this, uri -> Picasso.with(getContext())
+        RxBus.subscribe(RxBus.UPDATE_PROF_ICON, this, uri -> Picasso.with(getContext())
             .load((Uri)uri)
             .into(iconIv, SettingFragment.this));
     }

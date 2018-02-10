@@ -487,14 +487,14 @@ public class FbIntentService extends IntentService implements OnFailureListener,
      */
     @ServiceAction
     public void removeFileFromStorage(@NonNull String uid, @NonNull String groupKey, @NonNull String contentKey, final boolean isDoc){
-        new isMeGroupMemberChecker(){
-            @Override
-            protected void onError(@NonNull String errMsg) {
-                onErrorForService(errMsg, R.string.error);
-            }
-
-            @Override
-            protected void onSuccess(DataSnapshot dataSnapshot) {
+//        new isMeGroupMemberChecker(){
+//            @Override
+//            protected void onError(@NonNull String errMsg) {
+//                onErrorForService(errMsg, R.string.error);
+//            }
+//
+//            @Override
+//            protected void onSuccess(DataSnapshot dataSnapshot) {
                 getRef("group", groupKey, "contents", contentKey)
                         .removeValue((databaseError, databaseReference) -> {
                             if (databaseError != null)
@@ -510,8 +510,8 @@ public class FbIntentService extends IntentService implements OnFailureListener,
                                 }
                             }
                         });
-            }
-        }.check(uid, groupKey);
+//            }
+//        }.check(uid, groupKey);
     }
 
     @ServiceAction

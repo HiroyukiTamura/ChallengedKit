@@ -42,12 +42,12 @@ public class RxBus {
 
     public static final int UPDATE_GROUP_NAME = 0;
     public static final int UPDATE_GROUP_PHOTO = 1;
-    public static final int UPDATE_GROUP_PHOTO2 = 2;
+//    public static final int UPDATE_GROUP_PHOTO2 = 2;
     public static final int REMOVE_MEMBER = 3;
     public static final int REMOVE_STORAGE_FILE = 4;
     public static final int CREATE_GROUP_NEW_IMG = 5;
     public static final int UPDATE_PROF_NAME_SUCCESS = 6;
-    public static final int UPDATE_PROF_NAME_FAILURE = 7;
+//    public static final int UPDATE_PROF_NAME_FAILURE = 7;
     public static final int UPDATE_PROF_ICON = 8;
     public static final int ADD_DOC_COMMENT = 9;
     public static final int CREATE_DOC = 10;
