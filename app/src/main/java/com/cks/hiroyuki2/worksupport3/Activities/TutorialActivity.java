@@ -16,6 +16,7 @@
 
 package com.cks.hiroyuki2.worksupport3.Activities;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
@@ -32,6 +33,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.res.ColorRes;
 import org.androidannotations.annotations.res.StringRes;
 
+@SuppressLint("Registered")
 @EActivity
 public class TutorialActivity extends AppIntro {
 
