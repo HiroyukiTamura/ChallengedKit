@@ -86,9 +86,9 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
     private List<String> groupKeys = new ArrayList<>();
     private Messenger mServiceMessenger;
 
-    public static final int SEND_CODE_SOCIAL_STATE = 1;
+//    public static final int SEND_CODE_SOCIAL_STATE = 1;
 
-    public static final int SEND_CODE_ADD_COMMENT = 20;
+//    public static final int SEND_CODE_ADD_COMMENT = 20;
 
     static final String SEND_CODE = "SEND_CODE";
     static final int SEND_CODE_FRIEND_CHANGED = 10;
@@ -116,10 +116,10 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
-                case SEND_CODE_ADD_COMMENT:
-                    ServiceMessage sm = (ServiceMessage) msg.obj;
-                    addComment(sm);
-                    break;
+//                case SEND_CODE_ADD_COMMENT:
+//                    ServiceMessage sm = (ServiceMessage) msg.obj;
+//                    addComment(sm);
+//                    break;
                 default:
                     super.handleMessage(msg);
                     break;
@@ -370,58 +370,58 @@ public class BackService extends Service implements FirebaseAuth.AuthStateListen
         }
     }
 
-    private void addComment(@NonNull ServiceMessage sm){
-        sm.getUser().getIdToken(false).addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                onError(getApplicationContext(), TAG + task.toString(), R.string.error);
-                return;
-            }
+//    private void addComment(@NonNull ServiceMessage sm){
+//        sm.getUser().getIdToken(false).addOnCompleteListener(task -> {
+//            if (!task.isSuccessful()) {
+//                onError(getApplicationContext(), TAG + task.toString(), R.string.error);
+//                return;
+//            }
+//
+//            String token = task.getResult().getToken();
+//            ApiService apiService = getRetroFit().create(ApiService.class);
+//            apiService.getData("Bearer " + token, sm.getGroupKey(), sm.getContentsKey())
+//                    .enqueue(new Callback<ResponseBody>() {
+//                @Override
+//                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+//                    Log.d(TAG, "onResponse: code " + response.code() +"message "+ response.message());
+//                }
+//
+//                @Override
+//                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+//                    onError(getApplicationContext(), t.getMessage(), R.string.error);
+//                }
+//            });
+//        });
+//    }
 
-            String token = task.getResult().getToken();
-            ApiService apiService = getRetroFit().create(ApiService.class);
-            apiService.getData("Bearer " + token, sm.getGroupKey(), sm.getContentsKey())
-                    .enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                    Log.d(TAG, "onResponse: code " + response.code() +"message "+ response.message());
-                }
+//    @NonNull
+//    private Retrofit getRetroFit(){
+//        Gson gson = new GsonBuilder()
+//                .setLenient()
+//                .create();
+//
+//        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+//        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+//        OkHttpClient client = new OkHttpClient.Builder()
+//                .addInterceptor(interceptor)
+//                .retryOnConnectionFailure(true)
+//                .connectTimeout(7, TimeUnit.SECONDS)
+//                .build();
+//
+//        return new Retrofit.Builder()
+//                .baseUrl(API_URL)
+//                .client(client)
+//                .addConverterFactory(GsonConverterFactory.create(gson))
+//                .build();
+//    }
 
-                @Override
-                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                    onError(getApplicationContext(), t.getMessage(), R.string.error);
-                }
-            });
-        });
-    }
-
-    @NonNull
-    private Retrofit getRetroFit(){
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(interceptor)
-                .retryOnConnectionFailure(true)
-                .connectTimeout(7, TimeUnit.SECONDS)
-                .build();
-
-        return new Retrofit.Builder()
-                .baseUrl(API_URL)
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-    }
-
-    public interface ApiService {
-        @GET("helloWorld/api/")
-        @Headers({
-                "User-Agent: Retrofit-Sample-App"
-        })
-        Call<ResponseBody> getData(@Header("Authorization") String authorization,
-                                   @Header("groupKey") String groupKey,
-                                   @Header("contentsKey") String contentsKey);
-    }
+//    public interface ApiService {
+//        @GET("helloWorld/api/")
+//        @Headers({
+//                "User-Agent: Retrofit-Sample-App"
+//        })
+//        Call<ResponseBody> getData(@Header("Authorization") String authorization,
+//                                   @Header("groupKey") String groupKey,
+//                                   @Header("contentsKey") String contentsKey);
+//    }
 }

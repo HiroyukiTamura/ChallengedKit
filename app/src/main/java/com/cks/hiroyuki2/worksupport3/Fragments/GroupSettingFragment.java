@@ -444,6 +444,7 @@ public class GroupSettingFragment extends RxFragment implements Callback, OnFail
 
     /**
      * {@link onClickInvite()}の流れで発火する。
+     * これIntentServiceに移植するべきでは？
      */
     private void onResultAddMember(Intent data){
         final List<User> newMembers = data.getParcelableArrayListExtra(KEY_PARCELABLE);
