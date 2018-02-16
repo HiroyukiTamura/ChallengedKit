@@ -85,6 +85,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    //travis ci用
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
