@@ -390,6 +390,7 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
         getRef("friend", me.getUserUid()).addListenerForSingleValueEvent(this);
     }
 
+
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
         if (!dataSnapshot.exists() || !dataSnapshot.hasChildren()){/*このノードはNonNUllが保障されている*/
