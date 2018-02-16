@@ -24,8 +24,8 @@ before_install:
 jdk:
   - oraclejdk8
 
-#before_script:
-#  - chmod +x gradlew
+before_script:
+  - chmod +x gradlew
 
 script:
    - ./gradlew build connectedCheck --stacktrace
