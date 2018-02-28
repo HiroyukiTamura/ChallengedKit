@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/HiroyukTamura/ChallengedKit.svg?branch=WorkBrunch)](https://travis-ci.org/HiroyukTamura/ChallengedKit)
+
 ![edited3](https://user-images.githubusercontent.com/26954245/32928895-db1ef6d6-cb97-11e7-8a3b-6b4cb9f741f4.jpg)
 
 ## こんな機能があります
