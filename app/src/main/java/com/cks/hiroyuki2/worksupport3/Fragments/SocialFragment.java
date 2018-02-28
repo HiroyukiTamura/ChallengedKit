@@ -60,22 +60,32 @@ import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.view.View.VISIBLE;
+import static com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity.REQ_CODE_ADD_GROUP_MEMBER;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.FbIntentService.PREF_KEY_ACCESS_SOCIAL;
 import static com.cks.hiroyuki2.worksupprotlib.Entity.Group.makeGroupFromSnap;
 import static com.cks.hiroyuki2.worksupprotlib.Entity.User.makeUserFromSnap;
 import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
 import com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter;
+import com.trello.rxlifecycle2.components.support.RxFragment;
+
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRootRef;
 import static com.cks.hiroyuki2.worksupprotlib.Util.DEFAULT;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
+import static com.cks.hiroyuki2.worksupprotlib.Util.getPosFromUid;
 import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
@@ -90,7 +100,7 @@ import static com.example.hiroyuki3.worksupportlibw.AdditionalUtil.CODE_SOCIAL_F
  * SocialListRVAdapter.ISocialListRVAdapterはimplementしないでください。だって、SocialFragmentでグループ作成しないでしょ？
  */
 @EFragment(R.layout.fragment_social2)
-public class SocialFragment extends Fragment implements ValueEventListener, SocialGroupListRVAdapter.ISocialGroupListRVAdapter {
+public class SocialFragment extends RxFragment implements SocialGroupListRVAdapter.ISocialGroupListRVAdapter {
 
     private static final String TAG = "MANUAL_TAG: " + SocialFragment.class.getSimpleName();
     public static final int REQ_CODE_CREATE_GROUP = 1632;
@@ -387,59 +397,78 @@ public class SocialFragment extends Fragment implements ValueEventListener, Soci
     }
 
     private void retrieveUserList(){
-        getRef("friend", me.getUserUid()).addListenerForSingleValueEvent(this);
-    }
-
-
-    @Override
-    public void onDataChange(DataSnapshot dataSnapshot) {
-        if (!dataSnapshot.exists() || !dataSnapshot.hasChildren()){/*このノードはNonNUllが保障されている*/
-            onError(context, TAG+"!dataSnapshot.exists()"+dataSnapshot.toString(), R.string.error);
-            return;
-        }
-
-        for (DataSnapshot child: dataSnapshot.getChildren()) {
-            if (child.getKey().equals(DEFAULT))
-                continue;
-            userList.add(makeUserFromSnap(child));
-        }
-
-        userAdapter = new SocialListRVAdapter(userList, this, CODE_SOCIAL_FRAG);
-        rvUser.setAdapter(userAdapter);
-
-        getRef("userData", me.getUserUid(), "group").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists() || !dataSnapshot.hasChildren()){/*このノードはNonNUllが保障されている*/
-                    onError(SocialFragment.this, TAG+"!dataSnapshot.exists()"+dataSnapshot.toString(), R.string.error);
-                    return;
+        Single.create((SingleOnSubscribe<DataSnapshot>) emitter -> {
+            getRef("friend", me.getUserUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    emitter.onSuccess(dataSnapshot);
                 }
 
-                groupList = new ArrayList<>();
-                for (DataSnapshot data: dataSnapshot.getChildren()) {
-                    if (data.getKey().equals(DEFAULT))
-                        continue;
-                    GroupInUserDataNode groupNode = data.getValue(GroupInUserDataNode.class);
-                    groupNode.groupKey = data.getKey();
-                    groupList.add(groupNode);
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    emitter.onError(databaseError.toException());
                 }
-                groupAdapter = new SocialGroupListRVAdapter(groupList, SocialFragment.this);
-                rvShare.setAdapter(groupAdapter);
+            });
+        }).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindToLifecycle())
+                .subscribe(dataSnapshot -> {
+                    if (!dataSnapshot.exists() || !dataSnapshot.hasChildren()){/*このノードはNonNUllが保障されている*/
+                        onError(context, TAG+"!dataSnapshot.exists()"+dataSnapshot.toString(), R.string.error);
+                        return;
+                    }
 
-                sv.setVisibility(VISIBLE);
-            }
+                    for (DataSnapshot child: dataSnapshot.getChildren()) {
+                        if (child.getKey().equals(DEFAULT))
+                            continue;
+                        userList.add(makeUserFromSnap(child));
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                onError(SocialFragment.this, TAG+databaseError.getDetails(), R.string.error);
-            }
-        });
-    }
+                    userAdapter = new SocialListRVAdapter(userList, this, CODE_SOCIAL_FRAG);
+                    if (rvUser.getAdapter() == null)
+                        rvUser.setAdapter(userAdapter);
+                    else
+                        rvUser.swapAdapter(userAdapter, false);
 
-    @Override
-    public void onCancelled(DatabaseError databaseError) {
-        logStackTrace(databaseError.toException());
-        toastNullable(getContext(), R.string.error);
+
+                    Single.create((SingleOnSubscribe<DataSnapshot>) emitterI -> {
+                        getRef("friend", me.getUserUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                emitterI.onSuccess(dataSnapshot);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                emitterI.onError(databaseError.toException());
+                            }
+                        });
+                    }).subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .compose(bindToLifecycle())
+                            .subscribe(dataSnapshotI -> {
+                                if (!dataSnapshotI.exists() || !dataSnapshotI.hasChildren()){/*このノードはNonNUllが保障されている*/
+                                    onError(SocialFragment.this, TAG+"!dataSnapshot.exists()"+dataSnapshotI.toString(), R.string.error);
+                                    return;
+                                }
+
+                                groupList = new ArrayList<>();
+                                for (DataSnapshot data: dataSnapshotI.getChildren()) {
+                                    if (data.getKey().equals(DEFAULT))
+                                        continue;
+                                    GroupInUserDataNode groupNode = data.getValue(GroupInUserDataNode.class);
+                                    groupNode.groupKey = data.getKey();
+                                    groupList.add(groupNode);
+                                }
+                                groupAdapter = new SocialGroupListRVAdapter(groupList, SocialFragment.this);
+                                if (rvShare.getAdapter() == null)
+                                    rvShare.setAdapter(groupAdapter);
+                                else
+                                    rvShare.swapAdapter(groupAdapter, false);
+
+                                sv.setVisibility(VISIBLE);
+                            }, throwable -> Util.onError(SocialFragment.this, TAG+throwable.getMessage(), R.string.error));
+                }, throwable -> Util.onError(SocialFragment.this, TAG+throwable.getMessage(), R.string.error));
     }
 
     /**
