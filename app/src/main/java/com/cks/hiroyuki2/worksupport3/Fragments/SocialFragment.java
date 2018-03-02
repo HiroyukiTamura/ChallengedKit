@@ -306,45 +306,55 @@ public class SocialFragment extends RxFragment implements SocialGroupListRVAdapt
             if (mListener == null) return;
 
             groupNode.added = true;
-            DatabaseReference checkRef = getRef("group", groupNode.groupKey);
+//            DatabaseReference checkRef = getRef("group", groupNode.groupKey);
             HashMap<String, Object> hashMap = new HashMap<>();
             hashMap.put(makeScheme("group", groupNode.groupKey, "member", me.getUserUid(), "added"), true);
             hashMap.put(makeScheme("userData", me.getUserUid(), "group", groupNode.groupKey, "added"), true);
-            final FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, getRootRef(), context, hashMap) {
-                private Group group;
 
-                @Override
-                public void onSuccess(DatabaseReference ref) {
-                    toastNullable(getContext(), R.string.msg_add_group);
-                    mListener.onCompleteGroup(group);
-                    groupAdapter.notifyAddedToGroup(groupNode.groupKey);
-                }
-
-                @Override
-                protected void onNodeExist(@NonNull DataSnapshot dataSnapshot) {
-                    if (getContext() == null)
-                        return;
-                    group = makeGroupFromSnap(getContext(), dataSnapshot, groupNode.groupKey);
-                    if (group == null)
-                        return;//例外処理はmakeGroupFromSnap()内で行っています
-
-                    boolean isReallyMember = false;
-                    for (User user: group.userList)
-                        if (user.getUserUid().equals(me.getUserUid())){
-                            user.setChecked(true);
-                            isReallyMember = true;
-                            break;
-                        }
-
-                    if (!isReallyMember){
-                        onError(SocialFragment.this, TAG+"!isReallyMember", R.string.error);
-                        return;
+            Single.create((SingleOnSubscribe<DatabaseReference>) emitter -> {
+                getRootRef().updateChildren(hashMap, (databaseError, databaseReference) -> {
+                    if (databaseError == null) {
+                        emitter.onSuccess(databaseReference);
+                    } else {
+                        emitter.onError(databaseError.toException());
                     }
-                    super.onNodeExist(dataSnapshot);
-//                  srl.setRefreshing(false);
-                    }
-                };
-                writer.update(CODE_UPDATE_CHILDREN);
+                });
+            }).subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .compose(bindToLifecycle())
+                    .subscribe(databaseReference -> {
+
+                        Single.create((SingleOnSubscribe<DataSnapshot>) emitterI -> {
+                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    emitterI.onSuccess(dataSnapshot);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    emitterI.onError(databaseError.toException());
+                                }
+                            });
+                        }).subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .compose(bindToLifecycle())
+                                .subscribe(dataSnapshot -> {
+
+                                    toastNullable(getContext(), R.string.msg_add_group);
+                                    if (getContext() == null)
+                                        return;
+                                    Group group = makeGroupFromSnap(getContext(), dataSnapshot, groupNode.groupKey);
+                                    if (group == null) {
+                                        Util.onError(SocialFragment.this, TAG+ "group == null", R.string.error);
+                                        return;
+                                    }
+                                    mListener.onCompleteGroup(group);
+                                    groupAdapter.notifyAddedToGroup(groupNode.groupKey);
+
+                                });
+                    },  throwable -> Util.onError(SocialFragment.this, TAG+ throwable.getMessage(), R.string.error));
+
         } else if (button == BUTTON_NEGATIVE){
             exitGroup(me.getUserUid(), groupNode.groupKey, R.string.reject_invitation_toast);
         }
@@ -365,19 +375,29 @@ public class SocialFragment extends RxFragment implements SocialGroupListRVAdapt
         return hashMap;
     }
 
+    /**
+     * todo 未デバッグ
+     */
     public void exitGroup(@NonNull String meUid, @NonNull final String groupKey, @StringRes final int toast){
-        DatabaseReference checkRef = getRef("group", groupKey);
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(makeScheme("group", groupKey, "member", meUid), null);
-        hashMap.put(makeScheme("userData", meUid, "group", groupKey), null);
-        FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, getRootRef(), context, hashMap) {
-            @Override
-            public void onSuccess(DatabaseReference ref) {
-                toastNullable(getContext(), toast);
-                groupAdapter.notifyExitGroup(groupKey);
-            }
-        };
-        writer.update(CODE_UPDATE_CHILDREN);
+        Single.create((SingleOnSubscribe<DataSnapshot>) emitter -> {
+            getRootRef().addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    emitter.onSuccess(dataSnapshot);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    emitter.onError(databaseError.toException());
+                }
+            });
+        }).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindToLifecycle())
+                .subscribe(dataSnapshot -> {
+                    toastNullable(getContext(), toast);
+                    groupAdapter.notifyExitGroup(groupKey);
+                }, throwable -> Util.onError(SocialFragment.this, TAG+ throwable.getMessage(), R.string.error));
     }
 
     //自分は「参加」、他の人は「未参加」とする
@@ -418,6 +438,7 @@ public class SocialFragment extends RxFragment implements SocialGroupListRVAdapt
                         return;
                     }
 
+                    userList = new ArrayList<>();
                     for (DataSnapshot child: dataSnapshot.getChildren()) {
                         if (child.getKey().equals(DEFAULT))
                             continue;
@@ -432,7 +453,7 @@ public class SocialFragment extends RxFragment implements SocialGroupListRVAdapt
 
 
                     Single.create((SingleOnSubscribe<DataSnapshot>) emitterI -> {
-                        getRef("friend", me.getUserUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        getRef("userData", me.getUserUid(), "group").addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 emitterI.onSuccess(dataSnapshot);
