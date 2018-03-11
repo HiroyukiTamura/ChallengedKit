@@ -215,8 +215,9 @@ public class AddGroupFragment extends Fragment implements Callback , SocialListR
     }
 
     @Override
-    public void onError() {
+    public void onError(Exception e) {
         Util.onError(this, TAG + "onError()", R.string.error);
+        e.printStackTrace();
     }
 
     private void onFailureOparation(Exception e, String fileName, int ntfId, @android.support.annotation.StringRes int string){

@@ -160,7 +160,7 @@ public class GroupSettingFragment extends RxFragment implements Callback, OnFail
                 if (msg.getGroupKey() == group.groupKey)
                     return;
                 group.photoUrl = msg.getDownloadUrl().toString();
-                Picasso.with(getContext())
+                Picasso.get()
                         .load(msg.getDownloadUrl())
                         .into(icon, GroupSettingFragment.this);
             }
@@ -182,7 +182,7 @@ public class GroupSettingFragment extends RxFragment implements Callback, OnFail
         unbinder = ButterKnife.bind(this, rootView);
         setNullableText(name, group.groupName);
         defIcon.setImageResource(R.drawable.ic_group_white_24dp);
-        Picasso.with(getContext())/*もともとはデフォルトの画像が挿入されていて、もし画像取得ができれば、デフォルトのImageView手前にあるImageViewに描画し、デフォルトのImageViewを隠す。*/
+        Picasso.get()/*もともとはデフォルトの画像が挿入されていて、もし画像取得ができれば、デフォルトのImageView手前にあるImageViewに描画し、デフォルトのImageViewを隠す。*/
                 .load(group.photoUrl)
                 .into(icon, this);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -197,7 +197,8 @@ public class GroupSettingFragment extends RxFragment implements Callback, OnFail
     }
 
     @Override
-    public void onError() {
+    public void onError(Exception e) {
+        e.printStackTrace();
         //デフォルト画像が表示されたままなので、特になにもしない
     }
 
