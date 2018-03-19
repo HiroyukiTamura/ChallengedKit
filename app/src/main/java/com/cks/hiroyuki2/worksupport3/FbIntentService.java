@@ -321,15 +321,12 @@ public class FbIntentService extends IntentService implements OnFailureListener,
 //            @Override
 //            protected void onSuccess(DataSnapshot dataSnapshot) {
 //                DatabaseReference checkRef = getRef("group", groupKey, "contents", contentKey);
-                getRef("group", groupKey, "contents", contentKey, "comment").setValue(newComment, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        if (databaseError != null) {
-                            onErrorForService(TAG + databaseError.getMessage(), R.string.error);
-                        } else {
-                            RxMsgForUpdateComment msg = new RxMsgForUpdateComment(groupKey, contentKey, newComment);
-                            RxBus.publish(RxBus.UPDATE_COMMENT, msg);
-                        }
+                getRef("group", groupKey, "contents", contentKey, "comment").setValue(newComment, (databaseError, databaseReference) -> {
+                    if (databaseError != null) {
+                        onErrorForService(TAG + databaseError.getMessage(), R.string.error);
+                    } else {
+                        RxMsgForUpdateComment msg = new RxMsgForUpdateComment(groupKey, contentKey, newComment);
+                        RxBus.publish(RxBus.UPDATE_COMMENT, msg);
                     }
                 });
 //                FbCheckAndWriter writer = new FbCheckAndWriter(checkRef, writeRef, getApplicationContext(), newComment) {
@@ -406,9 +403,7 @@ public class FbIntentService extends IntentService implements OnFailureListener,
 
                 }).addOnPausedListener(taskSnapshot -> {
                     //do nothing
-                }).addOnProgressListener(taskSnapshot -> {
-                    showUploadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, fileName, ntfId);
-                });
+                }).addOnProgressListener(taskSnapshot -> showUploadingNtf(MainActivity.class, getApplicationContext(), taskSnapshot, fileName, ntfId));
 
 //        uploadFile("shareFile/"+ groupKey +"/"+ contentsKey, uri, e -> onFailureOparation(e, fileName, ntfId, R.string.msg_failed_upload), taskSnapshot -> {
 //            User me = new User(FirebaseAuth.getInstance().getCurrentUser());

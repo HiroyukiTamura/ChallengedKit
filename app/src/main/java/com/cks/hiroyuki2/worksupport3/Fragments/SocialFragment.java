@@ -22,7 +22,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -61,10 +60,8 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.Single;
-import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
@@ -72,21 +69,17 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.view.View.VISIBLE;
-import static com.cks.hiroyuki2.worksupport3.Activities.AddGroupActivity.REQ_CODE_ADD_GROUP_MEMBER;
 import static com.cks.hiroyuki2.worksupport3.DialogKicker.kickDialogInOnClick;
 import static com.cks.hiroyuki2.worksupport3.FbIntentService.PREF_KEY_ACCESS_SOCIAL;
 import static com.cks.hiroyuki2.worksupprotlib.Entity.Group.makeGroupFromSnap;
 import static com.cks.hiroyuki2.worksupprotlib.Entity.User.makeUserFromSnap;
-import static com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter.CODE_UPDATE_CHILDREN;
-import com.cks.hiroyuki2.worksupprotlib.FbCheckAndWriter;
+
 import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRef;
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRootRef;
 import static com.cks.hiroyuki2.worksupprotlib.Util.DEFAULT;
 import static com.cks.hiroyuki2.worksupprotlib.Util.PREF_NAME;
-import static com.cks.hiroyuki2.worksupprotlib.Util.getPosFromUid;
-import static com.cks.hiroyuki2.worksupprotlib.Util.logStackTrace;
 import static com.cks.hiroyuki2.worksupprotlib.Util.makeScheme;
 import static com.cks.hiroyuki2.worksupprotlib.Util.onError;
 import static com.cks.hiroyuki2.worksupprotlib.Util.setImgFromStorage;
@@ -311,49 +304,42 @@ public class SocialFragment extends RxFragment implements SocialGroupListRVAdapt
             hashMap.put(makeScheme("group", groupNode.groupKey, "member", me.getUserUid(), "added"), true);
             hashMap.put(makeScheme("userData", me.getUserUid(), "group", groupNode.groupKey, "added"), true);
 
-            Single.create((SingleOnSubscribe<DatabaseReference>) emitter -> {
-                getRootRef().updateChildren(hashMap, (databaseError, databaseReference) -> {
-                    if (databaseError == null) {
-                        emitter.onSuccess(databaseReference);
-                    } else {
-                        emitter.onError(databaseError.toException());
-                    }
-                });
-            }).subscribeOn(Schedulers.newThread())
+            Single.create((SingleOnSubscribe<DatabaseReference>) emitter -> getRootRef().updateChildren(hashMap, (databaseError, databaseReference) -> {
+                if (databaseError == null) {
+                    emitter.onSuccess(databaseReference);
+                } else {
+                    emitter.onError(databaseError.toException());
+                }
+            })).subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .compose(bindToLifecycle())
-                    .subscribe(databaseReference -> {
+                    .subscribe(databaseReference -> Single.create((SingleOnSubscribe<DataSnapshot>) emitterI -> databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            emitterI.onSuccess(dataSnapshot);
+                        }
 
-                        Single.create((SingleOnSubscribe<DataSnapshot>) emitterI -> {
-                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    emitterI.onSuccess(dataSnapshot);
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            emitterI.onError(databaseError.toException());
+                        }
+                    })).subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .compose(bindToLifecycle())
+                            .subscribe(dataSnapshot -> {
+
+                                toastNullable(getContext(), R.string.msg_add_group);
+                                if (getContext() == null)
+                                    return;
+                                Group group = makeGroupFromSnap(getContext(), dataSnapshot, groupNode.groupKey);
+                                if (group == null) {
+                                    Util.onError(SocialFragment.this, TAG+ "group == null", R.string.error);
+                                    return;
                                 }
+                                mListener.onCompleteGroup(group);
+                                groupAdapter.notifyAddedToGroup(groupNode.groupKey);
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-                                    emitterI.onError(databaseError.toException());
-                                }
-                            });
-                        }).subscribeOn(Schedulers.newThread())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .compose(bindToLifecycle())
-                                .subscribe(dataSnapshot -> {
-
-                                    toastNullable(getContext(), R.string.msg_add_group);
-                                    if (getContext() == null)
-                                        return;
-                                    Group group = makeGroupFromSnap(getContext(), dataSnapshot, groupNode.groupKey);
-                                    if (group == null) {
-                                        Util.onError(SocialFragment.this, TAG+ "group == null", R.string.error);
-                                        return;
-                                    }
-                                    mListener.onCompleteGroup(group);
-                                    groupAdapter.notifyAddedToGroup(groupNode.groupKey);
-
-                                });
-                    },  throwable -> Util.onError(SocialFragment.this, TAG+ throwable.getMessage(), R.string.error));
+                            }), throwable -> Util.onError(SocialFragment.this, TAG+ throwable.getMessage(), R.string.error));
 
         } else if (button == BUTTON_NEGATIVE){
             exitGroup(me.getUserUid(), groupNode.groupKey, R.string.reject_invitation_toast);
@@ -379,19 +365,17 @@ public class SocialFragment extends RxFragment implements SocialGroupListRVAdapt
      * todo 未デバッグ
      */
     public void exitGroup(@NonNull String meUid, @NonNull final String groupKey, @StringRes final int toast){
-        Single.create((SingleOnSubscribe<DataSnapshot>) emitter -> {
-            getRootRef().addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    emitter.onSuccess(dataSnapshot);
-                }
+        Single.create((SingleOnSubscribe<DataSnapshot>) emitter -> getRootRef().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                emitter.onSuccess(dataSnapshot);
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    emitter.onError(databaseError.toException());
-                }
-            });
-        }).subscribeOn(Schedulers.newThread())
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                emitter.onError(databaseError.toException());
+            }
+        })).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindToLifecycle())
                 .subscribe(dataSnapshot -> {
@@ -417,19 +401,17 @@ public class SocialFragment extends RxFragment implements SocialGroupListRVAdapt
     }
 
     private void retrieveUserList(){
-        Single.create((SingleOnSubscribe<DataSnapshot>) emitter -> {
-            getRef("friend", me.getUserUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    emitter.onSuccess(dataSnapshot);
-                }
+        Single.create((SingleOnSubscribe<DataSnapshot>) emitter -> getRef("friend", me.getUserUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                emitter.onSuccess(dataSnapshot);
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    emitter.onError(databaseError.toException());
-                }
-            });
-        }).subscribeOn(Schedulers.newThread())
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                emitter.onError(databaseError.toException());
+            }
+        })).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindToLifecycle())
                 .subscribe(dataSnapshot -> {
@@ -452,19 +434,17 @@ public class SocialFragment extends RxFragment implements SocialGroupListRVAdapt
                         rvUser.swapAdapter(userAdapter, false);
 
 
-                    Single.create((SingleOnSubscribe<DataSnapshot>) emitterI -> {
-                        getRef("userData", me.getUserUid(), "group").addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                emitterI.onSuccess(dataSnapshot);
-                            }
+                    Single.create((SingleOnSubscribe<DataSnapshot>) emitterI -> getRef("userData", me.getUserUid(), "group").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            emitterI.onSuccess(dataSnapshot);
+                        }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                emitterI.onError(databaseError.toException());
-                            }
-                        });
-                    }).subscribeOn(Schedulers.newThread())
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            emitterI.onError(databaseError.toException());
+                        }
+                    })).subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .compose(bindToLifecycle())
                             .subscribe(dataSnapshotI -> {

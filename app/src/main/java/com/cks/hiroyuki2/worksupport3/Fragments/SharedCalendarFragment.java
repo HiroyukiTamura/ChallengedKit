@@ -50,10 +50,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import io.reactivex.Single;
-import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.cks.hiroyuki2.worksupprotlib.FirebaseConnection.getRootRef;

@@ -45,7 +45,6 @@ import java.util.ArrayList;
 
 import icepick.Icepick;
 import icepick.State;
-import io.reactivex.functions.Consumer;
 
 import static com.cks.hiroyuki2.worksupport3.Fragments.SocialFragment.REQ_CODE_CREATE_GROUP;
 import static com.cks.hiroyuki2.worksupport3.Util.initAdMob;

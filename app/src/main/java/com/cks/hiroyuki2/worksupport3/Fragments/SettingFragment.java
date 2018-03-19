@@ -33,9 +33,7 @@ import com.cks.hiroyuki2.worksupport3.FbIntentService_;
 import com.cks.hiroyuki2.worksupport3.R;
 import com.cks.hiroyuki2.worksupport3.RxBus;
 import com.cks.hiroyuki2.worksupprotlib.Util;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,7 +49,6 @@ import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import io.reactivex.functions.Consumer;
 
 import static com.cks.hiroyuki2.worksupprotlib.Util.getTextNullable;
 import static com.cks.hiroyuki2.worksupprotlib.Util.getUserMe;
