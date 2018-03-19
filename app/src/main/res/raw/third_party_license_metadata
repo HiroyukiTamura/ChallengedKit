@@ -10,7 +10,7 @@
 657:46 core.cache
 705:46 clojure
 753:41 icepick
-5421:46 support-annotations
+5477:46 support-annotations
 883:46 jsr305
 931:84 checker-compat-qual
 1017:46 error_prone_annotations
@@ -28,122 +28,124 @@
 1694:54 twitter-core
 1750:46 rxlifecycle
 1798:46 rxjava
-1846:47 firebase-core
-1895:46 leakcanary-analyzer
-1943:53 crashlytics-core
-1998:23 fabric
-2023:53 beta
-2078:24 answers
-2104:41 junit
-2147:46 palette-v7
-2195:46 gridlayout-v7
-2339:46 preference-v7
-2291:46 preference-v14
-2387:46 dexter
-2435:42 appintro
-2479:46 firebase-ui-auth
-2527:46 design
-2575:46 customtabs
-2623:46 appcompat-v7
-2671:46 animated-vector-drawable
-2719:46 support-vector-drawable
-2767:46 extensions
-2815:46 support-v13
-2863:46 material-calendarview
-2911:38 library
-2951:47 play-services-ads
-3000:47 play-services-auth
-3049:47 play-services-vision
-3098:47 play-services-oss-licenses
-3147:47 firebase-auth
-3196:46 firebase-ui-firestore
-3244:47 firebase-firestore
-3293:46 firebase-ui-database
-3341:47 firebase-database
-3390:47 firebase-storage
-3439:47 firebase-crash
-3488:47 firebase-messaging
-3537:47 firebase-perf
-3586:47 firebase-appindexing
-3635:47 play-services-ads-lite
-3684:47 play-services-gass
-3733:47 play-services-auth-api-phone
-3782:47 play-services-auth-base
-3831:47 play-services-vision-common
-3880:47 play-services-base
-3929:47 firebase-database-connection
-3978:47 firebase-analytics
-4027:47 firebase-analytics-impl
-4076:47 firebase-iid
-4125:47 firebase-common
-4174:47 play-services-tasks
-4223:47 firebase-storage-common
-4272:47 play-services-basement
-4321:46 support-v4
-4369:46 support-fragment
-4417:46 recyclerview-v7
-4465:46 support-core-ui
-4513:46 support-core-utils
-4561:46 support-media-compat
-4609:46 transition
-4657:46 support-compat
-4705:92 gifdecoder
-4799:92 disklrucache
-4893:46 picasso
-4941:46 exifinterface
-4989:46 firebase-ui-common
-5037:46 livedata
-5085:46 livedata-core
-5181:46 runtime
-5277:46 common
-5325:46 viewmodel
-5373:46 cardview-v7
-5469:46 leakcanary-watcher
-5517:46 haha
-5565:46 constraint-layout
-5613:45 annotations-java5
-5660:46 layouts
-5708:46 material-sheet-fab
-5756:46 circleimageview
-5804:46 constraint-layout-solver
-5852:11365 memory
-17219:3182 PCRE
-20403:11358 safeparcel
-31763:19442 ICU4C
-51207:11365 time
-62574:1481 darts_clone
-64057:11365 base
-75424:680 STL
-76106:46817 rhino
-122925:11358 Volley
-134285:2500 zlib
-136787:243 tz database
-137032:11342 flatbuffers
-148376:11365 synchronization
-159743:11358 hybrid
-171103:11365 container
-182470:1732 Protobuf Nano
-184204:22655 Checker Framework
-206861:11365 types
-218228:731 UTF
-218961:11357 Error Prone
-230320:10141 customtabsclient
-240463:11358 CCTZ
-251823:1602 JSR 305
-253427:11365 algorithm
-264794:11365 debugging
-276161:11365 strings
-287528:1558 RE2
-289088:11358 v2964546_google
-300448:16013 Android SDK
-316463:10691 Android Core Utils Support Library
-327156:10691 Android Media Compat Support Library
-337849:10695 Android Core UI Support Library
-348546:10695 Android Fragments Support Library
-359243:10695 Android Annotations Support Library
-369940:10695 Android Compat Support Library
-380637:11358 okhttp3
-391997:11358 Okio
-403357:10695 Android Compatibility Library v4
-414054:34 arcanimator
-414090:49 reactive-streams
+1846:54 stetho
+1902:47 firebase-core
+1951:46 leakcanary-analyzer
+1999:53 beta
+2054:53 crashlytics-core
+2109:24 answers
+2135:23 fabric
+2160:41 junit
+2203:46 palette-v7
+2251:46 gridlayout-v7
+2395:46 preference-v7
+2347:46 preference-v14
+2443:46 dexter
+2491:42 appintro
+2535:46 firebase-ui-auth
+2583:46 design
+2631:46 customtabs
+2679:46 appcompat-v7
+2727:46 animated-vector-drawable
+2775:46 support-vector-drawable
+2823:46 extensions
+2871:46 support-v13
+2919:46 material-calendarview
+2967:38 library
+3007:47 play-services-ads
+3056:47 play-services-auth
+3105:47 play-services-vision
+3154:47 play-services-oss-licenses
+3203:47 firebase-auth
+3252:46 firebase-ui-firestore
+3300:47 firebase-firestore
+3349:46 firebase-ui-database
+3397:47 firebase-database
+3446:47 firebase-storage
+3495:47 firebase-crash
+3544:47 firebase-messaging
+3593:47 firebase-perf
+3642:47 firebase-appindexing
+3691:47 play-services-ads-lite
+3740:47 play-services-gass
+3789:47 play-services-auth-api-phone
+3838:47 play-services-auth-base
+3887:47 play-services-vision-common
+3936:47 play-services-base
+3985:47 firebase-database-connection
+4034:47 firebase-analytics
+4083:47 firebase-analytics-impl
+4132:47 firebase-iid
+4181:47 firebase-common
+4230:47 play-services-tasks
+4279:47 firebase-storage-common
+4328:47 play-services-basement
+4377:46 support-v4
+4425:46 support-fragment
+4473:46 recyclerview-v7
+4521:46 support-core-ui
+4569:46 support-core-utils
+4617:46 support-media-compat
+4665:46 transition
+4713:46 support-compat
+4761:92 gifdecoder
+4855:92 disklrucache
+4949:46 picasso
+4997:46 exifinterface
+5045:46 firebase-ui-common
+5093:46 livedata
+5141:46 livedata-core
+5237:46 runtime
+5333:46 common
+5381:46 viewmodel
+5429:46 cardview-v7
+5525:46 leakcanary-watcher
+5573:46 haha
+5621:46 constraint-layout
+5669:45 annotations-java5
+5716:46 layouts
+5764:46 material-sheet-fab
+5812:46 circleimageview
+5860:46 constraint-layout-solver
+5908:11365 memory
+17275:3182 PCRE
+20459:11358 safeparcel
+31819:19442 ICU4C
+51263:11365 time
+62630:1481 darts_clone
+64113:11365 base
+75480:680 STL
+76162:46817 rhino
+122981:11358 Volley
+134341:2500 zlib
+136843:243 tz database
+137088:11342 flatbuffers
+148432:11365 synchronization
+159799:11358 hybrid
+171159:11365 container
+182526:1732 Protobuf Nano
+184260:22655 Checker Framework
+206917:11365 types
+218284:731 UTF
+219017:11357 Error Prone
+230376:10141 customtabsclient
+240519:11358 CCTZ
+251879:1602 JSR 305
+253483:11365 algorithm
+264850:11365 debugging
+276217:11365 strings
+287584:1558 RE2
+289144:11358 v2964546_google
+300504:16013 Android SDK
+316519:10691 Android Core Utils Support Library
+327212:10691 Android Media Compat Support Library
+337905:10695 Android Core UI Support Library
+348602:10695 Android Fragments Support Library
+359299:10695 Android Annotations Support Library
+369996:10695 Android Compat Support Library
+380693:11358 okhttp3
+392053:11358 Okio
+403413:10695 Android Compatibility Library v4
+414110:34 arcanimator
+414146:49 reactive-streams
+414197:46 leakcanary-android-no-op

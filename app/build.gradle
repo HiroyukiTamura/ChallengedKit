@@ -40,7 +40,36 @@ apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'io.fabric'
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.google.gms.oss.licenses.plugin'
+apply plugin: 'deploygate'
 //apply plugin: 'project-report'
+
+deploygate {
+
+    // 自動ビルドを行っている場合、アカウント情報を以下のような形で指定することができます
+    userName = "hirotamu3"
+    token = "60a121d9676797e183df02224bb721e68457bfe6"
+
+    // 追加のオプションをフレーバーごとに設定できます
+    apks {
+
+        // `debug` フレーバーに対応し `uploadDeployGateDebug` タスクで使用されます
+        debug {
+            // 便利情報: 現在のコミットの git のハッシュ を使うとトラブルシューティングを楽にできます
+            def hash = 'git rev-parse --short HEAD'.execute([], project.rootDir).in.text.trim()
+            // ビルドのメッセージとして設定します
+            message = "debug build ${hash}"
+
+            // 配布ページを利用している場合、以下の設定で同時に更新することができます
+            releaseNote = "release note"
+        }
+
+        // 以下では `uploadDeployGateCustom` を作成して、任意のAPKファイルをアップロードします
+        custom {
+            // 対象のファイルを設定
+            sourceFile = file("${project.rootDir}/app/build/some-custom-build.apk")
+        }
+    }
+}
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -56,7 +85,7 @@ repositories {
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.0-rc1'
 
     defaultConfig {
         applicationId "com.cks.hiroyuki2.worksupport3"
@@ -116,7 +145,7 @@ dependencies {
 //    compile 'com.takisoft.fix:preference-v7:27.0.2.0'
 //    compile 'org.jetbrains:annotations-java5:15.0'
     //    compile 'com.github.channguyen:rsv:1.0.1'
-    implementation 'com.github.HiroyukTamura:WorkSupportLibW:8b7afaf'
+    implementation 'com.github.HiroyukTamura:WorkSupportLibW:966fda6'
 //    compile 'com.prolificinteractive:material-calendarview:1.4.3'
 //    compile 'com.firebaseui:firebase-ui:3.2.1'
 //    compile 'com.google.firebase:firebase-core:11.8.0'
@@ -157,7 +186,7 @@ dependencies {
     annotationProcessor 'org.androidannotations:androidannotations:4.4.0'
     implementation 'com.jakewharton:butterknife:9.0.0-SNAPSHOT'
     annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-SNAPSHOT'
-    implementation 'com.github.bumptech.glide:glide:4.4.0'
+    implementation 'com.github.bumptech.glide:glide:4.6.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
@@ -175,6 +204,8 @@ dependencies {
     implementation 'com.trello.rxlifecycle2:rxlifecycle:2.2.1'
     implementation 'com.trello.rxlifecycle2:rxlifecycle-android:2.2.1'
     implementation 'com.trello.rxlifecycle2:rxlifecycle-components:2.2.1'
+
+    implementation 'com.facebook.stetho:stetho:1.5.0'
 
     //    compile project(':worksupportlibrary')
 //    implementation 'com.android.support:palette-v7:27.0.2'//appcompatのバージョンコンフリクトエラーを消すためのもの
