@@ -73,8 +73,9 @@
         <meta-data android:name="firebase_performance_logcat_enabled" android:value="true" />
 
         <activity
-            android:name="$Activities.MainActivity_"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name=".Activities.MainActivity_"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -83,9 +84,10 @@
         </activity>
 
         <activity
-            android:name="$Activities.AddFriendActivity_"
-            android:parentActivityName="$Activities.MainActivity_"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name=".Activities.AddFriendActivity_"
+            android:parentActivityName=".Activities.MainActivity_"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="Activities.MainActivity" />
@@ -103,49 +105,55 @@
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_info_white_24dp" />
         <service
-            android:name=".FcmService">
+            android:name=".FcmService"
+            tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
 
         <activity
-            android:name="$Activities.EditDocActivity_"
-            android:parentActivityName="$Activities.MainActivity_"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false"/>
-
-        <activity
-            android:name="$Activities.AddGroupActivity_"
-            android:parentActivityName="$Activities.MainActivity_"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="Activities.MainActivity_" />
-        </activity>
-
-        <activity
-            android:name="$Activities.SharedDataViewActivity_"
+            android:name=".Activities.EditDocActivity_"
             android:parentActivityName=".Activities.MainActivity_"
             android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false">
+            android:exported="false"
+            tools:ignore="InnerclassSeparator" />
+
+        <activity
+            android:name=".Activities.AddGroupActivity_"
+            android:parentActivityName=".Activities.MainActivity_"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false"
+            tools:ignore="InnerclassSeparator">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="Activities.MainActivity_" />
         </activity>
 
         <activity
-            android:name="$Activities.SharedCalendarActivity_"
-            android:parentActivityName="$Activities.MainActivity_"
+            android:name=".Activities.SharedDataViewActivity_"
+            android:parentActivityName=".Activities.MainActivity_"
             android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false"/>
+            android:exported="false"
+            tools:ignore="InnerclassSeparator">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="Activities.MainActivity_" />
+        </activity>
 
         <activity
-            android:name="$Activities.GroupSettingActivity_"
-            android:parentActivityName="$Activities.MainActivity_"
+            android:name=".Activities.SharedCalendarActivity_"
+            android:parentActivityName=".Activities.MainActivity_"
             android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false">
+            android:exported="false"
+            tools:ignore="InnerclassSeparator" />
+
+        <activity
+            android:name=".Activities.GroupSettingActivity_"
+            android:parentActivityName=".Activities.MainActivity_"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false"
+            tools:ignore="InnerclassSeparator">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -153,14 +161,16 @@
         </activity>
 
         <activity
-            android:name="$Activities.TutorialActivity_"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".Activities.TutorialActivity_"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator" />
 
         <activity
-            android:name="$Activities.HelpActivity_"
-            android:parentActivityName="$Activities.MainActivity_"
+            android:name=".Activities.HelpActivity_"
+            android:parentActivityName=".Activities.MainActivity_"
             android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false">
+            android:exported="false"
+            tools:ignore="InnerclassSeparator">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
