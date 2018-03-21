@@ -19,6 +19,7 @@ package com.cks.hiroyuki2.worksupport3.Fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -258,23 +259,23 @@ public class SocialFragment extends RxFragment implements SocialGroupListRVAdapt
 
     /**
      * その場でグループ作成してほしいので、{@link com.cks.hiroyuki2.worksupport3.FbIntentService}に投げない。
+     * @param data {@link Parcelable}をどうやって{@link OnActivityResult.Extra}で扱うかよくわからないから、memberListに関してはここから取り出します。
      */
     @OnActivityResult(REQ_CODE_CREATE_GROUP)
     void onResultCreateGroup(Intent data, int resultCode,
                              @OnActivityResult.Extra(AddGroupActivity.INTENT_BUNDLE_GROUP_NAME) final String groupName,
                              @OnActivityResult.Extra(AddGroupActivity.INTENT_BUNDLE_GROUP_PHOTO_URL) @Nullable String photoUrl,
-                             @OnActivityResult.Extra(AddGroupActivity.KEY_PARCELABLE) List<User> memberList,
                              @OnActivityResult.Extra String groupKey){
 
         if (resultCode != RESULT_OK) return;
 
-//        List<User> userListOpe = new ArrayList<>(userList);
         me.setChecked(true);
+        List<User> memberList = data.getParcelableArrayListExtra(AddGroupActivity.KEY_PARCELABLE);
         memberList.add(me);
         for (User user: memberList)
             if(user.getUserUid().equals(DEFAULT))
                 memberList.remove(user);
-        memberList.remove(0);/*DEFAULT値を取り除く DEFAULT値をどうするかは後で考えましょう*/
+//        memberList.remove(0);/*DEFAULT値を取り除く DEFAULT値をどうするかは後で考えましょう*/
 
         HashMap<String, Object> childMap = makeMap(me.getUserUid(), groupKey, groupName, memberList, photoUrl);
 
