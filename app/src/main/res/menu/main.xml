@@ -31,4 +31,11 @@
         android:title="@string/action_settings"
         app:showAsAction="ifRoom"
         android:visible="false"/>
+    <item
+        android:id="@+id/action_template"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_view_list_white_24dp"
+        android:title="@string/action_settings"
+        app:showAsAction="ifRoom"
+        android:visible="false"/>
 </menu>

@@ -332,16 +332,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             finish();//最初のFragmentだったらfinish()
     }
 
+    /**
+     * @see <a href="https://goo.gl/yLqfSu">AndroidAnnotaions使えません</>
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.d(TAG, "onCreateOptionsMenu: fire");
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        MenuItem calendar = menu.getItem(0);
+        MenuItem calendar = menu.findItem(R.id.calendar);
         calendar.setVisible(fragment instanceof ShareBoardFragment);
-        MenuItem setting = menu.getItem(1);
+        MenuItem setting = menu.findItem(R.id.action_settings);
         setting.setVisible(fragment instanceof ShareBoardFragment);
+        MenuItem template = menu.findItem(R.id.action_template);
+        setting.setVisible(fragment instanceof RecordFragment);
         return true;
     }
 
@@ -353,6 +358,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @OptionsItem(R.id.action_settings)
     void onSelectMenuSetting(){
         onClickMenuSetting();
+    }
+
+    @OptionsItem(R.id.action_template)
+    void onSelectMenuTemplate(){
+
     }
 
     private void onClickMenuCalendar(){
