@@ -462,7 +462,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (tag.equals(fragmentOld.getTag()))//現在のfragmentが同じなら何もしない
             return;
 
-        changeToolbarTitle(fragment);
+//        changeToolbarTitle(fragment);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragment_container, fragment, tag);
         ft.addToBackStack(tag);
@@ -477,11 +477,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     //region toolbarまわり
-    private void changeToolbarTitle(Fragment fragment){
-        if (!(fragment instanceof AnalyticsFragment))
-            toolbar.setTitle(getString(R.string.app_name));
-    }
-
     public void initToolBar(Fragment attachedFrag){
         supportInvalidateOptionsMenu();
 
