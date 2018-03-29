@@ -12,7 +12,7 @@
   ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
-  -->
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cks.hiroyuki2.worksupport3">
@@ -22,9 +22,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
-    <!--<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
-    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
 
+    <!-- <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> -->
+    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
@@ -37,17 +37,18 @@
         android:theme="@style/AppTheme"
         tools:replace="android:name,android:label">
 
-        <!--fabric valueのkeyはリソースファイルなどに切り出すとビルドが通りません-->
+        <!-- fabric valueのkeyはリソースファイルなどに切り出すとビルドが通りません -->
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="6c1528b3bbc66a9d925a39b9982d20e328e8e509"
             tools:replace="android:value" />
 
-        <!--facebook-->
+        <!-- facebook -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"
             tools:replace="android:value" />
+
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -64,13 +65,17 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="android.webkit.WebView.MetricsOptOut"
             android:value="true" />
-        <!--facebook-->
+        <!-- facebook -->
 
-        <!--firebase perf-->
-        <meta-data android:name="firebase_performance_logcat_enabled" android:value="true" />
+
+        <!-- firebase perf -->
+        <meta-data
+            android:name="firebase_performance_logcat_enabled"
+            android:value="true" />
 
         <activity
             android:name=".Activities.MainActivity_"
@@ -82,7 +87,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".Activities.AddFriendActivity_"
             android:parentActivityName=".Activities.MainActivity_"
@@ -97,33 +101,34 @@
             android:name=".BackService_"
             android:exported="false" />
 
-        <!--firebase cloud messageing-->
+        <!-- firebase cloud messageing -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_info_white_24dp" />
+
         <service
             android:name=".FcmService"
             tools:ignore="ExportedService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
         <activity
             android:name=".Activities.EditDocActivity_"
+            android:exported="false"
             android:parentActivityName=".Activities.MainActivity_"
             android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false"
             tools:ignore="InnerclassSeparator" />
 
         <activity
             android:name=".Activities.AddGroupActivity_"
+            android:exported="false"
             android:parentActivityName=".Activities.MainActivity_"
             android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false"
             tools:ignore="InnerclassSeparator">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -132,9 +137,9 @@
 
         <activity
             android:name=".Activities.SharedDataViewActivity_"
+            android:exported="false"
             android:parentActivityName=".Activities.MainActivity_"
             android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false"
             tools:ignore="InnerclassSeparator">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -143,18 +148,17 @@
 
         <activity
             android:name=".Activities.SharedCalendarActivity_"
+            android:exported="false"
             android:parentActivityName=".Activities.MainActivity_"
             android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false"
             tools:ignore="InnerclassSeparator" />
 
         <activity
             android:name=".Activities.GroupSettingActivity_"
+            android:exported="false"
             android:parentActivityName=".Activities.MainActivity_"
             android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false"
             tools:ignore="InnerclassSeparator">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="Activities.MainActivity_" />
@@ -167,17 +171,29 @@
 
         <activity
             android:name=".Activities.HelpActivity_"
+            android:exported="false"
             android:parentActivityName=".Activities.MainActivity_"
             android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false"
             tools:ignore="InnerclassSeparator">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="Activities.MainActivity_" />
         </activity>
 
-        <service android:name=".FbIntentService_"/>
+        <activity android:name=".Activities.TemplateActivity_"
+            android:exported="false"
+            android:parentActivityName=".Activities.MainActivity_"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="Activities.MainActivity_" />
+        </activity>
+
+        <service android:name=".FbIntentService_" />
+
     </application>
+
+    <!--todo 所々ActivityのParentが指定されていなところがあるけど、どうなの？-->
 
 </manifest>

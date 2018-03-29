@@ -341,12 +341,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        MenuItem calendar = menu.findItem(R.id.calendar);
-        calendar.setVisible(fragment instanceof ShareBoardFragment);
-        MenuItem setting = menu.findItem(R.id.action_settings);
-        setting.setVisible(fragment instanceof ShareBoardFragment);
-        MenuItem template = menu.findItem(R.id.action_template);
-        setting.setVisible(fragment instanceof RecordFragment);
+        menu.findItem(R.id.calendar).setVisible(fragment instanceof ShareBoardFragment);
+        menu.findItem(R.id.action_settings).setVisible(fragment instanceof ShareBoardFragment);
+        menu.findItem(R.id.action_template).setVisible(fragment instanceof RecordFragment);
         return true;
     }
 
@@ -362,15 +359,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @OptionsItem(R.id.action_template)
     void onSelectMenuTemplate(){
-
+        com.cks.hiroyuki2.worksupport3.Activities.TemplateActivity_.intent(this).start();
     }
 
     private void onClickMenuCalendar(){
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (fragment instanceof ShareBoardFragment){
-            Group group = ((ShareBoardFragment)fragment).getGroup();
-            showSharedCalendarActivity(group);
-        }
+        if (fragment instanceof ShareBoardFragment)
+            com.cks.hiroyuki2.worksupport3.Activities.SharedCalendarActivity_.intent(this)
+                    .group(((ShareBoardFragment)fragment).getGroup())
+                    .start();
 
         invalidateOptionsMenu();
     }
@@ -378,16 +375,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void onClickMenuSetting(){
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if (fragment instanceof ShareBoardFragment){
-            Intent intent = new Intent(this, com.cks.hiroyuki2.worksupport3.Activities.GroupSettingActivity_.class);
-            intent.putExtra("group", ((ShareBoardFragment) fragment).getGroup());
-            startActivityForResult(intent, REQ_CODE_GROUP_SETTING);
+            com.cks.hiroyuki2.worksupport3.Activities.GroupSettingActivity_.intent(this)
+                    .group(((ShareBoardFragment) fragment).getGroup())
+                    .startForResult(REQ_CODE_GROUP_SETTING);
         }
 
         invalidateOptionsMenu();
-    }
-
-    private void showSharedCalendarActivity(@NonNull Group group){
-        com.cks.hiroyuki2.worksupport3.Activities.SharedCalendarActivity_.intent(this).group(group).start();
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
