@@ -51,6 +51,7 @@ public class TemplateActivity extends AppCompatActivity {
     @AfterViews
     void onAfterViews(){
         setSupportActionBar(toolbar);
+        toolbar.setTitle(R.string.item4);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

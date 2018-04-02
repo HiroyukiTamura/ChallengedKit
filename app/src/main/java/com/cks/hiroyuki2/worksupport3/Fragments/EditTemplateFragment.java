@@ -118,20 +118,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
     private List<RecordData> list;
     private List<RecordVpItem> uiList = new ArrayList<>();
     private NestedScrollView rootView;
-    private Context context;
     @ViewById(R.id.root_container) LinearLayout ll;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        this.context = context;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        context = null;
-    }
 
     @AfterViews
     void afterViews(){
@@ -179,7 +166,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
         kickWidgetDialog(null, TEMPLATE_EDIT, CALLBACK_TEMPLATE_EDIT, EditTemplateFragment.this);
     }
 
-    private void setView(RecordData data, int dataNum){
+    private void setView(@NonNull RecordData data, int dataNum){
         RecordVpItem vpItem;
         switch (data.dataType){
             case 1:
@@ -521,7 +508,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
         getList().get(dataNum).data.put(Integer.toString(tagNum), val);
     }
 
-    private void updateDateName(Bundle bundle){
+    private void updateDateName(@NonNull Bundle bundle){
         String newName = bundle.getString(RecordVPAdapter.NAME, null);
         int dataNum = bundle.getInt(DATA_NUM, 100);
         if (newName == null || dataNum == 100){
@@ -542,7 +529,7 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
         toast(getContext(), b, R.string.succeed_edit_name, R.string.error);
     }
 
-    private void updateComment(Bundle bundle){
+    private void updateComment(@NonNull Bundle bundle){
         String newComment = bundle.getString(RecordVPAdapter.COMMENT);
         int dataNum = bundle.getInt(DATA_NUM, 100);
         if (dataNum == 100){
@@ -638,12 +625,13 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
     @Override
     public void onClickRemoveTagBtn(int dataNum, int tagNum) {
         //todo これタグを削除する前に、「タグを削除しますか？」っていうDialogを挟むべきでは？
+        //todo dataNumで割り振らないで、
         TempItemTagPool tagPool = (TempItemTagPool) uiList.get(dataNum);
         tagPool.removeTag(tagNum);
         removeItemFromData(getList().get(dataNum), Integer.toString(tagNum));
 
         boolean b = applyTemplate(getList(), getContext());
-        applyTemplateFb(getList(), context);
+        applyTemplateFb(getList(), getContext());
         toast(getContext(), b, R.string.remove_tag_toast, R.string.error);
     }
 
@@ -652,11 +640,15 @@ public class EditTemplateFragment extends Fragment implements RecordVpItemCommen
         if (data == null || data.data == null || data.data.isEmpty() || !data.data.containsKey(key))
             return false;
 
+        int max = data.data.size();
         data.data.remove(key);
 
         List<Object> list = new LinkedList<>();
-        for (Map.Entry entry : data.data.entrySet()) {
-            list.add(entry.getValue());
+        for (int i = 0; i < max; i++) {
+            if (i == Integer.parseInt(key))
+                continue;
+            Object obj = data.data.get(Integer.toString(i));
+            list.add(obj);
         }
 
         HashMap<String, Object> hashMap = new HashMap<>();

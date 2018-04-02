@@ -4,7 +4,7 @@
 281:50 jcodemodel
 333:46 javapoet
 429:46 butterknife-annotations
-796:37 annotations
+427465:46 annotations
 571:41 scout
 614:41 quoin
 657:46 core.cache
@@ -55,29 +55,29 @@
 3015:46 material-calendarview
 3063:38 library
 3103:47 play-services-ads
-3152:47 play-services-auth
-3201:47 play-services-vision
-3250:47 play-services-oss-licenses
-3299:47 firebase-auth
-3348:46 firebase-ui-firestore
-3396:47 firebase-firestore
-3445:46 firebase-ui-database
-3493:47 firebase-database
-3542:47 firebase-storage
-3591:47 firebase-crash
-3640:47 firebase-messaging
-3689:47 firebase-perf
-3738:47 firebase-appindexing
-3787:47 play-services-ads-lite
-3836:47 play-services-gass
-3885:47 play-services-auth-api-phone
-3934:47 play-services-auth-base
-3983:47 play-services-vision-common
-4032:47 play-services-base
-4081:47 firebase-database-connection
-4130:47 firebase-analytics
-4179:47 firebase-analytics-impl
-4228:47 firebase-iid
+3152:47 play-services-vision
+3201:47 play-services-oss-licenses
+3250:47 firebase-crash
+3299:47 firebase-messaging
+3348:47 firebase-perf
+3397:47 firebase-appindexing
+3446:47 play-services-ads-lite
+3495:47 play-services-gass
+3544:47 play-services-vision-common
+3593:47 firebase-auth
+3642:47 play-services-auth
+3691:47 play-services-auth-api-phone
+3740:47 play-services-auth-base
+3789:47 play-services-base
+3838:47 firebase-analytics
+3887:47 firebase-analytics-impl
+3936:47 firebase-iid
+3985:46 firebase-ui-database
+4033:47 firebase-database
+4082:47 firebase-database-connection
+4131:46 firebase-ui-firestore
+4179:47 firebase-firestore
+4228:47 firebase-storage
 4277:47 firebase-common
 4326:47 play-services-tasks
 4375:47 firebase-storage-common
@@ -98,7 +98,7 @@
 5189:46 livedata
 5237:46 livedata-core
 5333:46 runtime
-5429:46 common
+426857:46 common
 5477:46 viewmodel
 5525:46 cardview-v7
 5621:46 leakcanary-watcher
@@ -107,44 +107,84 @@
 5764:46 layouts
 5812:46 material-sheet-fab
 5860:46 circleimageview
-5908:11365 memory
-17275:3182 PCRE
-20459:11358 safeparcel
-31819:19442 ICU4C
-51263:11365 time
-62630:1481 darts_clone
-64113:11365 base
-75480:680 STL
-76162:46817 rhino
-122981:11358 Volley
-134341:2500 zlib
-136843:243 tz database
-137088:11342 flatbuffers
-148432:11365 synchronization
-159799:11358 hybrid
-171159:11365 container
-182526:1732 Protobuf Nano
-184260:22655 Checker Framework
-206917:11365 types
-218284:731 UTF
-219017:11357 Error Prone
-230376:10141 customtabsclient
-240519:11358 CCTZ
-251879:1602 JSR 305
-253483:11365 algorithm
-264850:11365 debugging
-276217:11365 strings
-287584:1558 RE2
-289144:11358 v2964546_google
-300504:16013 Android SDK
-316519:10691 Android Core Utils Support Library
-327212:10691 Android Media Compat Support Library
-337905:10695 Android Core UI Support Library
-348602:10695 Android Fragments Support Library
-359299:10695 Android Annotations Support Library
-369996:10695 Android Compat Support Library
-380693:11358 okhttp3
-392053:11358 Okio
-403413:10695 Android Compatibility Library v4
-414110:34 arcanimator
-414146:49 reactive-streams
+5908:11365 synchronization
+17275:11365 strings
+28642:11358 subtle
+40002:22655 Checker Framework
+62659:11365 algorithm
+74026:1732 Protobuf Nano
+75760:1558 RE2
+77320:11357 Error Prone
+88679:1602 JSR 305
+90283:252 tz database
+90537:11365 container
+101904:46817 rhino
+148723:11365 base
+160090:19442 ICU4C
+179534:10141 customtabsclient
+189677:11365 debugging
+201044:731 UTF
+201777:11358 Volley
+213137:11365 types
+224504:3182 PCRE
+227688:11365 time
+239055:11365 memory
+250422:680 STL
+251104:1481 darts_clone
+252587:2500 zlib
+255089:11358 CCTZ
+266449:11342 flatbuffers
+277793:11358 safeparcel
+289153:11365 absl
+300520:11358 okhttp3
+311880:10695 Android Compatibility Library v4
+322577:16013 Android SDK
+338592:10695 Android Compat Support Library
+349289:11358 Okio
+360649:10695 Android Core UI Support Library
+371346:10695 Android Annotations Support Library
+382043:10691 Android Media Compat Support Library
+392736:11358 v2964546_google
+404096:10695 Android Fragments Support Library
+414793:10691 Android Core Utils Support Library
+425486:34 arcanimator
+425522:49 reactive-streams
+425573:46 lint-gradle
+425621:46 builder
+425669:46 lint
+425717:46 lint-checks
+425765:46 lint-api
+425813:46 manifest-merger
+425861:46 sdk-common
+425909:46 lint-gradle-api
+425957:46 gradle-api
+426005:46 builder-model
+426053:46 lint-kotlin
+426101:46 intellij-core
+426149:46 uast
+426197:46 groovy-all
+426245:46 kotlin-reflect
+426293:46 sdklib
+426341:46 repository
+426389:46 kotlin-stdlib-jre8
+426437:46 builder-test-api
+426485:46 ddmlib
+426533:40 bcpkix-jdk15on
+426575:40 bcprov-jdk15on
+426617:46 tracker
+426665:46 shared
+426713:46 protos
+426761:46 layoutlib-api
+426809:46 dvlib
+426905:46 apksig
+426953:46 javawriter
+427001:47 fastutil
+427050:50 jopt-simple
+427102:46 json-simple
+427198:121 kxml2
+427321:46 kotlin-compiler
+427369:46 kotlin-stdlib-jre7
+427417:46 kotlin-stdlib
+427513:55 stax-ex
+427570:102 jaxb-api
+427674:46 leakcanary-android-no-op
