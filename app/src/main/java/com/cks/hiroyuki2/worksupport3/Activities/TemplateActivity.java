@@ -51,9 +51,10 @@ public class TemplateActivity extends AppCompatActivity {
     @AfterViews
     void onAfterViews(){
         setSupportActionBar(toolbar);
-        toolbar.setTitle(R.string.item4);
-        if (getSupportActionBar() != null)
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(R.string.item4);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         initAdMob(this);
         Fabric.with(this, new Crashlytics());

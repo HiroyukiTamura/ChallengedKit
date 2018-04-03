@@ -239,8 +239,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (isFirstLaunch)
             return;
 
-        toolbar.setTitle("");
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
         toolbarHeight = getToolBarHeight(this);
 
         if(!getSupportFragmentManager().getFragments().isEmpty())
@@ -671,12 +671,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void setToolbarTitle(@Nullable String title){
-        toolbar.setTitle(title);
+        getSupportActionBar().setTitle(title);
     }
 
     public void setToolbarTitle(@StringRes int title){
         if (title != 0)
-            toolbar.setTitle(title);
+            getSupportActionBar().setTitle(title);
     }
 
     public LoginCheck getLoginCheck(){
